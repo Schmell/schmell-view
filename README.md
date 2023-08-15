@@ -1,10 +1,10 @@
-# create-svelte
+# schmell-view
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
 
 ## Deploying the project
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/sRATcT?referralCode=vMAgAq)
+
 
 ## Developing
 
