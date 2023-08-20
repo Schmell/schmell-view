@@ -2,28 +2,277 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator zod {
+  provider = "zod-prisma-types"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model VerificationToken {
-  id      String @id @unique
-  user_id String @unique
-  expires BigInt
+model Series {
+  id             String        @id @unique @default(cuid())
+  name           String
+  description    String?
+  rest           Json?
+  organizationId String?
+  publisherId    String?
+  createdAt      DateTime?     @default(now())
+  updatedAt      DateTime?     @updatedAt
+  Events         Event[]
+  Org            Organization? @relation(fields: [organizationId], references: [id])
+  Publisher      User?         @relation(fields: [publisherId], references: [id])
+  follow         follow[]
+  like           like[]
+  Venues         Venue[]
+}
+
+model Event {
+  id             String         @id @default(cuid())
+  eventeid       String
+  uniqueIdString String         @unique
+  name           String
+  eventwebsite   String?
+  venueName      String?
+  description    String?
+  titleImage     String?
+  public         Boolean        @default(true)
+  /// [fileInfo]
+  fileInfo       Json?
+  /// [resultColumns]
+  resultColumns  Json?
+  /// [eventRest]
+  rest           Json?
+  publisherId    String?
+  venueId        String?
+  organizationId String?
+  createdAt      DateTime?      @default(now())
+  updatedAt      DateTime?      @updatedAt
+  seriesId       String?
+  email          String?
+  Organization   Organization?  @relation(fields: [organizationId], references: [id])
+  Publisher      User?          @relation(fields: [publisherId], references: [id])
+  Series         Series?        @relation(fields: [seriesId], references: [id])
+  Venue          Venue?         @relation(fields: [venueId], references: [id])
+  Races          Race[]
+  Results        Result[]
+  follow         follow[]
+  like           like[]
+  Comps          Comp[]
+  comments       eventComment[]
+}
+
+model Race {
+  id               String    @id @unique @default(cuid())
+  raceId           String?
+  uniqueRaceString String    @unique
+  name             String?
+  starts           Json?
+  rank             String?
+  date             String?
+  time             String?
+  notes            String?
+  sailed           String?
+  resultColumns    Json?
+  /// [raceRest]
+  rest             Json?
+  eventId          String?
+  publisherId      String?
+  createdAt        DateTime? @default(now())
+  updatedAt        DateTime? @updatedAt
+  Event            Event?    @relation(fields: [eventId], references: [id])
+  Publisher        User?     @relation(fields: [publisherId], references: [id])
+  Results          Result[]
+  follow           follow[]
+  like             like[]
+  Comps            Comp[]
+  compId           String?
+}
+
+model Comp {
+  id          String    @id @default(cuid())
+  compId      String    @unique // right now this will only be unique on the same event
+  raceId      String?
+  club        String?
+  boat        String?
+  skipper     String?
+  fleet       String?
+  division    String?
+  rating      String?
+  rank        String?
+  nett        String?
+  total       String?
+  /// [compRest]
+  rest        Json?
+  publisherId String?
+  Publisher   User?     @relation(fields: [publisherId], references: [id])
+  Events      Event[]
+  Results     Result[]
+  follow      follow[]
+  like        like[]
+  Races       Race[]
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+
+  @@index([compId])
+}
+
+model Result {
+  id             String    @id @unique @default(cuid())
+  resultId       String?
+  finish         String?
+  start          String?
+  points         String?
+  position       String?
+  discard        String?
+  corrected      String?
+  resultType     String?
+  elasped        String?
+  supposedRating String?
+  elapsedWin     String?
+  ratingWin      String?
+  rrset          String?
+  publisherId    String
+  eventId        String?
+  compId         String?
+  raceId         String?
+  createdAt      DateTime? @default(now())
+  updatedAt      DateTime? @updatedAt
+  Comp           Comp?     @relation(fields: [compId], references: [id])
+  Event          Event?    @relation(fields: [eventId], references: [id])
+  Publisher      User      @relation(fields: [publisherId], references: [id])
+  Race           Race?     @relation(fields: [raceId], references: [id])
+
+  @@index([raceId])
+}
+
+model Organization {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  tag         String?
+  website     String?
+  email       String?
+  titleImage  String?
+  contact     Json?
+  ownerId     String?
+  Owner       User?     @relation(fields: [ownerId], references: [id])
+  Events      Event[]
+  Series      Series[]
+  follow      follow[]
+  like        like[]
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+}
+
+model Venue {
+  id          String    @id @unique @default(cuid())
+  name        String    @unique
+  website     String?
+  email       String?
+  burgee      String?
+  address     Json?
+  publisherId String?
+  Events      Event[]
+  Publisher   User?     @relation(fields: [publisherId], references: [id])
+  Series      Series[]
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+}
+
+model eventComment {
+  type      String?
+  ref       String?
+  comment   String
+  Event     Event?    @relation(fields: [eventId], references: [id])
+  eventId   String?
+  User      User      @relation(fields: [userId], references: [id])
+  userId    String
+  likes     like[]
+  id        String    @id @unique @default(cuid())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+enum CommentType {
+  series
+  event
+  race
+  result
+  comp
+}
+
+model follow {
+  id             String        @id @unique @default(cuid())
+  userId         String
+  type           String
+  seriesId       String?
+  eventId        String?
+  organizationId String?
+  raceId         String?
+  compId         String?
+  updatedAt      DateTime      @updatedAt
+  createdAt      DateTime      @default(now())
+  Comp           Comp?         @relation(fields: [compId], references: [id])
+  Event          Event?        @relation(fields: [eventId], references: [id])
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  Race           Race?         @relation(fields: [raceId], references: [id])
+  Series         Series?       @relation(fields: [seriesId], references: [id])
+  User           User          @relation(fields: [userId], references: [id])
+}
+
+model like {
+  id             String        @id @unique @default(cuid())
+  userId         String
+  type           String
+  seriesId       String?
+  eventId        String?
+  organizationId String?
+  raceId         String?
+  compId         String?
+  updatedAt      DateTime      @updatedAt
+  createdAt      DateTime      @default(now())
+  Comp           Comp?         @relation(fields: [compId], references: [id])
+  Event          Event?        @relation(fields: [eventId], references: [id])
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  Race           Race?         @relation(fields: [raceId], references: [id])
+  Series         Series?       @relation(fields: [seriesId], references: [id])
+  User           User          @relation(fields: [userId], references: [id])
+  eventComment   eventComment? @relation(fields: [eventCommentId], references: [id])
+  eventCommentId String?
 }
 
 model User {
-  id             String    @id @unique
+  id             String         @id @unique
   username       String
   firstname      String?
   lastname       String?
-  email          String?   @unique
+  email          String?        @unique
   email_verified Int?
   name           String?
   avatar         String?
   auth_session   Session[]
   auth_key       Key[]
+  UserSettings   UserSettings?
+  Series         Series[]
+  Event          Event[]
+  Race           Race[]
+  Comp           Comp[]
+  Result         Result[]
+  Organization   Organization[]
+  Venue          Venue[]
+  eventComment   eventComment[]
+  follow         follow[]
+  like           like[]
+}
+
+model UserSettings {
+  id       String  @id @unique @default(cuid())
+  theme    String?
+  language Lang?   @default(english)
+  userId   String? @unique
+  user     User?   @relation(fields: [userId], references: [id])
 }
 
 model Session {
@@ -43,4 +292,25 @@ model Key {
   user            User    @relation(references: [id], fields: [user_id], onDelete: Cascade)
 
   @@index([user_id])
+}
+
+model VerificationToken {
+  id      String @id @unique
+  user_id String @unique
+  expires BigInt
+}
+
+enum Lang {
+  english
+  french
+  spanish
+  german
+  dutch
+  swedish
+  russian
+  chinese
+  japanese
+  norweigen
+  italian
+  portugese
 }

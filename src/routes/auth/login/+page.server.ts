@@ -26,10 +26,7 @@ export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const form = await superValidate(request, emailLoginSchema);
 
-		if (!form.valid) {
-			// console.log('form: ', form);
-			return fail(400, { form });
-		}
+		if (!form.valid) fail(400, { form });
 
 		try {
 			// find user by key // and validate password
@@ -41,6 +38,7 @@ export const actions: Actions = {
 			});
 
 			locals.auth.setSession(session); // set session cookie
+			//
 		} catch (e: any) {
 			//
 			if (e instanceof LuciaError) {

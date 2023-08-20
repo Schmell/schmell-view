@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Button from '$components/form/Button.svelte';
-	import { Form, Input } from '$components/superForm/index.js';
+	import Button from '$components/old-form-deleteMe/Button.svelte';
+	import { Form, Input } from '$components/form/index.js';
 	import { superForm } from 'sveltekit-superforms/client';
 	// import * as flashModule from 'sveltekit-flash-message/client';
 	// import { getFlash } from 'sveltekit-flash-message/client';

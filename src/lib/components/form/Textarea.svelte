@@ -1,31 +1,20 @@
 <script lang="ts">
-	export let name: string
-	export let form: any
-	export let placeholder: string | undefined = undefined
-	export let rows: number | undefined = undefined
-	export let label: string | undefined = undefined
-	// export let value
-	export let errors
+	import ErrorLabel from './errorLabel.svelte';
+	import Label from './label.svelte';
+	export let name: string;
+	export let formObj;
+	export let rows: number | undefined = undefined;
 
-	function capitalizeFirstLetter(string: string) {
-		return string.charAt(0).toUpperCase() + string.slice(1)
-	}
+	import { cn } from '$lib/utils';
+	let className: string | undefined = undefined;
+	export { className as class };
+	const { form } = formObj;
 </script>
 
-<label for={name} class="label">{label ? label : capitalizeFirstLetter(name)}</label>
-
+<Label {name} {formObj} />
 <textarea
-	id={name}
-	{name}
-	{rows}
-	placeholder={placeholder ?? ''}
+	class={cn('textarea textarea-bordered max-w-lg', className)}
 	bind:value={$form[name]}
-	class="textarea textarea-bordered mb-2  w-full max-w-md {form?.errors?.[name]
-		? 'textarea-error'
-		: 'textarea-bordered'}"
+	{rows}
 />
-<label for={name} class="label">
-	{#if $errors[name]}
-		<span class="label-text-alt text-error">{form?.errors?.[name]}</span>
-	{/if}
-</label>
+<ErrorLabel {name} {formObj} />

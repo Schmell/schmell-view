@@ -11,7 +11,7 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 	if (!session) throw redirect(302, '/auth/login');
 
 	return {
-		user: session.user
+		// user: session.user
 	};
 });
 

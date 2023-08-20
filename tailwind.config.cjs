@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config}*/
-// import { themes } from '$lib/themes';
+
 const config = {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 
@@ -10,7 +10,7 @@ const config = {
 	plugins: [require('@tailwindcss/typography'), require('daisyui')],
 
 	daisyui: {
-		themes: ['light', 'dark', 'halloween', 'bumblebee']
+		themes: ['light', 'dark', 'cupcake', 'valentine', 'halloween', 'bumblebee']
 		// themes: themes
 	}
 };

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import SubNav from './SubNav.svelte'
+	import SubNav from './SubNav.svelte';
 
-	export let className: string | undefined = undefined
-	export let title: string | null = ''
+	export let className: string | undefined = undefined;
+	export let title: string | null = '';
 </script>
 
 <div>
@@ -15,13 +15,6 @@
 			</div>
 
 			<footer class="footer p-10 bg-base-200 text-base-content mb-8">
-				<div>
-					<span class="footer-title">Services</span>
-					<a href="/" class="link link-hover">Branding</a>
-					<a href="/" class="link link-hover">Design</a>
-					<a href="/" class="link link-hover">Marketing</a>
-					<a href="/" class="link link-hover">Advertisement</a>
-				</div>
 				<div>
 					<span class="footer-title">Company</span>
 					<a href="/" class="link link-hover">About us</a>

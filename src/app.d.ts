@@ -15,6 +15,50 @@ declare global {
 		// interface Platform {}
 	}
 	var prisma: PrismaClient;
+
+	namespace svelte.JSX {
+		interface HTMLAttributes<T> {
+			onclick_outside: () => void;
+		}
+	}
+
+	namespace PrismaJson {
+		type compRest = {
+			rating?: string;
+			sailNo?: string;
+			nett?: string;
+			total?: string;
+		};
+
+		type venueRest = {};
+
+		export type eventRest = {
+			venuewebsite?: string;
+			venueemail?: string;
+			venueburgee?: string;
+			eventburgee?: string;
+		};
+
+		const resultColumns = z.object({
+			boat: z.boolean().nullable(),
+			skipper: z.boolean().nullable(),
+			fleet: z.boolean().nullable(),
+			points: z.boolean().nullable(),
+			elapsed: z.boolean().nullable(),
+			corrected: z.boolean().nullable(),
+			finish: z.boolean().nullable(),
+			rank: z.boolean().nullable(),
+			position: z.boolean().nullable(),
+			nett: z.boolean().nullable(),
+			total: z.boolean().nullable()
+		});
+
+		export type resultColumns = z.infer<typeof resultColumns>;
+
+		type fileInfo = {
+			lastModified: string;
+		};
+	}
 }
 
 /// <reference types="lucia" />
