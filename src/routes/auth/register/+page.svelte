@@ -1,10 +1,8 @@
 <script lang="ts">
-	import Input from '$components/form/input.svelte';
 	import { superForm } from 'sveltekit-superforms/client';
-
 	import { emailRegisterSchema } from './emailRegisterSchema';
-	import { Form, Button } from '$components/form';
-	import Page from '$lib/components/layout/Page.svelte';
+	import { Form, Button, Input } from '$components/form';
+	import { Page } from '$components/layout';
 
 	export let data;
 

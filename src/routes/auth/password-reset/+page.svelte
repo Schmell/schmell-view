@@ -1,35 +1,10 @@
 <script lang="ts">
-	import Button from '$components/old-form-deleteMe/Button.svelte';
-	import { Form, Input } from '$components/form/index.js';
+	import { Form, Input, Button } from '$components/form/index.js';
 	import { superForm } from 'sveltekit-superforms/client';
-	// import * as flashModule from 'sveltekit-flash-message/client';
-	// import { getFlash } from 'sveltekit-flash-message/client';
-	// import { page } from '$app/stores';
 
 	export let data;
 
-	// const flash = getFlash(page);
 	const formObj = superForm(data.form);
-
-	// const formObj = superForm(data.form, {
-	// 	autoFocusOnError: true,
-
-	// 	onResult: ({ result }) => {
-	// 		if (result.type === 'success') {
-	// 			console.log('result: ', result);
-	// 		}
-	// 	},
-
-	// 	flashMessage: {
-	// 		module: flashModule,
-	// 		onError: ({ result, message }) => {
-	// 			const errorMessage = result.error.message;
-	// 			message.set({ type: 'error', message: errorMessage });
-	// 		}
-	// 	},
-
-	// 	syncFlashMessage: true
-	// });
 </script>
 
 <svelte:head>

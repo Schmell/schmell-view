@@ -1,11 +1,10 @@
 <script lang="ts">
-	//
-	import { Form, Input } from '$components/form/index.js';
 	import { superForm } from 'sveltekit-superforms/client';
-	import Button from '$components/old-form-deleteMe/Button.svelte';
 	import * as flashModule from 'sveltekit-flash-message/client';
 	import Icon from '@iconify/svelte';
-	import Page from '$components/layout/Page.svelte';
+
+	import { Form, Input, Button } from '$components/form';
+	import { Page } from '$components/layout';
 
 	export let data;
 
