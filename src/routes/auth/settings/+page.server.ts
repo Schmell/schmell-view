@@ -3,7 +3,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import type { Lang } from '@prisma/client';
 
-import { UserSettingsSchema } from '../../../../prisma/generated/zod';
+import { UserSettingsSchema } from '$lib/server/generated/zod';
 import { superValidate } from 'sveltekit-superforms/server';
 
 export let ssr = false;
