@@ -15,8 +15,10 @@ export const load = (async ({ params, url }) => {
 
 		return { form };
 	}
-
-	const org: any = prisma.organization.findFirst({ where: { id: params.orgId } });
+	const org: any = await prisma.organization.findFirst({
+		where: { id: params.orgId },
+		include: { Owner: true }
+	});
 
 	const form = await superValidate(org, OrganizationSchema);
 
@@ -47,8 +49,9 @@ export const actions: Actions = {
 					}
 				}
 			});
-			// throw redirect(300)
+			//
 		} catch (error: any) {
+			//
 			if (error instanceof Prisma.PrismaClientKnownRequestError) {
 				console.log('prisma known error: ', form);
 				// Unique constraint violation
@@ -83,6 +86,10 @@ export const actions: Actions = {
 		const from = url.searchParams.get('from');
 		// console.log('from: ', from)
 		if (from) {
+			// so ican use $page.url.pathname
+			if (from.slice(0, 1) === '/') {
+				throw redirect(303, `${from}`);
+			}
 			throw redirect(303, `/${from}`);
 		}
 	}

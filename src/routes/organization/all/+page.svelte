@@ -1,22 +1,48 @@
 <script lang="ts">
-	import ItemCard from '$lib/components/layout/ItemCard.svelte'
-	import Page from '$lib/components/layout/Page.svelte'
-	import type { Organization } from '@prisma/client'
-	// import type { PageData } from '../$types'
+	import { Page, ItemCard } from '$components/layout';
+	import { formatDateTime } from '$lib/utils/formatters';
+	import Icon from '@iconify/svelte';
+	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
-	export let data: OrganisationData
+	export let data: PageData;
 
-	interface OrganisationData {
-		orgs: Organization[]
-	}
+	$: ({ orgs } = data);
+	// $: console.log('orgs: ', orgs);
 </script>
 
 <Page title="Your Organizations">
-	<!-- // @ts-ignore -->
-	{#each data.orgs as org}
+	<div slot="trailing">
+		<a href="/organization/edit/new?from={$page.url.pathname}">
+			<Icon icon="material-symbols:add-circle" width="24" />
+		</a>
+	</div>
+	{#each orgs as org}
 		<ItemCard title={org.name} href="/organization/view/{org.id}">
-			<div>{org.description}</div>
-			<div slot="bottom-right">right</div>
+			<div>{org.description ?? 'No description provided'}</div>
+			<div>{org.website}</div>
+
+			<div slot="bottom-left">
+				{#if org.createdAt}
+					<div class="text-xs m-2 ml-2">{formatDateTime(org.createdAt)}</div>
+				{/if}
+			</div>
+			<div slot="top-right" class="text-xs">
+				<a href="/">
+					@{org.Owner?.username}
+				</a>
+			</div>
+
+			<div slot="bottom-right" class="flex justify-end text-primary">
+				<!-- Edit should only show when current user is owner -->
+				{#if data.user?.userId === org?.ownerId}
+					<div class="tooltip tooltip-top" data-tip="Organization Edit">
+						<a href="/organization/edit/{org?.id}?from={$page.url.pathname}" class="btn btn-ghost">
+							<Icon icon="material-symbols:edit-outline" width="24" />
+						</a>
+					</div>
+				{/if}
+			</div>
 		</ItemCard>
 	{/each}
 </Page>

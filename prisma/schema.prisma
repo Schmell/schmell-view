@@ -163,7 +163,6 @@ model Organization {
   website     String?
   email       String?
   titleImage  String?
-  contact     Json?
   ownerId     String?
   Owner       User?     @relation(fields: [ownerId], references: [id])
   Events      Event[]
@@ -203,13 +202,13 @@ model eventComment {
   updatedAt DateTime? @updatedAt
 }
 
-enum CommentType {
-  series
-  event
-  race
-  result
-  comp
-}
+// enum CommentType {
+//   series
+//   event
+//   race
+//   result
+//   comp
+// }
 
 model follow {
   id             String        @id @unique @default(cuid())
@@ -278,7 +277,7 @@ model User {
 model UserSettings {
   id       String  @id @unique @default(cuid())
   theme    String?
-  language Lang?   @default(english)
+  language String? @default("english")
   userId   String? @unique
   user     User?   @relation(fields: [userId], references: [id])
 }
@@ -308,17 +307,17 @@ model VerificationToken {
   expires BigInt
 }
 
-enum Lang {
-  english
-  french
-  spanish
-  german
-  dutch
-  swedish
-  russian
-  chinese
-  japanese
-  norweigen
-  italian
-  portugese
-}
+// enum Lang {
+//   english
+//   french
+//   spanish
+//   german
+//   dutch
+//   swedish
+//   russian
+//   chinese
+//   japanese
+//   norweigen
+//   italian
+//   portugese
+// }

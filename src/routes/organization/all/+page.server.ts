@@ -1,20 +1,23 @@
-import { prisma } from '$lib/server/prisma'
-import { fail } from '@sveltejs/kit'
-import type { Actions, PageServerLoad } from '../$types'
+import { prisma } from '$lib/server/prisma';
+import { fail } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params, locals }) => {
-	const user = locals.validateUser()
+export const load = (async ({ locals }) => {
+	const session = await locals.auth.validate();
 
-	try {
-		const orgs = await prisma.organization.findMany({
-			where: { ownerId: (await user)?.user?.userId }
-		})
-
-		return {
-			orgs: orgs
+	const getOrgs = async () => {
+		try {
+			return await prisma.organization.findMany({
+				where: { ownerId: session?.user.userId },
+				include: { Owner: true }
+			});
+		} catch (error) {
+			console.log('error: ', error);
+			throw fail(500, { message: 'oh crap' });
 		}
-	} catch (error) {
-		console.log('error: ', error)
-		return fail(500, { message: 'oh crap' })
-	}
-}
+	};
+
+	return {
+		orgs: getOrgs()
+	};
+}) satisfies PageServerLoad;

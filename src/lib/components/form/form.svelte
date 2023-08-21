@@ -21,7 +21,7 @@
 	<slot name="bottomLinks" />
 </form>
 
-{#if dev}
+{#if dev && !formObj.errors}
 	<div class="divider" />
-	<SuperDebug label={$message} data={$debug} display={dev && !noDebug} />
+	<SuperDebug label={$message} data={$debug} display={!noDebug} />
 {/if}

@@ -16,10 +16,13 @@ declare global {
 	}
 	var prisma: PrismaClient;
 
-	namespace svelte.JSX {
-		interface HTMLAttributes<T> {
-			onclick_outside: () => void;
-		}
+	// namespace svelte.JSX {
+	// 	interface HTMLAttributes<T> {
+	// 		onclick_outside: () => void;
+	// 	}
+	// }
+	interface HTMLAttributes<T> {
+		onclick_outside: () => void;
 	}
 
 	namespace PrismaJson {

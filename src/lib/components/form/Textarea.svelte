@@ -17,6 +17,7 @@
 	<textarea
 		class={cn('textarea textarea-bordered max-w-lg', className)}
 		bind:value={$form[name]}
+		{name}
 		{rows}
 	/>
 	<ErrorLabel {name} {formObj} />
