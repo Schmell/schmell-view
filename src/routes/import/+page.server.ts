@@ -43,22 +43,25 @@ export const actions: Actions = {
 				// console.log('complete: papaparse')
 				const session = await locals.auth.validate();
 
-				// const duplicates = await CheckForDuplicates({
-				// 	data: results.data,
-				// 	userId: session?.user.userId,
-				// 	file: file,
-				// 	orgId: org
-				// });
+				const duplicates = await CheckForDuplicates({
+					data: results.data,
+					userId: session?.user.userId,
+					file: file,
+					orgId: org
+				});
 
-				// if (duplicates !== null) {
-				// 	console.log('duplicates: ', duplicates);
-				// }
+				if (duplicates !== null) {
+					console.log('duplicates: ', duplicates);
+				}
 
-				// Populate maybe needs to be async
-				// ideally should have some kind of info return
-				// maybe a store can be implemented to change the status of how the populate process is going
-				// ultimately need to know when this finishes before doing the redirect
-				Populate({ data: results.data, userId: session?.user.userId, file: file, orgId: org });
+				await Populate({
+					data: results.data,
+					userId: session?.user.userId,
+					file: file,
+					orgId: org
+				});
+
+				throw redirect(300, `/events`);
 			},
 			error: (status, err) => {
 				// TODO
@@ -67,6 +70,6 @@ export const actions: Actions = {
 			}
 		});
 
-		throw redirect(300, '/events');
+		// throw redirect(300, '/events');
 	}
 };
