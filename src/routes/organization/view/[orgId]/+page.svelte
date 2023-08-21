@@ -1,19 +1,19 @@
 <script lang="ts">
-	import Page from '$lib/components/layout/Page.svelte'
-	import Icon from '@iconify/svelte'
-	import type { Organization } from '@prisma/client'
-	import type { PageData } from './$types'
+	import { Page } from '$components/layout';
+	import Icon from '@iconify/svelte';
+	import type { Organization } from '@prisma/client';
+	import type { PageData } from './$types';
 
-	export let data: PageData
-	console.log('data: ', data)
-	$: ({ org } = data)
+	export let data: PageData;
+	console.log('data: ', data);
+	$: ({ org } = data);
 
 	const getHref = (org: Organization | undefined) => {
-		if (!org) return null
+		if (!org) return null;
 		return org?.website && org.website.startsWith('http://')
 			? org.website
-			: `http://${org?.website}`
-	}
+			: `http://${org?.website}`;
+	};
 </script>
 
 <Page title={org?.name}>
@@ -42,7 +42,7 @@
 				<a href={getHref(org)} class="text-secondary">{org?.website} </a>
 			</div>
 		</div>
-		<div class="px-4 pb-4  flex justify-end">
+		<div class="px-4 pb-4 flex justify-end">
 			<div class="tooltip tooltip-top" data-tip="View Competitors">
 				<a href="/comps/{org?.id}" class="btn btn-ghost p-1">
 					<Icon class="text-3xl text-primary" icon="material-symbols:groups-outline-rounded" />

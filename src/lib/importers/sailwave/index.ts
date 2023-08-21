@@ -234,7 +234,7 @@ export async function Populate({ data, userId, file, orgId }) {
 
 			console.timeLog('time: ', 'races comlpete: ');
 
-			console.log('resultsArray: ', resultsArray);
+			// console.log('resultsArray: ', resultsArray);
 			await Promise.all(
 				await resultsArray.map(async (results) => {
 					await results.map(async (result) => {

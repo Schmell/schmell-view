@@ -1,34 +1,31 @@
 <script>
-	import { superForm } from 'sveltekit-superforms/client'
-	import { eventSchema } from './eventSchema'
-	import Button from '$lib/components/form/Button.svelte'
-	import TextInput from '$lib/components/form/TextInput.svelte'
-	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte'
-	import Check from '$lib/components/form/Check.svelte'
-	import Textarea from '$lib/components/form/Textarea.svelte'
+	import { superForm } from 'sveltekit-superforms/client';
+	import { eventSchema } from './eventSchema';
+	// import { Button, Input, Textarea } from '$components/form';
+	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 
-	export let data
+	export let data;
 
 	const { form, errors, enhance, constraints } = superForm(data.form, {
 		taintedMessage: 'Are you sure you want to leave?',
 		validators: eventSchema,
 		dataType: 'json'
-	})
+	});
 </script>
 
-<form method="post" use:enhance>
+<!-- <form method="post" use:enhance>
 	<div class="form-control">
 		<label class="label cursor-pointer">
 			<span class="label-text">Public</span>
 			<input type="checkbox" name="public" class="toggle toggle-success" checked={$form.public} />
 		</label>
 	</div>
-	<TextInput name="name" {form} {errors} />
+	<Input name="name" {form} {errors} />
 	<Textarea name="description" {form} {errors} />
-	<TextInput name="eventwebsite" label="Website" {form} {errors} />
-	<TextInput name="email" {form} {errors} />
+	<Input name="eventwebsite" label="Website" {form} {errors} />
+	<Input name="email" {form} {errors} />
 
-	<TextInput name="titleImage" label="Title Image Url" {form} {errors} />
+	<Input name="titleImage" label="Title Image Url" {form} {errors} />
 	<div class="label">Result Columns</div>
 	<div class="divider m-0" />
 	<div class="grid grid-cols-4">
@@ -47,4 +44,4 @@
 </form>
 <div class="mt-8">
 	<SuperDebug data={$form} />
-</div>
+</div> -->

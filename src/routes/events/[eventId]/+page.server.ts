@@ -1,9 +1,9 @@
-import { prisma } from '$lib/server/prisma'
-import type { PageServerLoad, Actions } from './$types'
+import { prisma } from '$lib/server/prisma';
+import type { PageServerLoad, Actions } from './$types';
 
 export const load = (async ({ params, locals }) => {
 	// console.log('params: ', params)
-	const user = await locals.validateUser()
+	const session = await locals.auth.validate();
 	const getEvent = async () => {
 		try {
 			return await prisma.event.findUniqueOrThrow({
@@ -23,11 +23,11 @@ export const load = (async ({ params, locals }) => {
 
 				// This would be easier and only one transactiion, but can't be lasy loaded
 				// include: { comments: true }
-			})
+			});
 		} catch (error) {
-			console.log('error: ', error)
+			console.log('error: ', error);
 		}
-	}
+	};
 	const getComments = async () => {
 		try {
 			return await prisma.eventComment.findMany({
@@ -40,21 +40,21 @@ export const load = (async ({ params, locals }) => {
 					_count: {
 						select: { likes: true }
 					},
-					likes: { where: { userId: user.user?.userId }, select: { userId: true, id: true } }
+					likes: { where: { userId: session?.user?.userId }, select: { userId: true, id: true } }
 				},
 				orderBy: {
 					createdAt: 'desc'
 				}
-			})
+			});
 		} catch (error) {
-			console.log('error: ', error)
+			console.log('error: ', error);
 		}
-	}
+	};
 	return {
 		event: getEvent(),
 		comments: getComments()
-	}
-}) satisfies PageServerLoad
+	};
+}) satisfies PageServerLoad;
 
 // const eventSchema = z.object({
 // 	name: z.string().min(1).max(64).trim(),
@@ -66,45 +66,45 @@ export const load = (async ({ params, locals }) => {
 
 export const actions = {
 	like: async ({ request, params, locals }) => {
-		const fd = await request.formData()
-		const formData = Object.fromEntries(fd) as Record<string, string>
-		console.log('formData: ', formData)
-		const user = await locals.validateUser()
+		const fd = await request.formData();
+		const formData = Object.fromEntries(fd) as Record<string, string>;
+		console.log('formData: ', formData);
+		const session = await locals.auth.validate();
 
 		try {
 			return await prisma.like.create({
 				data: {
 					type: 'comment',
 					eventComment: { connect: { id: formData.commentId } },
-					User: { connect: { id: user.user?.userId } },
+					User: { connect: { id: session?.user?.userId } },
 					Event: { connect: { id: params.eventId } }
 				}
-			})
+			});
 		} catch (error) {
-			console.log('error: ', error)
-			return { error: 'error' }
+			console.log('error: ', error);
+			return { error: 'error' };
 		}
 	},
 
 	unlike: async ({ request, locals, params }) => {
-		const fd = await request.formData()
-		const formData = Object.fromEntries(fd) as Record<string, string>
-		const user = await locals.validateUser()
-		console.log('formData: ', formData)
+		const fd = await request.formData();
+		const formData = Object.fromEntries(fd) as Record<string, string>;
+		// const session = await locals.auth.validate()
+		console.log('formData: ', formData);
 		try {
 			await prisma.like.delete({
 				where: { id: formData.likeId }
-			})
+			});
 		} catch (error) {
-			console.log('error: ', error)
+			console.log('error: ', error);
 		}
 	},
 
 	comment: async ({ request, locals, params }) => {
-		const fd = await request.formData()
+		const fd = await request.formData();
 
-		const { comment, type, eventCommentId } = Object.fromEntries(fd)
-		const user = await locals.validateUser()
+		const { comment, type, eventCommentId } = Object.fromEntries(fd);
+		const session = await locals.auth.validate();
 		try {
 			await prisma.eventComment.upsert({
 				where: { id: eventCommentId as string },
@@ -115,12 +115,12 @@ export const actions = {
 				create: {
 					comment: comment as string,
 					type: type as string,
-					User: { connect: { id: user.user?.userId as string } },
+					User: { connect: { id: session?.user?.userId as string } },
 					Event: { connect: { id: params.eventId } }
 				}
-			})
+			});
 		} catch (error) {
-			console.log('error: ', error)
+			console.log('error: ', error);
 		}
 	}
-} satisfies Actions
+} satisfies Actions;

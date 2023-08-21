@@ -2,6 +2,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator json {
+  provider  = "prisma-json-types-generator"
+  namespace = "PrismaJson"
+}
+
 generator zod {
   provider                 = "zod-prisma-types"
   output                   = "../src/lib/server/generated/zod"
@@ -107,6 +112,7 @@ model Comp {
   total       String?
   /// [compRest]
   rest        Json?
+  image       String?
   publisherId String?
   Publisher   User?     @relation(fields: [publisherId], references: [id])
   Events      Event[]

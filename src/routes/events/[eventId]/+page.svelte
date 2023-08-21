@@ -1,35 +1,35 @@
 <script script lang="ts">
-	import type { PageData } from './$types'
-	import Page from '$lib/components/layout/Page.svelte'
-	import Icon from '@iconify/svelte'
-	import { page } from '$app/stores'
-	import Input from '$lib/components/form/Input.svelte'
-	import Button from '$lib/components/form/Button.svelte'
+	import type { PageData } from './$types';
+	import Page from '$lib/components/layout/Page.svelte';
+	import Icon from '@iconify/svelte';
+	import { page } from '$app/stores';
+	import { Input, Button } from '$components/form';
+	// import Button from '$lib/components/form/Button.svelte'
 	// import Picker from 'emoji-picker-element/svelte'
-	import { enhance } from '$app/forms'
-	import { formatDateTime } from '$lib/utils/formatters'
-	import { now } from 'svelte/internal'
+	import { enhance } from '$app/forms';
+	import { formatDateTime } from '$lib/utils/formatters';
+	// import { now } from 'svelte/internal'
 
 	// import { comment } from 'svelte/internal'
 
-	export let data: PageData
-	export let form
+	export let data: PageData;
+	export let form;
 	// $: console.log('form: ', form)
 	// export let liked
-	$: ({ event, comments } = data)
+	$: ({ event, comments } = data);
 
 	// $: console.log('comments: ', comments)
 	// $: console.log('event: ', event)
 	//
 	function getHref(website) {
-		return website && website.startsWith('http://') ? website : `http://${website}`
+		return website && website.startsWith('http://') ? website : `http://${website}`;
 	}
 
 	function checkForUserLike(comment) {
 		if (comment.likes.some((like) => like.userId === data.user?.userId)) {
-			return true
+			return true;
 		}
-		return false
+		return false;
 	}
 
 	function getLikeId(comment) {
@@ -43,12 +43,12 @@
 		// 		} catch (error) {}
 		// 	}
 		// })
-		return comment.id
+		return comment.id;
 	}
 </script>
 
 {#if data}
-	<Page title={event?.name} className="mt-8">
+	<Page title={event?.name} class="mt-8">
 		<div class="max-w-md mx-auto bg-base-100 rounded-xl shadow-md overflow-hidden md:max-w-2xl">
 			<div class="md:flex">
 				<div class="md:shrink-0">
@@ -74,7 +74,7 @@
 					<a href={getHref(event?.eventwebsite)} class="text-secondary">{event?.eventwebsite} </a>
 				</div>
 			</div>
-			<div class="px-4 pb-4  flex justify-end">
+			<div class="px-4 pb-4 flex justify-end">
 				<div class="tooltip tooltip-top" data-tip="View Competitors">
 					<a href="/comps/{event?.id}" class="btn btn-ghost p-1">
 						<Icon class="text-3xl text-primary" icon="material-symbols:groups-outline-rounded" />
@@ -158,7 +158,7 @@
 										<input type="hidden" name="commentId" value={comment.id} />
 										<input type="hidden" name="likeId" value={form?.id} />
 										<div
-											class="flex items-center gap-2 px-2 rounded-full "
+											class="flex items-center gap-2 px-2 rounded-full"
 											class:bg-accent={checkForUserLike(comment)}
 											class:bg-base-100={!checkForUserLike(comment)}
 										>
@@ -189,7 +189,7 @@
 		</div>
 
 		<form method="POST" action="?/comment" use:enhance>
-			<Input {form} name="comment" label="Add a comment" />
+			<!-- <Input {form} name="comment" label="Add a comment" /> -->
 			<input type="hidden" name="type" value="event" />
 			<input type="hidden" name="eventCommentId" value="new" />
 			<Button type="submit">Submit</Button>

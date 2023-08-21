@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { PageData } from './$types'
-	import Page from '$lib/components/layout/Page.svelte'
-	import ImportForm from '../../import/ImportForm.svelte'
+	import type { PageData } from './$types';
+	import { Page } from '$components/layout';
+	import ImportForm from '../../import/ImportForm.svelte';
 
-	export let data: PageData
-	$: ({ orgs } = data)
+	export let data: PageData;
+	$: ({ orgs } = data);
 	// Start with the fact that this will add an invoice to there account
 	// Also have an option maual entry or import
 </script>
