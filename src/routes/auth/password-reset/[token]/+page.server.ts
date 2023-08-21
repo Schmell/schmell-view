@@ -59,7 +59,7 @@ export const actions = {
 			locals.auth.setSession(session);
 			//
 		} catch (e) {
-			//
+			console.log('e: ', e);
 			return fail(400, {
 				message: 'Invalid or expired password reset link'
 			});

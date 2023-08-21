@@ -1,25 +1,25 @@
 <script lang="ts">
-	import { goto } from '$app/navigation'
-	import { fade } from 'svelte/transition'
+	import { goto } from '$app/navigation';
+	import { fade } from 'svelte/transition';
 
-	export let title: string | null
-	export let href: string | null
+	export let title: string | null;
+	export let href: string | null;
 	//
 </script>
 
 <!-- in:fade={{ duration: 1000 }} out:fade={{ duration: 750 }} -->
 <div class="item-card mb-4 snap-center">
 	<header class="min-h-12 flex items-center bg-base-200 rounded-tl-xl shadow-md">
-		<div
-			class="pl-4 "
+		<button
+			class="pl-4"
 			class:smaller={title && title.length >= 28}
 			on:keyup
 			on:click={() => {
-				goto(`${href}`)
+				goto(`${href}`);
 			}}
 		>
 			{@html title}
-		</div>
+		</button>
 		<div class="pr-4 py-3">
 			<slot name="top-right" />
 		</div>

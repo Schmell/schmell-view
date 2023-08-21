@@ -38,14 +38,11 @@ export const actions: Actions = {
 			});
 
 			locals.auth.setSession(session); // set session cookie
-			//
 		} catch (e: any) {
-			//
 			if (e instanceof LuciaError) {
 				console.log('LuciaError: ', e);
 				// Check email and password or throw
 				if (e.message === 'AUTH_INVALID_PASSWORD' || e.message === 'AUTH_INVALID_KEY_ID') {
-					//
 					setError(form, 'email', '');
 					setError(form, 'password', '');
 					form.data.password = '';

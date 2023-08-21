@@ -11,8 +11,9 @@
 
 <form method="post" use:enhance>
 	<div class="flex justify-end text-warning min-h-7">
-		<div class="opacity-0">0</div>
-		{#if $message} {$message} {/if}
+		<div class="min-h-7">
+			{#if $message} {$message} {/if}
+		</div>
 	</div>
 
 	<slot />

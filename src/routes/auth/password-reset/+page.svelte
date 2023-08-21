@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Form, Input, Button } from '$components/form/index.js';
+	import { Page } from '$components/layout/index.js';
 	import { superForm } from 'sveltekit-superforms/client';
 
 	export let data;
@@ -10,10 +11,10 @@
 <svelte:head>
 	<title>Reset Password - Svelte-way</title>
 </svelte:head>
-
-<h1 class="m-0">Reset password</h1>
-<Form {formObj}>
-	<Input name="email" {formObj} />
-	<Button>Submit</Button>
-	<div slot="bottomLinks"><a href="/auth/login">Sign in</a></div>
-</Form>
+<Page title="Reset password">
+	<Form {formObj}>
+		<Input name="email" {formObj} />
+		<Button>Submit</Button>
+		<div slot="bottomLinks"><a href="/auth/login">Sign in</a></div>
+	</Form>
+</Page>

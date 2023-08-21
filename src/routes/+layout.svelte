@@ -30,11 +30,6 @@
 	};
 </script>
 
-{#if $flash}
-	{@const bg = $flash.type == 'success' ? '#3D9970' : '#FF4136'}
-	<div style:background-color={bg} class="flash">{$flash.message}</div>
-{/if}
-
 <div class="max-w-sm">
 	<div class="fixed top-0 z-20 w-full">
 		<nav class="navbar border-base-300 text-secondary-content">
@@ -86,8 +81,7 @@
 						</ul>
 					</div>
 				{:else}
-					<a href="/auth/login" class="btn btn-primary btn-sm shadow-lg">Login</a>
-					<a href="/auth/register" class="btn btn-primary btn-sm shadow-lg">Register</a>
+					<a href="/auth/login" class="btn btn-primary btn-xs rounded-full shadow-lg">Login</a>
 				{/if}
 			</div>
 		</nav>
@@ -124,14 +118,16 @@
 	</div>
 	<main>
 		<slot />
+		{#if $flash}
+			{@const bg = $flash.type == 'success' ? '#3D9970' : '#FF4136'}
+			<div style:background-color={bg} class="flash">{$flash.message}</div>
+		{/if}
 	</main>
 
 	<footer class="shadow">
 		<div class="btm-nav text-base-content">
-			<!-- {#if $messages}
-				<div>{$messages.message}</div>
-			{/if} -->
-			<button class="">
+			<!-- Home -->
+			<a href="/">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					class="h-5 w-5"
@@ -145,7 +141,7 @@
 						d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
 					/>
 				</svg>
-			</button>
+			</a>
 			<button class="active">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"

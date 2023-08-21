@@ -3,8 +3,9 @@ generator client {
 }
 
 generator zod {
-  provider = "zod-prisma-types"
-  output   = "/src/lib/server/generated/zod"
+  provider                 = "zod-prisma-types"
+  output                   = "../src/lib/server/generated/zod"
+  writeNullishInModelTypes = true
 }
 
 datasource db {
@@ -15,7 +16,7 @@ datasource db {
 model Series {
   id             String        @id @unique @default(cuid())
   name           String
-  description    String?
+  description    String? /// @zod.string.optional
   rest           Json?
   organizationId String?
   publisherId    String?
@@ -45,16 +46,14 @@ model Event {
   resultColumns  Json?
   /// [eventRest]
   rest           Json?
-  publisherId    String?
-  venueId        String?
-  organizationId String?
-  createdAt      DateTime?      @default(now())
-  updatedAt      DateTime?      @updatedAt
-  seriesId       String?
   email          String?
+  organizationId String?
   Organization   Organization?  @relation(fields: [organizationId], references: [id])
+  publisherId    String?
   Publisher      User?          @relation(fields: [publisherId], references: [id])
+  seriesId       String?
   Series         Series?        @relation(fields: [seriesId], references: [id])
+  venueId        String?
   Venue          Venue?         @relation(fields: [venueId], references: [id])
   Races          Race[]
   Results        Result[]
@@ -62,6 +61,8 @@ model Event {
   like           like[]
   Comps          Comp[]
   comments       eventComment[]
+  createdAt      DateTime?      @default(now())
+  updatedAt      DateTime?      @updatedAt
 }
 
 model Race {
@@ -78,11 +79,11 @@ model Race {
   resultColumns    Json?
   /// [raceRest]
   rest             Json?
-  eventId          String?
-  publisherId      String?
   createdAt        DateTime? @default(now())
   updatedAt        DateTime? @updatedAt
+  eventId          String?
   Event            Event?    @relation(fields: [eventId], references: [id])
+  publisherId      String?
   Publisher        User?     @relation(fields: [publisherId], references: [id])
   Results          Result[]
   follow           follow[]

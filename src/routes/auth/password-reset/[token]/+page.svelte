@@ -2,6 +2,7 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import * as flashModule from 'sveltekit-flash-message/client';
 	import { Form, Input, Button } from '$components/form/index.js';
+	import { Page } from '$components/layout/index.js';
 
 	export let data;
 
@@ -19,8 +20,9 @@
 	});
 </script>
 
-<h1 class="m-0">Reset password</h1>
-<Form {formObj}>
-	<Input name="password" type="password" {formObj} />
-	<Button>Submit</Button>
-</Form>
+<Page title="Reset password">
+	<Form {formObj}>
+		<Input name="password" type="password" {formObj} />
+		<Button>Submit</Button>
+	</Form>
+</Page>
