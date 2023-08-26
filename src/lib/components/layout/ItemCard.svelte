@@ -32,7 +32,7 @@
 	</div>
 
 	<hr class="border-base-content opacity-25" />
-	<div class="pr-4 pb-2 text-neutral-content flex justify-between">
+	<div class="pr-4 pb-2 text-neutral-content flex justify-between realtive">
 		<div>
 			<slot name="bottom-left" />
 		</div>

@@ -2,7 +2,10 @@
 	import { enhance } from '$app/forms';
 	import { Button } from '$components/form';
 	import Icon from '@iconify/svelte';
+	import { superValidate } from 'sveltekit-superforms/server';
 	export let orgs;
+
+	// const formObj = superValidate();
 </script>
 
 <div>
@@ -15,9 +18,10 @@
 				name="file"
 				class="file-input file-input-bordered file-input-accent w-full max-w-lg"
 			/>
-			<label for="org" class="label mt-2">Orgainzation</label>
+			<!-- <File {name} -->
+			<label for="org" class="label mt-2">Organization</label>
 			<div class="flex gap-4 items-center w-full">
-				<select name="org" class="select select-bordered w-72">
+				<select name="org" class="select select-bordered w-72 grow">
 					{#if orgs}
 						{#each orgs as org}
 							<option value={org.id}>{org.name}</option>

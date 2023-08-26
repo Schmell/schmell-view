@@ -12,9 +12,11 @@
 <Page title={$form.name === 'New Organization' ? 'Add a new Organization' : 'Edit Organization'}>
 	<Form {formObj}>
 		<Input name="name" {formObj} />
-		<Textarea name="description" rows={4} {formObj} />
+		<Input name="logo" {formObj} />
+		<Textarea name="description" rows={3} {formObj} />
 		<Input name="website" {formObj} />
 		<Input name="email" {formObj} />
+		<Input name="titleImage" label="Title Image Url" {formObj} />
 		<Button>Submit</Button>
 	</Form>
 </Page>

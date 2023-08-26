@@ -162,6 +162,7 @@ model Organization {
   tag         String?
   website     String?
   email       String?
+  logo        String? /// @zod.string.url
   titleImage  String?
   ownerId     String?
   Owner       User?     @relation(fields: [ownerId], references: [id])

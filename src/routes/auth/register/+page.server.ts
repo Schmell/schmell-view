@@ -1,5 +1,5 @@
 import { auth } from '$lib/server/lucia';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import { generateEmailVerificationToken } from '$lib/server/token';
 import { sendEmailVerificationLink } from '$lib/server/email';
 import type { PageServerLoad, Actions } from './$types';
@@ -8,6 +8,7 @@ import { LuciaError } from 'lucia';
 import { emailRegisterSchema } from './emailRegisterSchema';
 import { Prisma } from '@prisma/client';
 import { capitalizeFirstLetter } from '$lib/utils';
+import { redirect } from 'sveltekit-flash-message/server';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const session = await locals.auth.validate();
@@ -24,8 +25,22 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, locals }) => {
+	default: async (event) => {
+		const { request, locals } = event;
+
 		const form = await superValidate(request, emailRegisterSchema);
+
+		const exists = await prisma.user.findUnique({
+			where: { email: form.data.email },
+			select: { id: true }
+		});
+		console.log('exists: ', exists);
+		if (exists)
+			throw redirect(
+				'/auth/login',
+				{ type: 'error', message: 'Email already exists - try to login' },
+				event
+			);
 
 		if (!form.valid) {
 			return fail(400, { form });

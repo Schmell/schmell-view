@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 export const eventSchema = z.object({
 	name: z.string(),
@@ -8,7 +8,7 @@ export const eventSchema = z.object({
 	description: z.string().nullable(),
 	titleImage: z.string().nullable(),
 	public: z.boolean(),
-	// resultColumns: z.any()
+	// resultColumns: z.any(),
 	rank: z.string().nullable(),
 	points: z.string().nullable(),
 	position: z.string().nullable(),
@@ -20,4 +20,4 @@ export const eventSchema = z.object({
 	nett: z.string().nullable(),
 	total: z.string().nullable()
 	// Venue: z.any()
-})
+});
