@@ -58,7 +58,9 @@
 						<div
 							class="badge"
 							class:badge-success={race.sailed === '1'}
+							class:text-success-content={race.sailed === '1'}
 							class:badge-error={race.sailed === '0'}
+							class:text-error-content={race.sailed === '0'}
 						>
 							{race.sailed === '1' ? 'Complete' : 'Un-Sailed'}
 						</div>

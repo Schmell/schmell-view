@@ -63,6 +63,7 @@
 				<div class="opacity-0 select-none">0</div>
 			{/if}
 
+			<!-- use getHref here -->
 			<a
 				href={event.eventwebsite && event.eventwebsite.startsWith('http://')
 					? event.eventwebsite

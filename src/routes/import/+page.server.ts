@@ -33,32 +33,35 @@ export const actions: Actions = {
 	default: async (input) => {
 		const { request, locals } = input;
 		const { org, file }: any = Object.fromEntries(await request.formData());
-		let status;
+
 		const texted = await file.text();
 
-		parse(texted, {
-			complete: async (results) => {
-				const session = await locals.auth.validate();
+		await new Promise((resolve) => {
+			parse(texted, {
+				complete: async (results) => {
+					const session = await locals.auth.validate();
 
-				status = await Populate({
-					data: results.data,
-					userId: session?.user.userId,
-					file: file,
-					orgId: org
-				});
-			},
+					await Populate({
+						data: results.data,
+						userId: session?.user.userId,
+						file: file,
+						orgId: org
+					});
+					resolve({ success: true });
+				},
 
-			error: (status, err) => {
-				// TODO
-				console.log('import error: ', status, err);
-				throw error(418, `error from import server ts ${err}`);
-			}
+				error: (status, err) => {
+					// TODO
+					console.log('import error: ', status, err);
+					throw error(418, `error from import server ts ${err}`);
+				}
+			});
 		});
 
 		// return resultsData
-		return {
-			status
-		};
-		// throw redirect(300, `/events`);
+		// return {
+		// 	status
+		// };
+		throw redirect(300, `/events`);
 	}
 };

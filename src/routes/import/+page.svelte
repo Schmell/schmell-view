@@ -23,11 +23,12 @@
 	import { enhance } from '$app/forms';
 	import { superForm } from 'sveltekit-superforms/client';
 
-	export let form;
+	// export let form;
 	export let data;
 	$: ({ orgs } = data);
+	let loading = false;
 	// $: ({ status } = form);
-	$: console.log('form.status: ', form);
+	// $: console.log('form.status: ', form);
 </script>
 
 <Page title="Import from File">
@@ -61,7 +62,18 @@
 						</a>
 					</div>
 				</div>
-				<Button>Import</Button>
+				<Button
+					on:click={() => {
+						loading = true;
+					}}
+					disabled={loading}
+				>
+					{#if loading}
+						<span class="loading loading-dots loading-lg" />
+					{:else}
+						Import
+					{/if}
+				</Button>
 			</div>
 		</form>
 	</div>
