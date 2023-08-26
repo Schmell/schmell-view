@@ -24,10 +24,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			? url.searchParams.get('sortOrder')
 			: 'asc';
 		Object.defineProperty(sort, sortBy, { value: sortOrder });
-		console.log('sort: ', sort);
+		// console.log('sort: ', sort);
 		return sort;
 	}
-	console.log('sort(): ', sort());
+	// console.log('sort(): ', sort());
 	// const orgs = await prisma.organization.findMany({
 	// 	where: { ownerId: session.userId }
 	// })
