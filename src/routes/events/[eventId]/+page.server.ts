@@ -37,7 +37,8 @@ export const load = (async ({ params, locals, url }) => {
 					eventwebsite: true,
 					_count: { select: { comments: true } },
 					comments: { select: { User: { select: { avatar: true, username: true } } }, take: 10 },
-					Venue: { select: { name: true, website: true } }
+					Venue: { select: { name: true, website: true } },
+					Races: { orderBy: { name: 'asc' } }
 				}
 			});
 		} catch (error) {

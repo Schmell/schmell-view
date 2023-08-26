@@ -6,8 +6,9 @@
 
 body {
 	overflow: hidden;
+	@apply text-base-content;
 }
-h2 {
+/* h2 {
 	@apply text-3xl my-2;
 }
 h3 {
@@ -18,4 +19,4 @@ h4 {
 }
 p {
 	@apply my-2;
-}
+} */

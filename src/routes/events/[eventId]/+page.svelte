@@ -1,22 +1,23 @@
 <script script lang="ts">
+	import type { PageData } from './$types';
+	import { page } from '$app/stores';
+	import { enhance } from '$app/forms';
 	import Icon from '@iconify/svelte';
 	import { superForm } from 'sveltekit-superforms/client';
-	import type { PageData } from './$types';
 
 	import { Page } from '$components/layout';
 	import { Input, Button, Form, Hidden } from '$components/form';
-	import { page } from '$app/stores';
-	import { enhance } from '$app/forms';
 	import { formatDateTime } from '$lib/utils/formatters';
 
 	export let data: PageData;
 	export let form;
-
 	$: ({ event, comments } = data);
 
+	let showRaces: boolean = false;
+
 	// $: console.log('comments: ', comments)
-	// $: console.log('event: ', event)
-	//
+	// $: console.log('event: ', event);
+
 	function getHref(website) {
 		return website && website.startsWith('http://') ? website : `http://${website}`;
 	}
@@ -28,12 +29,6 @@
 		return false;
 	}
 
-	// function makeExternalHref(url: string){
-	// 	if(url.startsWith('http')) return url
-	// 	url.
-
-	// }
-
 	const commentFormObj = superForm(data.commentForm);
 	const { form: commentForm } = commentFormObj;
 
@@ -43,7 +38,7 @@
 {#if data}
 	<Page title={event?.name}>
 		<div
-			class="mt-18 max-w-md mx-auto bg-base-100 rounded-xl shadow-md overflow-hidden md:max-w-2xl"
+			class="mt-18 mb-8 max-w-md mx-auto bg-base-100 rounded-xl shadow-md overflow-hidden md:max-w-2xl"
 		>
 			<div class="md:flex">
 				<div class="md:shrink-0">
@@ -54,29 +49,29 @@
 					/>
 				</div>
 
-				<div class="pt-8 pb-4 px-8">
-					<div class="uppercase tracking-wide text-sm text-accent font-semibold">
+				<div class="pt-8 px-8">
+					<div class="uppercase tracking-wide text-xl text-accent font-semibold">
 						{@html event?.name}
 					</div>
 					{#if event?.Venue}
 						<div class="flex items-center gap-4">
 							<a
 								href={`/venue/${event?.venueId}`}
-								class="mt-1 text-lg leading-tight font-medium text-base-content hover:underline"
+								class="mt-1 text-lg leading-tight text-base-content hover:underline"
 							>
 								{event.Venue.name ? event.Venue.name : 'No venue provided'}
 							</a>
 							<div>-</div>
 							<a
 								href={getHref(event.Venue.website)}
-								class="mt-1 text-xs leading-tight font-medium text-base-content hover:underline"
+								class="mt-1 text-xs leading-tight text-base-content hover:underline"
 							>
 								{event.Venue.website}
 							</a>
 						</div>
 					{/if}
 
-					<p class="mt-2 text-base-content">
+					<p class="mt-2">
 						{event?.description ? event?.description : 'No description provided'}
 					</p>
 
@@ -84,27 +79,65 @@
 				</div>
 			</div>
 
-			<div class="px-4 pb-4 flex justify-end">
-				<div class="tooltip tooltip-top" data-tip="View Competitors">
-					<a href="/comps/{event?.id}" class="btn btn-ghost p-1">
-						<Icon class="text-3xl text-primary" icon="material-symbols:groups-outline-rounded" />
-					</a>
-				</div>
-
-				<div class="tooltip tooltip-top" data-tip="View Races">
-					<a href="/races/{event?.id}" class="btn btn-ghost p-1">
-						<Icon class="text-3xl text-primary" icon="material-symbols:preview" />
-					</a>
-				</div>
-
-				{#if data.user?.userId === event?.publisherId}
-					<div class="tooltip tooltip-top" data-tip="Edit Event">
-						<a href="/events/edit/{event?.id}?from={$page.url.pathname}" class="btn btn-ghost p-1">
-							<Icon class="text-3xl text-primary" icon="material-symbols:edit-outline" />
+			<!-- Tools  -->
+			<div class="px-4 pb-4 flex justify-between items-center">
+				<button
+					class="btn btn-ghost btn-xs"
+					on:click={() => {
+						showRaces = !showRaces;
+					}}
+				>
+					{showRaces ? '^ Hide Races' : '⌄ Show Races'}
+				</button>
+				<div>
+					<div class="tooltip tooltip-top" data-tip="View Competitors">
+						<a href="/comps/{event?.id}" class="btn btn-ghost p-1">
+							<Icon class="text-3xl text-primary" icon="material-symbols:groups-outline-rounded" />
 						</a>
 					</div>
-				{/if}
+
+					<div class="tooltip tooltip-top" data-tip="View Races">
+						<a href="/races/{event?.id}" class="btn btn-ghost p-1">
+							<Icon class="text-3xl text-primary" icon="mdi:eye" />
+						</a>
+					</div>
+
+					{#if data.user?.userId === event?.publisherId}
+						<div class="tooltip tooltip-top" data-tip="Edit Event">
+							<a
+								href="/events/edit/{event?.id}?from={$page.url.pathname}"
+								class="btn btn-ghost p-1"
+							>
+								<Icon class="text-3xl text-primary" icon="material-symbols:edit-outline" />
+							</a>
+						</div>
+					{/if}
+				</div>
 			</div>
+
+			<!-- ////////////////////////////////////////////////////////////////////////////// -->
+
+			{#if showRaces}
+				{#each event.Races as race}
+					<a href="/results/{race.id}">
+						<div class=" p-0 m-2 mx-4 border-t text-base-content">
+							<div class="w-full pt-1">
+								<h1 class="text-xl font-semibold">{race.name}</h1>
+							</div>
+							<div class="flex justify-between">
+								<div class="text-xs">
+									{race.date ? race.date : ''}
+									{race.time ? `- ${race.time}` : ''}
+								</div>
+
+								<div class="badge badge-accent" class:badge-error={!race.sailed}>
+									{race.sailed ? 'Sailed' : 'Unsailed'}
+								</div>
+							</div>
+						</div>
+					</a>
+				{/each}
+			{/if}
 		</div>
 
 		<div class="mt-4">

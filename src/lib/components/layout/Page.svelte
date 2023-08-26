@@ -27,7 +27,7 @@
 				<div class="relative w-[4rem]" />
 			</div>
 		{/if} -->
-		<div class="mt-32">
+		<div class="mt-36">
 			{#if $flash}
 				<div class="flex justify-between w-full">
 					<div
@@ -40,7 +40,7 @@
 					<div class="relative w-[2.75rem]" />
 				</div>
 			{/if}
-			<div class="mx-4 my-8 mb-24">
+			<div class="mx-4 mb-24">
 				<slot />
 			</div>
 		</div>

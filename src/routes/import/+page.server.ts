@@ -1,14 +1,11 @@
 import type { Actions, PageServerLoad } from '../$types';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { CheckForDuplicates, Populate } from '$lib/importers/sailwave';
+import { error, redirect } from '@sveltejs/kit';
+import { Populate } from '$lib/importers/sailwave';
 
 import pkg from 'papaparse';
 const { parse } = pkg;
 import { prisma } from '$lib/server/prisma';
 import { z } from 'zod';
-import { superValidate } from 'sveltekit-superforms/server';
-import csvToJson from 'convert-csv-to-json';
-import { writable } from 'svelte/store';
 
 const importSchema = z.object({
 	file: z.any(),

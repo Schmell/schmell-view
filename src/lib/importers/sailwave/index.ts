@@ -36,11 +36,6 @@ export function CreateEvent({ data, userId, file, orgId }: CreateEventProps) {
 }
 
 export async function Populate({ data, userId, file, orgId }) {
-	// so upsert is easy but this doesn't make sense.
-	// people will either be creating, updating or overwritting
-	// ??????? could have Duplicate problems by using this method
-	// also cuurently not supporting updating at all
-	// no file so exit
 	if (!data) throw error(400, { message: 'Populate function requires data' });
 
 	// Make new Blw class
@@ -48,11 +43,6 @@ export async function Populate({ data, userId, file, orgId }) {
 	const event = blw.getEvent();
 	const { eventeid, uniqueIdString } = event;
 	const blwComps = blw.getComps();
-
-	// The query needs to be broken into smaller chunkcs to work in serverless
-	// Instead of one big upsert we need to check for duplicates first
-	// we can probably add the first chunk easy with event, org, venue which are all flat
-	// Not to sure how to do the races as i had comps and results nested
 
 	function eventCreate() {
 		// console.log('userId: ', userId);
@@ -206,7 +196,7 @@ export async function Populate({ data, userId, file, orgId }) {
 			await prisma.event.upsert(eventCreate());
 
 			console.timeLog('time: ', 'event comlpete: ');
-
+			// setFlash({ type: 'success', message: 'Event Created' }, actionEvent);
 			// importState.set('event comlpete:');
 
 			await Promise.allSettled(

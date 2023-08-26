@@ -35,7 +35,7 @@
 			<div slot="bottom-right" class="flex justify-end text-primary">
 				<div class="tooltip tooltip-top" data-tip="View Event">
 					<a href="/events/{event?.id}?from={$page.url.pathname}" class="btn btn-ghost p-1">
-						<Icon class="text-3xl text-primary" icon="material-symbols:preview" />
+						<Icon class="text-3xl text-primary" icon="mdi:eye" />
 					</a>
 				</div>
 
