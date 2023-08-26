@@ -184,20 +184,16 @@ export async function Populate({ data, userId, file, orgId }) {
 
 	async function addTables() {
 		try {
-			// await prisma.event.upsert(upsertObj())
 			const comps = await compsCreate();
 			const races = await racesCreate();
 			const resultsArray = await resultsCreate();
 
 			console.log('Start import');
 			console.time('time: ');
-			// importState.set('start');
 
 			await prisma.event.upsert(eventCreate());
 
 			console.timeLog('time: ', 'event comlpete: ');
-			// setFlash({ type: 'success', message: 'Event Created' }, actionEvent);
-			// importState.set('event comlpete:');
 
 			await Promise.allSettled(
 				comps.map(async (comp) => {
@@ -207,8 +203,6 @@ export async function Populate({ data, userId, file, orgId }) {
 
 			console.timeLog('time: ', 'comps complete');
 
-			// importState.set('comps complete');
-
 			await Promise.allSettled(
 				races.map(async (race) => {
 					return await prisma.race.upsert(race);
@@ -216,8 +210,6 @@ export async function Populate({ data, userId, file, orgId }) {
 			);
 
 			console.timeLog('time: ', 'races comlpete: ');
-
-			// importState.set('races comlpete');
 
 			await Promise.all(
 				await resultsArray.map(async (results) => {
