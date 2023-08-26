@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Form, Button, Input, Textarea } from '$components/form';
+	import { Form, Button, Input, Textarea } from '$components/form/index.js';
 	import { Page } from '$components/layout';
 	import { superForm } from 'sveltekit-superforms/client';
 

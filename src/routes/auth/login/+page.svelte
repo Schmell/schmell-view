@@ -3,7 +3,7 @@
 	import * as flashModule from 'sveltekit-flash-message/client';
 	import Icon from '@iconify/svelte';
 
-	import { Form, Input, Button } from '$components/form';
+	import { Form, Input, Button } from '$components/form/index.js';
 	import { Page } from '$components/layout';
 
 	export let data;
