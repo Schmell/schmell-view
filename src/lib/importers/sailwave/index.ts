@@ -1,7 +1,8 @@
 import { prisma } from '$lib/server/prisma';
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import Blw from './Blw';
 import { setFlash } from 'sveltekit-flash-message/server';
+import { Prisma } from '@prisma/client';
 // import { messages } from '$lib/stores/messages'
 // import { Prisma } from '@prisma/client'
 
@@ -189,7 +190,7 @@ export async function Populate({ data, userId, file, orgId }) {
 		});
 	}
 
-	addTables();
+	await addTables();
 
 	async function addTables() {
 		try {
@@ -199,27 +200,15 @@ export async function Populate({ data, userId, file, orgId }) {
 			const resultsArray = await resultsCreate();
 			console.log('Start import');
 			console.time('time: ');
-			// setFlash({ type: 'success', message: 'Importing started' }, input)
-			// messages.update(() => {
-			// 	return { message: 'Importing started' }
-			// })
 
-			await prisma.event.upsert(eventCreate());
+			const event = await prisma.event.upsert(eventCreate());
 			console.timeLog('time: ', 'event comlpete: ');
-
-			// messages.update(() => {
-			// 	return { message: 'Event complete' }
-			// })
 
 			await Promise.allSettled(
 				comps.map(async (comp) => {
 					return await prisma.comp.upsert(comp);
 				})
 			);
-
-			// messages.update(() => {
-			// 	return { message: 'Comps complete' }
-			// })
 
 			console.timeLog('time: ', 'comps complete');
 			await Promise.allSettled(
@@ -228,13 +217,8 @@ export async function Populate({ data, userId, file, orgId }) {
 				})
 			);
 
-			// messages.update(() => {
-			// 	return { message: 'Races complete' }
-			// })
-
 			console.timeLog('time: ', 'races comlpete: ');
 
-			// console.log('resultsArray: ', resultsArray);
 			await Promise.all(
 				await resultsArray.map(async (results) => {
 					await results.map(async (result) => {
@@ -243,14 +227,23 @@ export async function Populate({ data, userId, file, orgId }) {
 				})
 			);
 
-			// messages.update(() => {
-			// 	return { message: 'Import complete' }
-			// })
-
 			console.timeLog('time: ', 'results comlpete: ');
 			console.timeEnd('time: ');
+			// console.log('event: ', event);
+
+			//
 		} catch (error: any) {
-			console.log('Import Error: ', error.message);
+			//
+			if (error instanceof Prisma.PrismaClientKnownRequestError) {
+				// Timeout error
+				if (error.code === 'P2024') {
+					console.log('P2024: ', error);
+				}
+
+				console.log('Prisma Known Request Error: ', error);
+			}
+
+			console.log('Import Error: ', error);
 		}
 	}
 } // populate

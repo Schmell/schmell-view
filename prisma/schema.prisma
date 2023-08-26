@@ -306,18 +306,3 @@ model VerificationToken {
   user_id String @unique
   expires BigInt
 }
-
-// enum Lang {
-//   english
-//   french
-//   spanish
-//   german
-//   dutch
-//   swedish
-//   russian
-//   chinese
-//   japanese
-//   norweigen
-//   italian
-//   portugese
-// }
