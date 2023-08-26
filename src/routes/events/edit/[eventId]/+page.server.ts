@@ -1,12 +1,14 @@
 import { superValidate } from 'sveltekit-superforms/server';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { prisma } from '$lib/server/prisma.js';
+// import { EventSchema } from '$lib/server/generated/zod';
 import { eventSchema } from './eventSchema.js';
 
 export const load = async ({ params }) => {
-	const event = await prisma.event.findUnique({
-		where: { id: params.eventId },
-		include: { Venue: true }
+	const event: any = await prisma.event.findUnique({
+		where: { id: params.eventId }
+
+		// include: { Venue: true }
 	});
 	const form = await superValidate(event, eventSchema);
 	if (params.eventId === 'new') {
@@ -21,7 +23,7 @@ export const load = async ({ params }) => {
 export const actions = {
 	default: async ({ request, params, url }) => {
 		const form = await superValidate(request, eventSchema);
-
+		console.log('form: ', form.data);
 		// Convenient validation check:
 		if (!form.valid) {
 			// Again, always return { form } and things will just work.

@@ -1,10 +1,28 @@
 import { prisma } from '$lib/server/prisma';
+import { superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad, Actions } from './$types';
+import { z } from 'zod';
+import { fail, redirect } from '@sveltejs/kit';
+import { luciaErrors, prismaError } from '$lib/error-handling';
 
-export const load = (async ({ params, locals }) => {
+const commentSchema = z.object({
+	comment: z.string().max(256).nullish(),
+	type: z.string(),
+	eventComentId: z.string(),
+	id: z.string().optional()
+});
+
+const likeSchema = z.object({
+	comment: z.string().max(256),
+	type: z.string(),
+	id: z.string()
+});
+
+export const load = (async ({ params, locals, url }) => {
 	// console.log('params: ', params)
-	const session = await locals.auth.validate();
-	const getEvent = async () => {
+	// const session = await locals.auth.validate();
+
+	async function getEvent() {
 		try {
 			return await prisma.event.findUniqueOrThrow({
 				where: { id: params.eventId },
@@ -18,21 +36,23 @@ export const load = (async ({ params, locals }) => {
 					publisherId: true,
 					eventwebsite: true,
 					_count: { select: { comments: true } },
-					comments: { select: { User: { select: { avatar: true, username: true } } }, take: 10 }
+					comments: { select: { User: { select: { avatar: true, username: true } } }, take: 10 },
+					Venue: { select: { name: true, website: true } }
 				}
-
-				// This would be easier and only one transactiion, but can't be lasy loaded
-				// include: { comments: true }
 			});
 		} catch (error) {
+			luciaErrors(error);
+			prismaError(error);
 			console.log('error: ', error);
+			throw fail(500, { messgage: 'Unknown Error occured in getEvent()' });
+			// return fail(501, { message: 'Unkown error occured' });
 		}
-	};
-	const getComments = async () => {
+	} // getEvent()
+
+	async function getComments() {
 		try {
 			return await prisma.eventComment.findMany({
 				where: { eventId: params.eventId },
-				// _count: true,
 				include: {
 					User: {
 						select: { avatar: true, username: true, id: true }
@@ -40,36 +60,56 @@ export const load = (async ({ params, locals }) => {
 					_count: {
 						select: { likes: true }
 					},
-					likes: { where: { userId: session?.user?.userId }, select: { userId: true, id: true } }
+					likes: { select: { userId: true, id: true } }
 				},
 				orderBy: {
 					createdAt: 'desc'
 				}
 			});
 		} catch (error) {
+			luciaErrors(error);
+			prismaError(error);
 			console.log('error: ', error);
+			throw fail(500, { messgage: 'Unknown Error occured in getComments()' });
 		}
-	};
+	} // getComments
+
+	// edit comment
+	let eventComment = {};
+	const editCommentId = url.searchParams.get('editComment');
+
+	if (editCommentId) {
+		// Pass the comment to be edited back to the page
+		// Make the comment component use the populated comment to pre-fill the form
+		// then just post to ?/comment formAction
+		try {
+			eventComment = await prisma.eventComment.findFirstOrThrow({
+				where: { id: editCommentId }
+			});
+		} catch (error) {
+			luciaErrors(error);
+			prismaError(error);
+			console.log('error: ', error);
+			throw fail(500, { messgage: 'Unknown Error occured' });
+			// return fail(500, { messgage: 'Unknown Error occured' });
+		}
+	}
+
+	const commentForm = await superValidate(eventComment, commentSchema, { id: 'commentForm' });
+
 	return {
+		commentForm,
 		event: getEvent(),
 		comments: getComments()
 	};
 }) satisfies PageServerLoad;
 
-// const eventSchema = z.object({
-// 	name: z.string().min(1).max(64).trim(),
-// 	description: z.string().optional(),
-// 	website: z.string().url().optional(),
-// 	email: z.string().min(1).max(64).email(),
-// 	titleImage: z.string().url().optional()
-// })
-
 export const actions = {
-	like: async ({ request, params, locals }) => {
-		const fd = await request.formData();
-		const formData = Object.fromEntries(fd) as Record<string, string>;
-		console.log('formData: ', formData);
+	like: async ({ request, params, locals, url }) => {
+		const formData = Object.fromEntries(await request.formData()) as Record<string, string>;
+
 		const session = await locals.auth.validate();
+		if (!session) throw redirect(301, `/login?from=${url.pathname}`);
 
 		try {
 			return await prisma.like.create({
@@ -80,47 +120,72 @@ export const actions = {
 					Event: { connect: { id: params.eventId } }
 				}
 			});
+			//
 		} catch (error) {
+			luciaErrors(error);
+			prismaError(error);
 			console.log('error: ', error);
-			return { error: 'error' };
+			return fail(500, {
+				message: 'Unknown Error occured'
+			});
 		}
 	},
 
-	unlike: async ({ request, locals, params }) => {
-		const fd = await request.formData();
-		const formData = Object.fromEntries(fd) as Record<string, string>;
-		// const session = await locals.auth.validate()
-		console.log('formData: ', formData);
+	unlike: async ({ request, locals, url }) => {
+		const formData = Object.fromEntries(await request.formData()) as Record<string, string>;
+
+		const session = await locals.auth.validate();
+		if (!session) throw redirect(301, `/login?from=${url.pathname}`);
+
 		try {
 			await prisma.like.delete({
 				where: { id: formData.likeId }
 			});
+			//
 		} catch (error) {
+			luciaErrors(error);
+			prismaError(error);
 			console.log('error: ', error);
+			return fail(500, {
+				message: 'Unknown Error occured'
+			});
 		}
 	},
 
-	comment: async ({ request, locals, params }) => {
-		const fd = await request.formData();
+	comment: async ({ request, locals, params, url }) => {
+		const commentForm = await superValidate(request, commentSchema, { id: 'commentForm' });
 
-		const { comment, type, eventCommentId } = Object.fromEntries(fd);
+		const { data } = commentForm;
+
 		const session = await locals.auth.validate();
+		if (!session) throw redirect(301, `/login?from=${url.pathname}`);
+
 		try {
 			await prisma.eventComment.upsert({
-				where: { id: eventCommentId as string },
+				where: { id: data.id },
 				update: {
-					comment: comment as string,
-					type: type as string
+					comment: data.comment ?? '',
+					type: data.type
 				},
 				create: {
-					comment: comment as string,
-					type: type as string,
-					User: { connect: { id: session?.user?.userId as string } },
+					comment: data.comment ?? '',
+					type: data.type,
+					User: { connect: { id: session?.user?.userId } },
 					Event: { connect: { id: params.eventId } }
 				}
 			});
+
+			data.comment = '';
+			//
 		} catch (error) {
+			luciaErrors(error);
+			prismaError(error);
 			console.log('error: ', error);
+			return fail(500, {
+				message: 'Unknown Error occured'
+			});
 		}
+
+		throw redirect(307, `/events/${params.eventId}`);
 	}
 } satisfies Actions;

@@ -1,8 +1,9 @@
 import { prisma } from '$lib/server/prisma';
-import { error, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import Blw from './Blw';
 import { setFlash } from 'sveltekit-flash-message/server';
 import { Prisma } from '@prisma/client';
+import { importState } from '$lib/stores';
 // import { messages } from '$lib/stores/messages'
 // import { Prisma } from '@prisma/client'
 
@@ -39,7 +40,6 @@ export async function Populate({ data, userId, file, orgId }) {
 	// people will either be creating, updating or overwritting
 	// ??????? could have Duplicate problems by using this method
 	// also cuurently not supporting updating at all
-
 	// no file so exit
 	if (!data) throw error(400, { message: 'Populate function requires data' });
 
@@ -190,7 +190,7 @@ export async function Populate({ data, userId, file, orgId }) {
 		});
 	}
 
-	await addTables();
+	return addTables();
 
 	async function addTables() {
 		try {
@@ -198,11 +198,16 @@ export async function Populate({ data, userId, file, orgId }) {
 			const comps = await compsCreate();
 			const races = await racesCreate();
 			const resultsArray = await resultsCreate();
+
 			console.log('Start import');
 			console.time('time: ');
+			// importState.set('start');
 
-			const event = await prisma.event.upsert(eventCreate());
+			await prisma.event.upsert(eventCreate());
+
 			console.timeLog('time: ', 'event comlpete: ');
+
+			// importState.set('event comlpete:');
 
 			await Promise.allSettled(
 				comps.map(async (comp) => {
@@ -211,6 +216,9 @@ export async function Populate({ data, userId, file, orgId }) {
 			);
 
 			console.timeLog('time: ', 'comps complete');
+
+			// importState.set('comps complete');
+
 			await Promise.allSettled(
 				races.map(async (race) => {
 					return await prisma.race.upsert(race);
@@ -218,6 +226,8 @@ export async function Populate({ data, userId, file, orgId }) {
 			);
 
 			console.timeLog('time: ', 'races comlpete: ');
+
+			// importState.set('races comlpete');
 
 			await Promise.all(
 				await resultsArray.map(async (results) => {
@@ -227,23 +237,32 @@ export async function Populate({ data, userId, file, orgId }) {
 				})
 			);
 
-			console.timeLog('time: ', 'results comlpete: ');
+			console.timeLog('time: ', 'results comlpete ');
 			console.timeEnd('time: ');
-			// console.log('event: ', event);
-
+			return {
+				sucess: true
+			};
 			//
 		} catch (error: any) {
 			//
 			if (error instanceof Prisma.PrismaClientKnownRequestError) {
 				// Timeout error
 				if (error.code === 'P2024') {
-					console.log('P2024: ', error);
+					console.log(error.meta?.cause);
+					throw fail(500, { message: error.meta?.cause });
+				}
+
+				if (error.code === 'P2025') {
+					console.log(error.meta?.cause);
+					throw fail(500, { message: error.meta?.cause });
 				}
 
 				console.log('Prisma Known Request Error: ', error);
+				throw fail(500, { message: error.meta?.cause });
 			}
 
 			console.log('Import Error: ', error);
+			throw error(500, `Populate error: ${error}`);
 		}
 	}
 } // populate

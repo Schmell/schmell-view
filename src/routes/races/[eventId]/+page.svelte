@@ -28,25 +28,32 @@
 					<div slot="top-right">
 						<a href="/results/{race.id}" class="btn btn-accent btn-xs">View Results</a>
 					</div>
+
 					<div slot="bottom-right" class="flex justify-end text-primary">
 						<div class="tooltip tooltip-top" data-tip="View Competitors">
 							<a href="/comps/{event?.id}" class="btn btn-ghost p-1">
 								<Icon icon="material-symbols:groups-outline-rounded" width="30" />
 							</a>
 						</div>
-						<!-- Edit should only show when current user is owner -->
-						<!-- {#if user?.userId === event?.publisherId} -->
-						<div class="tooltip tooltip-top" data-tip="Race Edit">
-							<a href="/event/{event?.id}" class="btn btn-ghost">
-								<Icon icon="material-symbols:edit-outline" width="24" />
-							</a>
+
+						{#if data.user?.userId === event?.publisherId}
+							<div class="tooltip tooltip-top" data-tip="Race Edit">
+								<a href="/event/{event?.id}" class="btn btn-ghost">
+									<Icon icon="material-symbols:edit-outline" width="24" />
+								</a>
+							</div>
+						{/if}
+					</div>
+
+					{#if race.notes}
+						<div class="text-xs text-primary-focus underline">Notes:</div>
+						<div class="px-2 pb-4">
+							{race.notes}
 						</div>
-						<!-- {/if} -->
-					</div>
-					<div>Notes:</div>
-					<div class="px-2 pb-4">
-						{race.notes ? race.notes : 'No notes provided'}
-					</div>
+					{:else}
+						<div class="opacity-0 select-none">I</div>
+					{/if}
+
 					<div class="flex justify-between items-center">
 						<div
 							class="badge"
@@ -55,13 +62,14 @@
 						>
 							{race.sailed === '1' ? 'Complete' : 'Un-Sailed'}
 						</div>
+
 						<div class="p-2 text-sm pr-6">
 							{race.date ? race.date : 'TBA'} - {race.time ? race.time : ''}
 						</div>
 					</div>
 
-					<div slot="bottom-left" class="p-2 text-xs text-base-content">
-						<div>
+					<div slot="bottom-left" class="relative">
+						<!-- <div>
 							Updated:
 							<span class="px-2">
 								{#if race.updatedAt}
@@ -70,10 +78,9 @@
 									No date provided
 								{/if}
 							</span>
-						</div>
-						<div>
-							Created:
-							<span class="px-2">
+						</div> -->
+						<div class="absolute">
+							<span class="px-2 text-xs">
 								{#if race.createdAt}
 									{formatDateTime(race.createdAt)}
 								{:else}

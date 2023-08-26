@@ -9,7 +9,8 @@
 	import { page } from '$app/stores';
 	import { getFlash } from 'sveltekit-flash-message/client';
 
-	const flash = getFlash(page);
+	// const flash = getFlash(page);
+	// $: console.log('flash: ', $flash);
 
 	export let data;
 	$: ({ user } = data);
@@ -34,35 +35,16 @@
 	<div class="fixed top-0 z-20 w-full">
 		<nav class="navbar border-base-300 text-secondary-content">
 			<button on:click={toggleOpen} class="btn-ghost btn hover:bg-transparent">
-				<Icon class="text-3xl text-base-300" icon="ci:hamburger-lg" />
+				<Icon class="text-3xl text-base-300 opacity-90" icon="ci:hamburger-lg" />
 			</button>
-
-			<!-- <div class="flex-none"> -->
-			<!-- <ul class="menu menu-horizontal px-1 z-50 w-40">
-				<li>
-					<button><Icon icon="arcticons:theme-store" /></button>
-					<ul class="p-2 bg-base-100 text-base-content w-36 max-h-96 overflow-y-scroll">
-						<form method="POST" use:enhance={submitUpdateTheme}>
-							{#each themes as theme}
-								<li>
-									<button formaction="/?/setTheme&theme={theme}&redirectTo={$page.url.pathname}"
-										>{theme}</button
-									>
-								</li>
-							{/each}
-						</form>
-					</ul>
-				</li>
-			</ul> -->
-			<!-- </div> -->
 
 			<div class="user-nav">
 				<!-- <SignOut /> -->
 				{#if data.user}
 					<div
-						class="dropdown-end dropdown avatar rounded-full border-2 border-neutral-content bg-base-200 drop-shadow-lg focus:bg-base-100"
+						class="dropdown-end dropdown avatar rounded-full border-2 border-neutral-content bg-black bg-opacity-20 drop-shadow-lg focus:bg-base-100"
 					>
-						<div tabindex="-1" class="w-10 rounded-full">
+						<div tabindex="-1" class="w-10 rounded-full select-none">
 							<img src={user?.avatar} alt={user?.name} />
 						</div>
 						<ul
@@ -75,7 +57,7 @@
 							<li><div class="divider m-0 p-0" /></li>
 							<li>
 								<form method="POST">
-									<button formaction="?/logout" type="submit">Logout</button>
+									<button formaction="/?/logout" type="submit">Logout</button>
 								</form>
 							</li>
 						</ul>
@@ -118,12 +100,12 @@
 	</div>
 	<main>
 		<slot />
-		{#if $flash}
-			{@const bg = $flash.type == 'success' ? '#3D9970' : '#FF4136'}
-			<div style:background-color={bg} class="flash">{$flash.message}</div>
-		{/if}
 	</main>
-
+	<!-- {#if $flash}
+		<div id="flashMessage" class="absolute top-40 z-50" class:bg-error={$flash.type !== 'success'}>
+			{$flash.message}
+		</div>
+	{/if} -->
 	<footer class="shadow">
 		<div class="btm-nav text-base-content">
 			<!-- Home -->

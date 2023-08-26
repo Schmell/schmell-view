@@ -55,6 +55,7 @@
 		"@tanstack/svelte-table": "^8.9.5",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.0.0",
+		"convert-csv-to-json": "^2.0.0",
 		"googleapis": "^123.0.0",
 		"lucia": "^2.0.0",
 		"lucide-svelte": "^0.263.0",
