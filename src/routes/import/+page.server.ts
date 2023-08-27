@@ -1,11 +1,10 @@
 import type { Actions, PageServerLoad } from '../$types';
-import { error, redirect } from '@sveltejs/kit';
-import { Populate } from '$lib/importers/sailwave';
-
-import pkg from 'papaparse';
-const { parse } = pkg;
-import { prisma } from '$lib/server/prisma';
 import { z } from 'zod';
+import csv from 'csvtojson';
+import { redirect } from '@sveltejs/kit';
+import { prisma } from '$lib/server/prisma';
+import { Populate } from '$lib/importers/sailwave';
+import Blw from '$lib/importers/sailwave/Blw';
 
 const importSchema = z.object({
 	file: z.any(),
@@ -30,38 +29,31 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async (input) => {
-		const { request, locals } = input;
+	default: async ({ request, locals }) => {
+		const session = await locals.auth.validate();
+
 		const { org, file }: any = Object.fromEntries(await request.formData());
 
-		const texted = await file.text();
+		const csvArray = await csv({ noheader: true, output: 'csv' }).fromString(await file.text());
 
-		await new Promise((resolve) => {
-			parse(texted, {
-				complete: async (results) => {
-					const session = await locals.auth.validate();
-
-					await Populate({
-						data: results.data,
-						userId: session?.user.userId,
-						file: file,
-						orgId: org
-					});
-					resolve({ success: true });
-				},
-
-				error: (status, err) => {
-					// TODO
-					console.log('import error: ', status, err);
-					throw error(418, `error from import server ts ${err}`);
-				}
-			});
+		const blw = new Blw({ data: csvArray });
+		const { uniqueIdString } = blw.getEvent();
+		// const  = event;
+		const duplicate = await prisma.event.findFirst({
+			where: { uniqueIdString: uniqueIdString },
+			select: { id: true }
 		});
 
-		// return resultsData
-		// return {
-		// 	status
-		// };
+		if (duplicate) {
+			throw redirect(301, `/import/duplicate?eventId=${duplicate.id}`);
+		}
+
+		await Populate({
+			blw,
+			userId: session?.user.userId,
+			orgId: org
+		});
+
 		throw redirect(300, `/events`);
 	}
 };
