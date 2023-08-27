@@ -12,7 +12,7 @@
 	// $: console.log('events: ', events)
 </script>
 
-<Page title="Your Events">
+<Page title="Events">
 	<div slot="trailing">
 		<a class="br-primary" href="/events/createEvent">
 			<Icon icon="material-symbols:add-circle" width="34" />
@@ -35,7 +35,7 @@
 			<div slot="bottom-right" class="flex justify-end text-primary">
 				<div class="tooltip tooltip-top" data-tip="View Event">
 					<a href="/events/{event?.id}?from={$page.url.pathname}" class="btn btn-ghost p-1">
-						<Icon class="text-3xl text-primary" icon="mdi:eye" />
+						<Icon class="text-3xl text-primary" icon="material-symbols:preview" />
 					</a>
 				</div>
 

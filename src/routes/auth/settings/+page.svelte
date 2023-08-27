@@ -10,7 +10,6 @@
 
 	const formObj = superForm(data.form);
 	const { form } = formObj;
-	console.log('form: ', $form.theme);
 
 	$: if ($form.theme) {
 		document.documentElement.setAttribute('data-theme', $form.theme);

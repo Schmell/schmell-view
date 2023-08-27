@@ -1,7 +1,7 @@
 import { prisma } from '$lib/server/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import type { Lang } from '@prisma/client';
+// import type { Lang } from '@prisma/client';
 
 import { UserSettingsSchema } from '$lib/server/generated/zod';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -26,7 +26,7 @@ export const load = (async ({ locals }) => {
 }) satisfies PageServerLoad;
 
 export const actions: Actions = {
-	default: async ({ locals, request, cookies }) => {
+	default: async ({ locals, request, cookies, url }) => {
 		const session = await locals.auth.validate();
 
 		let newTheme = '';
@@ -49,11 +49,11 @@ export const actions: Actions = {
 			await prisma.userSettings.upsert({
 				where: { userId: session.user.userId },
 				update: {
-					language: form.data.language as Lang,
+					language: form.data.language,
 					theme: form.data.theme
 				},
 				create: {
-					language: form.data.language as Lang,
+					language: form.data.language,
 					theme: form.data.theme,
 					user: {
 						connect: { id: session.user.userId }
@@ -65,6 +65,8 @@ export const actions: Actions = {
 
 			return fail(400, { message: 'Fail on settings save' });
 		}
-		return { newTheme };
+		// return { newTheme };\
+		console.log('url.searchParams.get(from): ', url.searchParams.get('from'));
+		throw redirect(301, `${url.searchParams.get('from')}?theme=${newTheme}`);
 	}
 };

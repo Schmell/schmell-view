@@ -4,13 +4,7 @@
 	import { slide } from 'svelte/transition';
 	import Icon from '@iconify/svelte';
 	import { clickOutside } from '$lib/utils';
-	import { enhance } from '$app/forms';
-	import { themes } from '$lib/utils';
 	import { page } from '$app/stores';
-	import { getFlash } from 'sveltekit-flash-message/client';
-
-	// const flash = getFlash(page);
-	// $: console.log('flash: ', $flash);
 
 	export let data;
 	$: ({ user } = data);
@@ -35,7 +29,7 @@
 	<div class="fixed top-0 z-20 w-full">
 		<nav class="navbar border-base-300 text-secondary-content">
 			<button on:click={toggleOpen} class="btn-ghost btn hover:bg-transparent">
-				<Icon class="text-3xl text-base-300 opacity-90" icon="ci:hamburger-lg" />
+				<Icon class="text-3xl text-primary-content opacity-90" icon="ci:hamburger-lg" />
 			</button>
 
 			<div class="user-nav">
@@ -51,8 +45,8 @@
 							tabindex="-1"
 							class=" dropdown-content menu rounded-box w-52 bg-base-100 p-2 text-base-content drop-shadow-lg"
 						>
-							<li><a href="/auth/profile">Profile</a></li>
-							<li><a href="/auth/settings">Settings</a></li>
+							<li><a href="/auth/profile?from={$page.url.pathname}">Profile</a></li>
+							<li><a href="/auth/settings?from={$page.url.pathname}">Settings</a></li>
 							<!-- <li><a href="/auth/account">Account</a></li> -->
 							<li><div class="divider m-0 p-0" /></li>
 							<li>
@@ -126,7 +120,7 @@
 
 <style>
 	main {
-		@apply bg-base-300;
+		@apply bg-base-200;
 		width: 100%;
 		height: 100vh;
 		position: absolute;
@@ -149,7 +143,7 @@
 	}
 
 	.navbar {
-		@apply bg-primary shadow-md;
+		@apply bg-primary-focus shadow-md;
 		display: flex;
 		justify-content: space-between;
 		padding-inline-start: 0em;

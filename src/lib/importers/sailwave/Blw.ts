@@ -1,105 +1,62 @@
-// import { User } from "firebase/auth";
-// import { parse } from 'papaparse'
-import { createId } from '@paralleldrive/cuid2'
-import { formatTime } from '../../utils/formatters'
-
-interface IBlw {
-	// user: User | null | undefined;
-	data: any
-	file: any
-	// file: chromeFile
-}
-
-interface chromeFile extends File {
-	lastModifiedDate?: string
-}
-
-// const RaceType = Prisma = {}
-
-// type Race = {
-// 	raceId: string
-// 	uniqueRaceString: string
-// 	name: string
-// 	starts: {}
-// 	rank: string
-// 	date: string
-// 	time: string
-// 	notes: string
-// 	sailed: string
-// 	resultColumns: {}
-// 	// /// [raceRest]
-// 	rest: {}
-// 	// Event            Event?    @relation(fields: [eventId], references: [id])
-// 	// eventId          String?
-// 	// Publisher        User?     @relation(fields: [publisherId], references: [id])
-// 	// publisherId      String?
-// 	// Comps            Comp[]
-// 	// Results          Result[]
-// 	// createdAt        DateTime? @default(now())
-// 	// updatedAt        DateTime? @updatedAt
-// 	// // compId      String?
-// 	// follow           follow[]
-// 	// like             like[]
-// }
+import { createId } from '@paralleldrive/cuid2';
+import { formatTime } from '../../utils/formatters';
 
 export default class Blw {
-	// // user: User | null | undefined;
-	data: any
-	file: any
+	data: any;
 
-	constructor(props: IBlw) {
-		// this.user = props.user;
-		this.data = props.data
-		this.file = props.file
-		this.data.cuid = createId()
+	constructor(props) {
+		this.data = props.data;
+		this.data.cuid = createId();
 	}
 
 	getComps() {
-		const compData: any = []
+		const compData: any = [];
 		const compBoats = this.data.filter((item: any) => {
-			return item[0] === 'comphigh'
-		})
+			return item[0] === 'comphigh';
+		});
 		compBoats.sort().forEach((compBoat: any) => {
 			let competitor = {
 				compId: '',
 				uniqueCompId: ''
-			}
+			};
 
-			competitor.compId = `${compBoat[2]}-${this.data.cuid}`
+			competitor.compId = `${compBoat[2]}-${this.data.cuid}`;
 			// also need a uniqueCompId for connecting comps to users
 			// competitor.uniqueCompId = ""
 			let compRows = this.data.filter((item: any) => {
-				var regex = new RegExp(`^comp`, 'g')
-				return item[0].match(regex) && item[2] === compBoat[2]
-			})
+				var regex = new RegExp(`^comp`, 'g');
+				return item[0].match(regex) && item[2] === compBoat[2];
+			});
 			compRows.forEach((item: any) => {
-				const newName = item[0].replace('comp', '')
-				competitor[newName] = item[1] ?? ''
-			})
-			compData.push(competitor)
-		}) //each compBoats
+				const newName = item[0].replace('comp', '');
+				competitor[newName] = item[1] ?? '';
+			});
+			compData.push(competitor);
+		}); //each compBoats
 		const sorted = compData!.sort((a: any, b: any) => {
-			return a.boat - b.boat
-		})
+			return a.boat - b.boat;
+		});
 
-		return sorted
+		return sorted;
 	} // getComps
 
 	getResults(raceId) {
 		// const data = await this.getFileData()
-		const resultsArr: any = []
+		const resultsArr: any = [];
 		// use rdisc to get an individuals result
 		const results = this.data.filter((item: any) => {
-			return item[0] === 'rdisc' && item[3] === raceId
-		})
+			return item[0] === 'rdisc' && item[3] === raceId;
+		});
 		// console.log('results: ', results)
 		results.forEach((result: any) => {
-			// console.log('result: ', result)
+			// console.log('result: ', result);
 			// Results in blw file have no prefix to speak of (just an r)
 			// So we need to find each row individually
 			const resultRow = {
-				resultId: `${result[3]}-${result[2]}-${this.data.cuid}`,
+				// resultId: `${result[3]}-${result[2]}-${this.data.cuid}`,
+				raceCompId: `${result[3]}-${result[2]}`,
 				compId: `${result[2]}-${this.data.cuid}`,
+
 				finish: this.resultHelp('rft', this.data, result)
 					? this.resultHelp('rft', this.data, result)
 					: '',
@@ -107,7 +64,7 @@ export default class Blw {
 					? this.resultHelp('rst', this.data, result)
 					: '',
 				points: this.resultHelp('rpts', this.data, result)
-					? this.resultHelp('rpts', this.data, +result)
+					? this.resultHelp('rpts', this.data, result)
 					: '',
 				position: this.resultHelp('rpos', this.data, result)
 					? this.resultHelp('rpos', this.data, result)
@@ -136,45 +93,42 @@ export default class Blw {
 				rrset: this.resultHelp('rrset', this.data, result)
 					? this.resultHelp('rrset', this.data, result)
 					: ''
-			}
-			resultsArr.push(resultRow)
-		}) // forEach
+			};
+			resultsArr.push(resultRow);
+		}); // forEach
 
-		return resultsArr
+		return resultsArr;
 	} // getResults
 
 	resultHelp(resultTag: string, data: any[], result: any[] | number) {
 		let res = data.filter((item) => {
-			return item[0] === resultTag && item[2] === result[2] && item[3] === result[3]
-		})
-		// console.log('res: ', res)
+			return item[0] === resultTag && item[2] === result[2] && item[3] === result[3];
+		});
 		if (res[0]) {
-			return res[0][1]
+			return res[0][1];
 		} else {
-			// console.log('else res: ', res)
-			return ''
+			return '';
 		}
 	}
 
-	// I don't think i use this
-	// each race has fleets
+	// I don't think i use this // each race has fleets
 	getFleets() {
 		// const data = await this.getFileData()
 		var fleetsRaw: any[] = this.data.filter((item: any) => {
-			return item[0] === 'serpubgroupvalues'
-		})
-		var fleets = fleetsRaw[0][1].match(/[^|]+/g)
+			return item[0] === 'serpubgroupvalues';
+		});
+		var fleets = fleetsRaw[0][1].match(/[^|]+/g);
 
-		return fleets
+		return fleets;
 	}
 
 	getRaces(uniqueIdString: string) {
 		// new object to be returned
-		let raceData: any = []
+		let raceData: any = [];
 		// Find all raceids by getting known csv row
 		const races = this.data.filter((item: any) => {
-			return item[0] === 'racerank'
-		})
+			return item[0] === 'racerank';
+		});
 		// For each race push data to new object
 		races.forEach((race: any) => {
 			let raceObj = {
@@ -183,79 +137,79 @@ export default class Blw {
 				starts: '',
 				name: '',
 				rank: ''
-			}
+			};
 
-			raceObj.raceId = race[3]
+			raceObj.raceId = race[3];
 			// console.log('race: ', race[3], race[1])
 			// need to get eventeid
-			raceObj.uniqueRaceString = uniqueIdString + '_' + race[3]
+			raceObj.uniqueRaceString = uniqueIdString + '_' + race[3];
 
 			let resultRows = this.data.filter((item: any) => {
-				var regex = new RegExp(`^race`, 'g')
-				return item[0].match(regex) && item[3] === race[3]
-			})
+				var regex = new RegExp(`^race`, 'g');
+				return item[0].match(regex) && item[3] === race[3];
+			});
 
-			let raceStarts: any = []
+			let raceStarts: any = [];
 
 			resultRows.forEach((item) => {
 				// Format the starts to object
 				if (item[0] === 'racestart') {
-					const racestartString = item[1].split('|')
-					let start = racestartString[1]
-					let fleet = racestartString[0].split('^')[1]
+					const racestartString = item[1].split('|');
+					let start = racestartString[1];
+					let fleet = racestartString[0].split('^')[1];
 
 					// remove the undefined
-					if (!fleet) fleet = 'none'
+					if (!fleet) fleet = 'none';
 
 					// This will stop undefined or null
 					try {
-						start = formatTime(start)
+						start = formatTime(start);
 					} catch {
-						start = ''
+						start = '';
 					}
 
-					raceStarts.push({ fleet, start })
+					raceStarts.push({ fleet, start });
 				} else {
 					// not racestart so just add to raceObj
-					const property = item[0].replace('race', '')
-					raceObj[property] = item[1]
+					const property = item[0].replace('race', '');
+					raceObj[property] = item[1];
 				}
-			}) // resultRows.forEach
+			}); // resultRows.forEach
 
 			// now add the starts to raceObj
 			raceStarts.forEach((start: any) => {
-				raceObj.starts = raceStarts
-			})
+				raceObj.starts = raceStarts;
+			});
 
 			if (!raceObj.name) {
-				raceObj.name = `Race ${raceObj.rank}`
+				raceObj.name = `Race ${raceObj.rank}`;
 			}
-			raceData.push(raceObj)
-		})
+			raceData.push(raceObj);
+		});
 
-		return raceData
+		return raceData;
 	} // getRaces
 
 	getEvent() {
 		const eventRows = this.data.filter((item: any) => {
-			const regex = new RegExp(`^ser`, 'g')
-			return item[0].match(regex)
-		})
+			const regex = new RegExp(`^ser`, 'g');
+			return item[0].match(regex);
+		});
 
 		type EventRest = {
-			venuewebsite?: string
-			venueemail?: string
-			venueburgee?: string
-			eventburgee?: string
-		}
+			venuewebsite?: string;
+			venueemail?: string;
+			venueburgee?: string;
+			eventburgee?: string;
+		};
 
 		type EventObj = {
-			event: string
-			eventwebsite: string
-			venue: string
-			eventeid: string
-			rest: EventRest
-		}
+			event: string;
+			eventwebsite: string;
+			venue: string;
+			eventeid: string;
+			rest: EventRest;
+		};
 
 		let eventObj: any = {
 			event: '',
@@ -263,20 +217,20 @@ export default class Blw {
 			venue: '',
 			eventeid: '',
 			rest: {}
-		}
+		};
 
 		eventRows.forEach((item) => {
-			const property = item[0].replace('ser', '')
-			eventObj[property] = item[1]
-		})
+			const property = item[0].replace('ser', '');
+			eventObj[property] = item[1];
+		});
 
-		const { event, eventwebsite, venue, eventeid, ...rest } = eventObj
+		const { event, eventwebsite, venue, eventeid, ...rest } = eventObj;
 		const uniqueIdString =
 			event.toLowerCase().trim().split(' ').join('_') +
 			'-' +
 			eventeid +
 			'-' +
-			venue.toLowerCase().trim().split(' ').join('_')
+			venue.toLowerCase().trim().split(' ').join('_');
 		return {
 			name: event,
 			eventwebsite,
@@ -285,8 +239,8 @@ export default class Blw {
 			eventeid: eventeid,
 			venueemail: rest.venueemail,
 			venuewebsite: rest.venuewebsite,
-			venueburgee: rest.venueburgee
-			// rest
-		}
+			venueburgee: rest.venueburgee,
+			rest
+		};
 	} // getSeries
 }

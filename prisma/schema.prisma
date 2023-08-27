@@ -128,7 +128,7 @@ model Comp {
 
 model Result {
   id             String    @id @unique @default(cuid())
-  resultId       String?
+  resultId       String    @unique
   finish         String?
   start          String?
   points         String?
@@ -145,12 +145,12 @@ model Result {
   eventId        String?
   compId         String?
   raceId         String?
-  createdAt      DateTime? @default(now())
-  updatedAt      DateTime? @updatedAt
   Comp           Comp?     @relation(fields: [compId], references: [id])
   Event          Event?    @relation(fields: [eventId], references: [id])
   Publisher      User      @relation(fields: [publisherId], references: [id])
   Race           Race?     @relation(fields: [raceId], references: [id])
+  createdAt      DateTime? @default(now())
+  updatedAt      DateTime? @updatedAt
 
   @@index([raceId])
 }

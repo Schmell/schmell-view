@@ -96,9 +96,9 @@
 						</a>
 					</div>
 
-					<div class="tooltip tooltip-top" data-tip="View Races">
+					<div class="tooltip tooltip-top" data-tip="Edit Races">
 						<a href="/races/{event?.id}" class="btn btn-ghost p-1">
-							<Icon class="text-3xl text-primary" icon="mdi:eye" />
+							<Icon class="text-3xl text-primary" icon="material-symbols:box-edit-outline" />
 						</a>
 					</div>
 

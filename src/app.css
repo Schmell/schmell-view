@@ -6,7 +6,7 @@
 
 body {
 	overflow: hidden;
-	@apply text-base-content;
+	/* @apply text-base-content; */
 }
 /* h2 {
 	@apply text-3xl my-2;

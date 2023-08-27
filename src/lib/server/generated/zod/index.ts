@@ -214,7 +214,7 @@ export type Comp = z.infer<typeof CompSchema>
 
 export const ResultSchema = z.object({
   id: z.string().cuid(),
-  resultId: z.string().nullish(),
+  resultId: z.string(),
   finish: z.string().nullish(),
   start: z.string().nullish(),
   points: z.string().nullish(),
@@ -1559,7 +1559,7 @@ export const ResultWhereInputSchema: z.ZodType<Prisma.ResultWhereInput> = z.obje
   OR: z.lazy(() => ResultWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => ResultWhereInputSchema),z.lazy(() => ResultWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  resultId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  resultId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   finish: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   start: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   points: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -1586,7 +1586,7 @@ export const ResultWhereInputSchema: z.ZodType<Prisma.ResultWhereInput> = z.obje
 
 export const ResultOrderByWithRelationInputSchema: z.ZodType<Prisma.ResultOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  resultId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  resultId: z.lazy(() => SortOrderSchema).optional(),
   finish: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   start: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   points: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -1611,15 +1611,24 @@ export const ResultOrderByWithRelationInputSchema: z.ZodType<Prisma.ResultOrderB
   Race: z.lazy(() => RaceOrderByWithRelationInputSchema).optional()
 }).strict();
 
-export const ResultWhereUniqueInputSchema: z.ZodType<Prisma.ResultWhereUniqueInput> = z.object({
-  id: z.string().cuid()
-})
+export const ResultWhereUniqueInputSchema: z.ZodType<Prisma.ResultWhereUniqueInput> = z.union([
+  z.object({
+    id: z.string().cuid(),
+    resultId: z.string()
+  }),
+  z.object({
+    id: z.string().cuid(),
+  }),
+  z.object({
+    resultId: z.string(),
+  }),
+])
 .and(z.object({
   id: z.string().cuid().optional(),
+  resultId: z.string().optional(),
   AND: z.union([ z.lazy(() => ResultWhereInputSchema),z.lazy(() => ResultWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => ResultWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => ResultWhereInputSchema),z.lazy(() => ResultWhereInputSchema).array() ]).optional(),
-  resultId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   finish: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   start: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   points: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -1646,7 +1655,7 @@ export const ResultWhereUniqueInputSchema: z.ZodType<Prisma.ResultWhereUniqueInp
 
 export const ResultOrderByWithAggregationInputSchema: z.ZodType<Prisma.ResultOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  resultId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  resultId: z.lazy(() => SortOrderSchema).optional(),
   finish: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   start: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   points: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -1675,7 +1684,7 @@ export const ResultScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Result
   OR: z.lazy(() => ResultScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => ResultScalarWhereWithAggregatesInputSchema),z.lazy(() => ResultScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  resultId: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  resultId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   finish: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   start: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   points: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
@@ -3102,7 +3111,7 @@ export const CompUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CompUncheckedU
 
 export const ResultCreateInputSchema: z.ZodType<Prisma.ResultCreateInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -3125,7 +3134,7 @@ export const ResultCreateInputSchema: z.ZodType<Prisma.ResultCreateInput> = z.ob
 
 export const ResultUncheckedCreateInputSchema: z.ZodType<Prisma.ResultUncheckedCreateInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -3148,7 +3157,7 @@ export const ResultUncheckedCreateInputSchema: z.ZodType<Prisma.ResultUncheckedC
 
 export const ResultUpdateInputSchema: z.ZodType<Prisma.ResultUpdateInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3171,7 +3180,7 @@ export const ResultUpdateInputSchema: z.ZodType<Prisma.ResultUpdateInput> = z.ob
 
 export const ResultUncheckedUpdateInputSchema: z.ZodType<Prisma.ResultUncheckedUpdateInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3194,7 +3203,7 @@ export const ResultUncheckedUpdateInputSchema: z.ZodType<Prisma.ResultUncheckedU
 
 export const ResultCreateManyInputSchema: z.ZodType<Prisma.ResultCreateManyInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -3217,7 +3226,7 @@ export const ResultCreateManyInputSchema: z.ZodType<Prisma.ResultCreateManyInput
 
 export const ResultUpdateManyMutationInputSchema: z.ZodType<Prisma.ResultUpdateManyMutationInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3236,7 +3245,7 @@ export const ResultUpdateManyMutationInputSchema: z.ZodType<Prisma.ResultUpdateM
 
 export const ResultUncheckedUpdateManyInputSchema: z.ZodType<Prisma.ResultUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -8106,7 +8115,7 @@ export const RaceCreateManyEventInputEnvelopeSchema: z.ZodType<Prisma.RaceCreate
 
 export const ResultCreateWithoutEventInputSchema: z.ZodType<Prisma.ResultCreateWithoutEventInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -8128,7 +8137,7 @@ export const ResultCreateWithoutEventInputSchema: z.ZodType<Prisma.ResultCreateW
 
 export const ResultUncheckedCreateWithoutEventInputSchema: z.ZodType<Prisma.ResultUncheckedCreateWithoutEventInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -8551,7 +8560,7 @@ export const ResultScalarWhereInputSchema: z.ZodType<Prisma.ResultScalarWhereInp
   OR: z.lazy(() => ResultScalarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => ResultScalarWhereInputSchema),z.lazy(() => ResultScalarWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  resultId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  resultId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   finish: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   start: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   points: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -8785,7 +8794,7 @@ export const UserCreateOrConnectWithoutRaceInputSchema: z.ZodType<Prisma.UserCre
 
 export const ResultCreateWithoutRaceInputSchema: z.ZodType<Prisma.ResultCreateWithoutRaceInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -8807,7 +8816,7 @@ export const ResultCreateWithoutRaceInputSchema: z.ZodType<Prisma.ResultCreateWi
 
 export const ResultUncheckedCreateWithoutRaceInputSchema: z.ZodType<Prisma.ResultUncheckedCreateWithoutRaceInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -9258,7 +9267,7 @@ export const EventCreateOrConnectWithoutCompsInputSchema: z.ZodType<Prisma.Event
 
 export const ResultCreateWithoutCompInputSchema: z.ZodType<Prisma.ResultCreateWithoutCompInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -9280,7 +9289,7 @@ export const ResultCreateWithoutCompInputSchema: z.ZodType<Prisma.ResultCreateWi
 
 export const ResultUncheckedCreateWithoutCompInputSchema: z.ZodType<Prisma.ResultUncheckedCreateWithoutCompInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -12452,7 +12461,7 @@ export const CompCreateManyPublisherInputEnvelopeSchema: z.ZodType<Prisma.CompCr
 
 export const ResultCreateWithoutPublisherInputSchema: z.ZodType<Prisma.ResultCreateWithoutPublisherInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -12474,7 +12483,7 @@ export const ResultCreateWithoutPublisherInputSchema: z.ZodType<Prisma.ResultCre
 
 export const ResultUncheckedCreateWithoutPublisherInputSchema: z.ZodType<Prisma.ResultUncheckedCreateWithoutPublisherInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -13516,7 +13525,7 @@ export const RaceCreateManyEventInputSchema: z.ZodType<Prisma.RaceCreateManyEven
 
 export const ResultCreateManyEventInputSchema: z.ZodType<Prisma.ResultCreateManyEventInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -13638,7 +13647,7 @@ export const RaceUncheckedUpdateManyWithoutEventInputSchema: z.ZodType<Prisma.Ra
 
 export const ResultUpdateWithoutEventInputSchema: z.ZodType<Prisma.ResultUpdateWithoutEventInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -13660,7 +13669,7 @@ export const ResultUpdateWithoutEventInputSchema: z.ZodType<Prisma.ResultUpdateW
 
 export const ResultUncheckedUpdateWithoutEventInputSchema: z.ZodType<Prisma.ResultUncheckedUpdateWithoutEventInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -13682,7 +13691,7 @@ export const ResultUncheckedUpdateWithoutEventInputSchema: z.ZodType<Prisma.Resu
 
 export const ResultUncheckedUpdateManyWithoutEventInputSchema: z.ZodType<Prisma.ResultUncheckedUpdateManyWithoutEventInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -13879,7 +13888,7 @@ export const eventCommentUncheckedUpdateManyWithoutEventInputSchema: z.ZodType<P
 
 export const ResultCreateManyRaceInputSchema: z.ZodType<Prisma.ResultCreateManyRaceInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -13926,7 +13935,7 @@ export const likeCreateManyRaceInputSchema: z.ZodType<Prisma.likeCreateManyRaceI
 
 export const ResultUpdateWithoutRaceInputSchema: z.ZodType<Prisma.ResultUpdateWithoutRaceInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -13948,7 +13957,7 @@ export const ResultUpdateWithoutRaceInputSchema: z.ZodType<Prisma.ResultUpdateWi
 
 export const ResultUncheckedUpdateWithoutRaceInputSchema: z.ZodType<Prisma.ResultUncheckedUpdateWithoutRaceInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -13970,7 +13979,7 @@ export const ResultUncheckedUpdateWithoutRaceInputSchema: z.ZodType<Prisma.Resul
 
 export const ResultUncheckedUpdateManyWithoutRaceInputSchema: z.ZodType<Prisma.ResultUncheckedUpdateManyWithoutRaceInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -14135,7 +14144,7 @@ export const CompUncheckedUpdateManyWithoutRacesInputSchema: z.ZodType<Prisma.Co
 
 export const ResultCreateManyCompInputSchema: z.ZodType<Prisma.ResultCreateManyCompInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -14258,7 +14267,7 @@ export const EventUncheckedUpdateManyWithoutCompsInputSchema: z.ZodType<Prisma.E
 
 export const ResultUpdateWithoutCompInputSchema: z.ZodType<Prisma.ResultUpdateWithoutCompInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -14280,7 +14289,7 @@ export const ResultUpdateWithoutCompInputSchema: z.ZodType<Prisma.ResultUpdateWi
 
 export const ResultUncheckedUpdateWithoutCompInputSchema: z.ZodType<Prisma.ResultUncheckedUpdateWithoutCompInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -14302,7 +14311,7 @@ export const ResultUncheckedUpdateWithoutCompInputSchema: z.ZodType<Prisma.Resul
 
 export const ResultUncheckedUpdateManyWithoutCompInputSchema: z.ZodType<Prisma.ResultUncheckedUpdateManyWithoutCompInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -14976,7 +14985,7 @@ export const CompCreateManyPublisherInputSchema: z.ZodType<Prisma.CompCreateMany
 
 export const ResultCreateManyPublisherInputSchema: z.ZodType<Prisma.ResultCreateManyPublisherInput> = z.object({
   id: z.string().cuid().optional(),
-  resultId: z.string().optional().nullable(),
+  resultId: z.string(),
   finish: z.string().optional().nullable(),
   start: z.string().optional().nullable(),
   points: z.string().optional().nullable(),
@@ -15335,7 +15344,7 @@ export const CompUncheckedUpdateManyWithoutPublisherInputSchema: z.ZodType<Prism
 
 export const ResultUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.ResultUpdateWithoutPublisherInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -15357,7 +15366,7 @@ export const ResultUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.ResultUpd
 
 export const ResultUncheckedUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.ResultUncheckedUpdateWithoutPublisherInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -15379,7 +15388,7 @@ export const ResultUncheckedUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.
 
 export const ResultUncheckedUpdateManyWithoutPublisherInputSchema: z.ZodType<Prisma.ResultUncheckedUpdateManyWithoutPublisherInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  resultId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  resultId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   finish: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   start: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   points: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),

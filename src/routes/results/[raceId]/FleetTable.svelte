@@ -30,7 +30,7 @@
 
 		return {
 			points: result.points, // convert to number
-			position: result.position,
+			position: result.position, // named place on table
 			rank: result.Comp?.rank ?? '',
 			total: result.Comp?.total ?? '',
 			nett: result.Comp?.nett ?? '',
@@ -64,7 +64,7 @@
 				{
 					accessorKey: 'rank',
 					header: 'Rank',
-					cell: (info) => info.getValue()
+					cell: (info) => flexRender(Centered, { info: info.getValue() })
 				},
 				{
 					accessorKey: 'points',
@@ -74,7 +74,7 @@
 				{
 					accessorKey: 'position',
 					header: 'Place',
-					cell: (info) => info.getValue()
+					cell: (info) => flexRender(Centered, { info: info.getValue() })
 				},
 				{
 					accessorKey: 'boat',
@@ -182,7 +182,7 @@
 
 <div class="my-8">
 	<div class="flex justify-between mb-4">
-		<h2>{fleetName}</h2>
+		<h2 class="text-4xl font-medium">{fleetName}</h2>
 		<label for="my-modal-3" class="btn btn-active">view</label>
 
 		<!-- Put this part before </body> tag -->
