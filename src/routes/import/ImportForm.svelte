@@ -3,8 +3,8 @@
 	import { page } from '$app/stores';
 	import { Button } from '$components/form';
 	import Icon from '@iconify/svelte';
-	import { superValidate } from 'sveltekit-superforms/server';
 	export let orgs;
+	export let action;
 
 	let loading;
 
@@ -14,12 +14,10 @@
 			update();
 		};
 	};
-
-	// const formObj = superValidate();
 </script>
 
 <div>
-	<form method="POST" enctype="multipart/form-data" use:enhance={onSubmit}>
+	<form method="POST" {action} enctype="multipart/form-data" use:enhance={onSubmit}>
 		<div class="flex flex-col">
 			<div class="h-16 flex items-center">
 				{#if loading}
@@ -32,7 +30,6 @@
 					/>
 				{/if}
 			</div>
-			<!-- <File name="file" {formObj} label="Sailwave File" /> -->
 			<label for="org" class="label mt-2">Organization</label>
 			<div class="flex gap-4 items-center w-full mb-5">
 				<select name="org" class="select select-bordered w-72 grow">

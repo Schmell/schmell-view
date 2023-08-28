@@ -29,24 +29,47 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, locals }) => {
+	newImport: async ({ request, locals }) => {
 		const session = await locals.auth.validate();
-
-		const { org, file }: any = Object.fromEntries(await request.formData());
-
+		const formData = await request.formData();
+		const { org, file }: any = Object.fromEntries(formData);
 		const csvArray = await csv({ noheader: true, output: 'csv' }).fromString(await file.text());
 
 		const blw = new Blw({ data: csvArray });
 		const { uniqueIdString } = blw.getEvent();
-		// const  = event;
+
 		const duplicate = await prisma.event.findFirst({
 			where: { uniqueIdString: uniqueIdString },
 			select: { id: true }
 		});
 
 		if (duplicate) {
-			throw redirect(301, `/import/duplicate?eventId=${duplicate.id}`);
+			// console.log('duplicate: ', duplicate);
+			// rather than throw i could return everything
+			// throw redirect(301, `/import/duplicate?eventId=${duplicate.id}`);
+			return {
+				duplicate: true,
+				org
+			};
 		}
+
+		await Populate({
+			blw,
+			userId: session?.user.userId,
+			orgId: org
+		});
+
+		throw redirect(300, `/events`);
+	},
+
+	update: async ({ request, locals }) => {
+		const session = await locals.auth.validate();
+
+		const formData: any = Object.fromEntries(await request.formData());
+		const { org, file }: any = formData;
+		const csvArray = await csv({ noheader: true, output: 'csv' }).fromString(await file.text());
+
+		const blw = new Blw({ data: csvArray });
 
 		await Populate({
 			blw,
