@@ -23,7 +23,7 @@ export const GET = async (event) => {
 		const getUser = async () => {
 			if (existingUser) return existingUser;
 
-			console.log('googleUser: ', googleUser);
+			// console.log('googleUser: ', googleUser);
 
 			const user = await createUser({
 				attributes: {

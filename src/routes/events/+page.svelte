@@ -4,11 +4,28 @@
 	import { Page, ItemCard } from '$components/layout';
 	import Icon from '@iconify/svelte';
 	import { formatDateTime } from '$lib/utils/formatters';
+	import { fail } from '@sveltejs/kit';
+	import { enhance } from '$app/forms';
 
 	export let data: PageData;
 
 	$: ({ events } = data);
 
+	async function like(type, item) {
+		// console.log('item: ', item);
+		try {
+			return await fetch(`/api/like?likeType=${type}&itemId=${item.id}`, {
+				method: 'GET',
+
+				headers: {
+					'content-type': 'application/json'
+				}
+			});
+		} catch (error) {
+			console.log('error: ', error);
+			throw fail(400, { message: 'add like error' });
+		}
+	}
 	// $: console.log('events: ', events)
 </script>
 
@@ -27,9 +44,17 @@
 	{#each events as event}
 		<ItemCard title={event.name} href="/events/{event.id}">
 			<div slot="top-right">
-				<a href="/races/{event.id}?from={$page.url.pathname}" class="btn btn-accent btn-xs">
+				<!-- <a href="/races/{event.id}?from={$page.url.pathname}" class="btn btn-accent btn-xs">
 					View Races
 				</a>
+
+				<button
+					on:click={() => {
+						like('event', event);
+					}}
+				>
+					like it
+				</button> -->
 			</div>
 
 			<div slot="bottom-right" class="flex justify-end text-primary">

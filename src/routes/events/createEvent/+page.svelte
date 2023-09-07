@@ -18,7 +18,7 @@
 		<li class="step">Publish</li>
 	</ul>
 
-	<ImportForm {orgs} />
+	<ImportForm {orgs} {...$$props} action="?/newImport" />
 	<p>Use Update event to keep your events in sync.</p>
 	<button class="btn btn-primary">Enter Event manually</button>
 </Page>

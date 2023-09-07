@@ -8,10 +8,19 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!session) {
 		throw redirect(302, '/');
 	}
-	// const mySort = sort();
+
+	const skip = url.searchParams.get('skip');
+	const take = url.searchParams.get('take');
+
 	const events = await prisma.event.findMany({
-		// where: { publisherId: session.userId },
-		include: { Publisher: true },
+		include: {
+			Publisher: true,
+			likes: { select: { id: true, eventId: true, userId: true } },
+			_count: { select: { likes: true } }
+		},
+		skip: Number(skip ?? 0),
+		take: Number(take ?? 10),
+
 		orderBy: sort()
 	});
 
@@ -24,15 +33,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			? url.searchParams.get('sortOrder')
 			: 'asc';
 		Object.defineProperty(sort, sortBy, { value: sortOrder });
-		// console.log('sort: ', sort);
 		return sort;
 	}
-	// console.log('sort(): ', sort());
-	// const orgs = await prisma.organization.findMany({
-	// 	where: { ownerId: session.userId }
-	// })
+
 	return {
 		events
-		// orgs
 	};
 };

@@ -26,12 +26,14 @@
 
 	function getFleetResults(key: string | null | undefined) {
 		return data.results?.filter((result) => {
+			// console.log('result: ', result.Comp);
 			if (result.Comp?.fleet) {
 				return result.Comp?.fleet === key;
-			} else if (result.Comp?.fleet) {
-				return result.Comp?.fleet === key;
+			} else if (result.Comp?.division) {
+				return result.Comp?.division === key;
 			}
-			// might be a bad override here
+
+			// if there is no fleet or division
 			return result;
 		});
 	}
@@ -42,14 +44,14 @@
 		let fleetsTables: (Result & {
 			Comp: Comp | null;
 		})[] = [];
+
 		const unique = getUniqueFleetsArray();
-		// console.log('unique: ', unique)
+
 		unique.forEach((uf) => {
 			let fleetResults = getFleetResults(uf);
-
 			if (fleetResults) fleetsTables.push(fleetResults as any);
 		});
-		// console.log('fleetsTables: ', fleetsTables)
+
 		return fleetsTables;
 	}
 

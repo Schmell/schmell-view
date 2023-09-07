@@ -1,7 +1,10 @@
 import { prisma } from '$lib/server/prisma';
+import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ params }) => {
+	if (!params.raceId) throw fail(307, { message: 'No Race Id Provided' });
+
 	async function getRace() {
 		// how to pass to routes
 		return await prisma.race.findFirst({
@@ -12,15 +15,11 @@ export const load = (async ({ params }) => {
 
 	const getResults = async () => {
 		try {
-			const result = await prisma.result.findMany({
+			return await prisma.result.findMany({
 				where: { raceId: params.raceId },
 				include: { Comp: true },
-				orderBy: { position: 'asc' }
+				orderBy: { points: 'asc' }
 			});
-
-			if (result) return result;
-
-			// return [{ error: 'no results' }]
 		} catch (error) {
 			console.error('error: ', error);
 			// return [{ error: 'no results' }]

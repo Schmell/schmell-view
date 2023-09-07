@@ -90,7 +90,7 @@ export const actions: Actions = {
 			if (from.slice(0, 1) === '/') {
 				throw redirect(303, `${from}`);
 			}
-			throw redirect(303, `/${from}`);
+			throw redirect(303, `/${from}${url.search}`);
 		}
 	}
 };

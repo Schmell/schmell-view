@@ -1,39 +1,33 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
+	import type { ColumnDef, TableOptions, SortDirection } from '@tanstack/svelte-table';
 	import {
 		createSvelteTable,
 		getCoreRowModel,
 		getSortedRowModel,
-		type ColumnDef,
-		type TableOptions,
-		flexRender,
-		createColumnHelper,
-		type SortDirection
+		flexRender
 	} from '@tanstack/svelte-table';
 	import AscSort from './ascSort.svelte';
 	import DscSort from './dscSort.svelte';
 	import Empty from './empty.svelte';
-	import Centered from './centered.svelte';
+	import Cell from './cell.svelte';
 
-	// export let data
-	// export let fleetData
 	export let race;
 	export let results;
 	export let fleetName;
-	// console.log('results: ', results)
+	// $: console.log('race: ', race);
 	const notypecheck = (x: any) => x;
 
 	let columnVisibility = { fleet: false };
 
 	let resultRows = results.map((result) => {
-		// you cannot pass null on anything here
-
 		return {
-			points: result.points, // convert to number
-			position: result.position, // named place on table
-			rank: result.Comp?.rank ?? '',
-			total: result.Comp?.total ?? '',
-			nett: result.Comp?.nett ?? '',
+			points: Number(result.points), // convert to number
+			position: Number(result.position), // named place on table
+			discard: Number(result.discard),
+			rank: Number(result.Comp?.rank) ?? '',
+			total: Number(result.Comp?.total) ?? '',
+			nett: Number(result.Comp?.nett) ?? '',
 			finish: result.finish,
 			elapsed: result.elasped,
 			start: result.start,
@@ -49,6 +43,7 @@
 		rank?: string;
 		boat?: string;
 		skipper?: string;
+		code?: string;
 		finish?: string;
 		start?: string;
 		elapsed?: string;
@@ -59,59 +54,64 @@
 	///////////////////////////////////////////////////////
 	const columns: ColumnDef<Result>[] = [
 		{
-			header: `${fleetName}`,
+			header: `Points`,
 			columns: [
 				{
 					accessorKey: 'rank',
 					header: 'Rank',
-					cell: (info) => flexRender(Centered, { info: info.getValue() })
+					cell: (info) => flexRender(Cell, { info })
 				},
 				{
 					accessorKey: 'points',
 					header: 'Points',
-					cell: (info) => flexRender(Centered, { info: info.getValue() })
+					cell: (info) => flexRender(Cell, { info, discard: true })
 				},
 				{
 					accessorKey: 'position',
 					header: 'Place',
-					cell: (info) => flexRender(Centered, { info: info.getValue() })
-				},
+					cell: (info) => flexRender(Cell, { info })
+				}
+			]
+		},
+		{
+			header: `Name`,
+			columns: [
 				{
 					accessorKey: 'boat',
 					header: 'Boat',
-					cell: (info) => info.getValue()
+					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
 				},
 				{
 					accessorKey: 'skipper',
 					header: 'Skipper',
-					cell: (info) => info.getValue()
-				},
-				// {
-				// 	accessorKey: 'fleet',
-				// 	header: 'Fleet',
-				// 	cell: (info) => info.getValue()
-				// },
+					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
+				}
+			]
+		},
+		{
+			header: `Score`,
+			columns: [
 				{
 					accessorKey: 'corrected',
 					header: 'Corrected',
-					cell: (info) => (info.getValue() as number).toString()
+					cell: (info) => flexRender(Cell, { info, discard: true, useCode: true })
 				},
 				{
 					accessorKey: 'nett',
 					header: 'Nett',
-					cell: (info) => info.getValue()
+					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
 				},
 				{
 					accessorKey: 'total',
 					header: 'Total',
-					cell: (info) => info.getValue()
+					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
 				}
 			]
 		}
 	];
 	///////////////////////////////////////////////////////
 
-	let sorting = [];
+	let sorting = [{ id: 'points', desc: false }];
 
 	function getSortSymbol(isSorted: boolean | SortDirection) {
 		return isSorted ? (isSorted === 'asc' ? AscSort : DscSort) : Empty;
@@ -123,6 +123,7 @@
 		} else {
 			sorting = updater;
 		}
+
 		options.update((old) => ({
 			...old,
 			state: {

@@ -1,73 +1,80 @@
-import { CheckForDuplicates, Populate } from '$lib/importers/sailwave';
+import { Populate } from '$lib/importers/sailwave';
+import Blw from '$lib/importers/sailwave/Blw';
 import { prisma } from '$lib/server/prisma';
-import { error, redirect } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
+import csv from 'csvtojson';
 import type { Actions, PageServerLoad } from './$types';
-import pkg from 'papaparse';
-const { parse } = pkg;
+import { prismaError } from '$lib/error-handling';
 
-export const load = (async ({ parent }) => {
-	const user = (await parent()).user;
+export const load = (async ({ locals }) => {
+	const session = await locals.auth.validate();
+	// If not logged in redirect
+	if (!session) {
+		throw redirect(302, '/');
+	}
 
-	const getOrgs = async () => {
-		return await prisma.organization.findMany({
-			where: { ownerId: user?.userId },
-			select: {
-				id: true,
-				name: true
-			}
-		});
-	};
-
+	async function getOrgs() {
+		try {
+			return await prisma.organization.findMany({
+				where: { ownerId: session?.userId },
+				select: { name: true, id: true }
+			});
+			//
+		} catch (error) {
+			prismaError(error);
+			console.log('error: ', error);
+		}
+	}
 	return {
 		orgs: await getOrgs()
 	};
 }) satisfies PageServerLoad;
 
 export const actions: Actions = {
-	default: async (input) => {
-		const { request, locals, params, cookies } = input;
-		const fd = await request.formData();
+	newImport: async ({ request, locals, url }) => {
+		const session = await locals.auth.validate();
 
-		const { org, file }: any = Object.fromEntries(fd);
+		const formData = await request.formData();
+		const { org, file }: any = Object.fromEntries(formData);
 
-		//  TODO:
-		// Impement multiple file upload
+		const csvArray = await csv({ noheader: true, output: 'csv' }).fromString(await file.text());
 
-		//  TODO:
-		// check for duplicates etc.. before
+		const blw = new Blw({ data: csvArray });
+		const { uniqueIdString } = blw.getEvent();
 
-		const texted = await file.text();
-		await new Promise((resolve) => {
-			parse(texted, {
-				complete: async (results) => {
-					const session = await input.locals.auth.validate();
-					const duplicates = await CheckForDuplicates({
-						data: results.data,
-						userId: session?.user.userId,
-						file: file,
-						orgId: org
-					});
-
-					if (duplicates !== null) {
-						console.log('duplicates: ', duplicates);
-					}
-
-					await Populate({
-						data: results.data,
-						userId: session?.user.userId,
-						file: file,
-						orgId: org
-					});
-					resolve({ success: true });
-				},
-				error: (status, err) => {
-					// TODO
-					console.log('import error: ', status, err);
-					throw error(418, `error from import server ts ${err}`);
-				}
-			});
+		const duplicate = await prisma.event.findFirst({
+			where: { uniqueIdString: uniqueIdString },
+			select: { id: true }
 		});
 
-		throw redirect(300, '/events');
+		if (duplicate) {
+			throw redirect(301, `/import/update?${url.search}&duplicate=1&eventId=${duplicate.id}`);
+		}
+
+		await Populate({
+			blw,
+			userId: session?.user.userId,
+			orgId: org
+		});
+
+		throw redirect(300, `/events`);
+	},
+
+	update: async ({ request, locals }) => {
+		const session = await locals.auth.validate();
+
+		const formData: any = Object.fromEntries(await request.formData());
+		const { org, file }: any = formData;
+		const csvArray = await csv({ noheader: true, output: 'csv' }).fromString(await file.text());
+
+		const blw = new Blw({ data: csvArray });
+
+		await Populate({
+			blw,
+			userId: session?.user.userId,
+			orgId: org
+		});
+
+		throw redirect(300, `/events`);
 	}
 };

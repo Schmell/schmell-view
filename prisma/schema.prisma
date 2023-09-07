@@ -14,8 +14,9 @@ generator zod {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("ACC_DATABASE_URL")
+  directUrl = env("DATABASE_URL")
 }
 
 model Series {
@@ -62,8 +63,8 @@ model Event {
   Venue          Venue?         @relation(fields: [venueId], references: [id])
   Races          Race[]
   Results        Result[]
-  follow         follow[]
-  like           like[]
+  follows        follow[]
+  likes          like[]
   Comps          Comp[]
   comments       eventComment[]
   createdAt      DateTime?      @default(now())
@@ -81,6 +82,7 @@ model Race {
   time             String?
   notes            String?
   sailed           String?
+  rating           String?
   resultColumns    Json?
   /// [raceRest]
   rest             Json?
@@ -134,8 +136,10 @@ model Result {
   points         String?
   position       String?
   discard        String?
+  raceRating     String?
   corrected      String?
   resultType     String?
+  code           String?
   elasped        String?
   supposedRating String?
   elapsedWin     String?
@@ -234,6 +238,7 @@ model like {
   id             String        @id @unique @default(cuid())
   userId         String
   type           String
+  itemId         String?
   seriesId       String?
   eventId        String?
   organizationId String?

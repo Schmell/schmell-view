@@ -8,6 +8,7 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			auth: import('lucia').AuthRequest;
+			from: string;
 		}
 		interface PageData {
 			flash?: { type: 'success' | 'error'; message: string };

@@ -3,17 +3,19 @@
 	import { page } from '$app/stores';
 	import { Button } from '$components/form';
 	import Icon from '@iconify/svelte';
+
 	export let orgs;
 	export let action;
+	$: ({ orgs, data } = $$props);
 
 	let loading;
 
-	const onSubmit = () => {
+	function onSubmit() {
 		loading = true;
 		return ({ update }) => {
 			update();
 		};
-	};
+	}
 </script>
 
 <div>
@@ -44,7 +46,7 @@
 				</select>
 				<div class="tooltip tooltip-bottom-right" data-tip="Add Organization">
 					<a
-						href="/organization/edit/new?from={$page.url.pathname}"
+						href="/organization/edit/new?from={$page.url.pathname}{$page.url.search}"
 						class="btn btn-primary btn-circle btn-sm hover:btn-primary-focus"
 					>
 						<Icon class="text-3xl" icon="ic:baseline-add" />

@@ -47,9 +47,8 @@ export default class Blw {
 		const results = this.data.filter((item: any) => {
 			return item[0] === 'rdisc' && item[3] === raceId;
 		});
-		// console.log('results: ', results)
+
 		results.forEach((result: any) => {
-			// console.log('result: ', result);
 			// Results in blw file have no prefix to speak of (just an r)
 			// So we need to find each row individually
 			const resultRow = {
@@ -57,43 +56,25 @@ export default class Blw {
 				raceCompId: `${result[3]}-${result[2]}`,
 				compId: `${result[2]}-${this.data.cuid}`,
 
-				finish: this.resultHelp('rft', this.data, result)
-					? this.resultHelp('rft', this.data, result)
-					: '',
-				start: this.resultHelp('rst', this.data, result)
-					? this.resultHelp('rst', this.data, result)
-					: '',
-				points: this.resultHelp('rpts', this.data, result)
-					? this.resultHelp('rpts', this.data, result)
-					: '',
-				position: this.resultHelp('rpos', this.data, result)
-					? this.resultHelp('rpos', this.data, result)
-					: '',
-				discard: this.resultHelp('rdisc', this.data, result)
-					? this.resultHelp('rdisc', this.data, result)
-					: '',
-				corrected: this.resultHelp('rcor', this.data, result)
-					? this.resultHelp('rcor', this.data, result)
-					: '',
-				resultType: this.resultHelp('rrestyp', this.data, result)
-					? this.resultHelp('rrestyp', this.data, result)
-					: '',
-				elapsed: this.resultHelp('rele', this.data, result)
-					? this.resultHelp('rele', this.data, result)
-					: '',
-				supposedRating: this.resultHelp('srat', this.data, result)
-					? this.resultHelp('srat', this.data, result)
-					: '',
-				elapsedWin: this.resultHelp('rewin', this.data, result)
-					? this.resultHelp('rewin', this.data, result)
-					: '',
-				ratingWin: this.resultHelp('rrwin', this.data, result)
-					? this.resultHelp('rrwin', this.data, result)
-					: '',
-				rrset: this.resultHelp('rrset', this.data, result)
-					? this.resultHelp('rrset', this.data, result)
-					: ''
+				finish: this.resultHelp('rft', this.data, result) ?? '',
+				start: this.resultHelp('rst', this.data, result) ?? '',
+				points: this.resultHelp('rpts', this.data, result) ?? '',
+				position: this.resultHelp('rpos', this.data, result) ?? '',
+				// I belive this comes from the sailwizard (recorded position)
+				// the position will include all boats in the race
+				recordedPosition: this.resultHelp('rrecpos', this.data, result) ?? '',
+				raceRating: this.resultHelp('rrat', this.data, result) ?? '',
+				discard: this.resultHelp('rdisc', this.data, result) ?? '',
+				corrected: this.resultHelp('rcor', this.data, result) ?? '',
+				resultType: this.resultHelp('rrestyp', this.data, result) ?? '',
+				code: this.resultHelp('rcod', this.data, result) ?? '',
+				elapsed: this.resultHelp('rele', this.data, result) ?? '',
+				supposedRating: this.resultHelp('srat', this.data, result) ?? '',
+				elapsedWin: this.resultHelp('rewin', this.data, result) ?? '',
+				ratingWin: this.resultHelp('rrwin', this.data, result) ?? '',
+				rrset: this.resultHelp('rrset', this.data, result) ?? ''
 			};
+
 			resultsArr.push(resultRow);
 		}); // forEach
 
@@ -104,6 +85,7 @@ export default class Blw {
 		let res = data.filter((item) => {
 			return item[0] === resultTag && item[2] === result[2] && item[3] === result[3];
 		});
+
 		if (res[0]) {
 			return res[0][1];
 		} else {
@@ -125,10 +107,12 @@ export default class Blw {
 	getRaces(uniqueIdString: string) {
 		// new object to be returned
 		let raceData: any = [];
+
 		// Find all raceids by getting known csv row
 		const races = this.data.filter((item: any) => {
 			return item[0] === 'racerank';
 		});
+
 		// For each race push data to new object
 		races.forEach((race: any) => {
 			let raceObj = {
@@ -140,7 +124,7 @@ export default class Blw {
 			};
 
 			raceObj.raceId = race[3];
-			// console.log('race: ', race[3], race[1])
+
 			// need to get eventeid
 			raceObj.uniqueRaceString = uniqueIdString + '_' + race[3];
 
@@ -155,9 +139,17 @@ export default class Blw {
 				// Format the starts to object
 				if (item[0] === 'racestart') {
 					const racestartString = item[1].split('|');
-					let start = racestartString[1];
-					let fleet = racestartString[0].split('^')[1];
 
+					let fleet = racestartString[0].split('^');
+
+					let start = racestartString[1];
+
+					let finishType = racestartString[2] ?? '';
+					let startName = racestartString[3] ?? '';
+					let raceDistance = racestartString[4] ?? '';
+					let course = racestartString[9] ?? '';
+					let avgWind = racestartString[10] ?? '';
+					let windDir = racestartString[4] ?? '';
 					// remove the undefined
 					if (!fleet) fleet = 'none';
 
@@ -168,10 +160,20 @@ export default class Blw {
 						start = '';
 					}
 
-					raceStarts.push({ fleet, start });
+					raceStarts.push({
+						fleet,
+						start,
+						finishType,
+						startName,
+						raceDistance,
+						course,
+						avgWind,
+						windDir
+					});
 				} else {
 					// not racestart so just add to raceObj
 					const property = item[0].replace('race', '');
+
 					raceObj[property] = item[1];
 				}
 			}); // resultRows.forEach
@@ -184,6 +186,7 @@ export default class Blw {
 			if (!raceObj.name) {
 				raceObj.name = `Race ${raceObj.rank}`;
 			}
+
 			raceData.push(raceObj);
 		});
 
@@ -192,24 +195,12 @@ export default class Blw {
 
 	getEvent() {
 		const eventRows = this.data.filter((item: any) => {
-			const regex = new RegExp(`^ser`, 'g');
-			return item[0].match(regex);
+			if (item[0]) {
+				const regex = new RegExp(`^ser`, 'g');
+				return item[0].match(regex);
+			}
+			//
 		});
-
-		type EventRest = {
-			venuewebsite?: string;
-			venueemail?: string;
-			venueburgee?: string;
-			eventburgee?: string;
-		};
-
-		type EventObj = {
-			event: string;
-			eventwebsite: string;
-			venue: string;
-			eventeid: string;
-			rest: EventRest;
-		};
 
 		let eventObj: any = {
 			event: '',
@@ -225,12 +216,14 @@ export default class Blw {
 		});
 
 		const { event, eventwebsite, venue, eventeid, ...rest } = eventObj;
+
 		const uniqueIdString =
 			event.toLowerCase().trim().split(' ').join('_') +
 			'-' +
 			eventeid +
 			'-' +
 			venue.toLowerCase().trim().split(' ').join('_');
+
 		return {
 			name: event,
 			eventwebsite,
@@ -242,5 +235,30 @@ export default class Blw {
 			venueburgee: rest.venueburgee,
 			rest
 		};
-	} // getSeries
-}
+	} // getEvent()
+
+	getScoring() {
+		const rows = this.data.filter((item: any) => {
+			const regex = new RegExp(`^scr`, 'g');
+			return item[0].match(regex);
+		});
+
+		let obj: any = {};
+
+		rows.forEach((item) => {
+			const property = item[0].replace('scr', '');
+			obj[property] = item[1];
+		});
+
+		// console.log('Scoring rows: ', rows);
+
+		const { ratingsystem, ratsysa, ratsysb, ...rest } = obj;
+
+		return {
+			ratingsystem,
+			ratsysa,
+			ratsysb,
+			rest
+		};
+	}
+} // Blw

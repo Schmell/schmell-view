@@ -1,5 +1,5 @@
 import { prisma } from '$lib/server/prisma';
-import { error, fail } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import Blw from './Blw';
 import { Prisma } from '@prisma/client';
 
@@ -59,6 +59,10 @@ export async function Populate({ blw, userId, orgId }) {
 		};
 	}
 
+	function scoringSystem() {
+		return blw.getScoring();
+	}
+
 	async function racesCreate() {
 		const compList = await blw.getComps().map((comp) => {
 			return { compId: comp.compId };
@@ -98,6 +102,7 @@ export async function Populate({ blw, userId, orgId }) {
 					rank: comp.rank,
 					nett: comp.nett,
 					total: comp.total,
+					rating: comp.rating,
 					rest: comp,
 					Events: {
 						connect: [{ uniqueIdString: uniqueIdString }]
@@ -113,6 +118,7 @@ export async function Populate({ blw, userId, orgId }) {
 					rank: comp.rank,
 					nett: comp.nett,
 					total: comp.total,
+					rating: comp.rating,
 					rest: comp,
 					Events: {
 						connect: [{ uniqueIdString: uniqueIdString }]
@@ -130,9 +136,11 @@ export async function Populate({ blw, userId, orgId }) {
 		return blw.getRaces(uniqueIdString).map((race) => {
 			return blw.getResults(race.raceId).map((result) => {
 				//  Note convert to numbers
+				// console.log('result: ', result);
 				return {
 					resultId: result.resultId,
 					raceCompId: result.raceCompId,
+					fleet: result.fleet,
 					points: result.points,
 					finish: result.finish,
 					start: result.start,
@@ -175,6 +183,7 @@ export async function Populate({ blw, userId, orgId }) {
 			const newEvent = await prisma.event.upsert(eventCreate());
 
 			console.timeLog('time', 'event comlpete: ');
+			// console.log('scoringSystem(): ', scoringSystem());
 
 			await Promise.allSettled(
 				comps.map(async (comp) => {
@@ -191,8 +200,9 @@ export async function Populate({ blw, userId, orgId }) {
 			);
 
 			console.timeLog('time', 'races comlpete: ');
+			// console.log('resultsArray: ', resultsArray);
 
-			await Promise.all(
+			await Promise.allSettled(
 				await resultsArray.map(async (results) => {
 					await results.map(async (result) => {
 						const { raceCompId, ...rest } = result;
@@ -226,10 +236,12 @@ export async function Populate({ blw, userId, orgId }) {
 
 				if (error.code === 'P2025') {
 					console.log(error.meta?.cause);
-					throw fail(500, { message: error.meta?.cause });
+					// throw fail(500, { message: error.meta?.cause });
+					throw redirect(307, '/import');
 				}
 
 				console.log('Prisma Known Request Error: ', error);
+				// throw redirect(307, '/import');
 				throw fail(500, { message: error.meta?.cause });
 			}
 

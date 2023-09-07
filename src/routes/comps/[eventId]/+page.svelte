@@ -5,7 +5,7 @@
 
 	export let data;
 	$: ({ user, comps } = data);
-	// $: console.log('comps: ', comps)
+	// $: console.log('comps: ', comps);
 </script>
 
 <Page title="Competitiors">
@@ -30,28 +30,52 @@
 						</div>
 					{/if}
 				</div>
-				<div class="flex flex-col">
-					<div>
-						{comp.skipper ? `Skipper: ${comp.skipper}` : ''}
-					</div>
-					<div>
-						{comp.club ? `Club: ${comp.club}` : ''}
-					</div>
-					<div>
-						{comp.fleet ? `Fleet: ${comp.fleet}` : ''}
-					</div>
-					<div>
-						{comp.division ? `Division: ${comp.division}` : ''}
-					</div>
-					<div>
-						{comp.rest?.rating ? `Rating: ${comp.rest?.rating}` : ''}
-					</div>
-					<div>
-						{comp.division ? `Division: ${comp.division}` : ''}
-					</div>
-					<div>
-						{comp.division ? `Division: ${comp.division}` : ''}
-					</div>
+
+				<div class=" grid grid-cols-2 gap-4">
+					{#if comp.skipper}
+						<div>
+							<div class="text-xs opacity-70">Skipper:</div>
+							<div class="pl-2">
+								{comp.skipper}
+							</div>
+						</div>
+					{/if}
+
+					{#if comp.club}
+						<div>
+							<div class="text-xs opacity-70">Club:</div>
+							<div class="pl-2">
+								{comp.club}
+							</div>
+						</div>
+					{/if}
+
+					{#if comp.fleet}
+						<div>
+							<div class="text-xs opacity-70">Fleet:</div>
+							<div class="pl-2">
+								{comp.fleet}
+							</div>
+						</div>
+					{/if}
+
+					{#if comp.division}
+						<div>
+							<div class="text-xs opacity-70">division:</div>
+							<div class="pl-2">
+								{comp.division}
+							</div>
+						</div>
+					{/if}
+
+					{#if comp.rating}
+						<div>
+							<div class="text-xs opacity-70">Rating:</div>
+							<div class="pl-2">
+								{comp.rating}
+							</div>
+						</div>
+					{/if}
 				</div>
 
 				<div slot="bottom-left" class="p-2 text-xs text-base-content">

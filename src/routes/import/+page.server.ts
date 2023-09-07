@@ -5,6 +5,7 @@ import { redirect } from '@sveltejs/kit';
 import { prisma } from '$lib/server/prisma';
 import { Populate } from '$lib/importers/sailwave';
 import Blw from '$lib/importers/sailwave/Blw';
+import { prismaError } from '$lib/error-handling';
 
 const importSchema = z.object({
 	file: z.any(),
@@ -18,18 +19,25 @@ export const load: PageServerLoad = async ({ locals }) => {
 		throw redirect(302, '/');
 	}
 
-	const orgs: any = await prisma.organization.findMany({
-		where: { ownerId: session.userId },
-		select: { name: true, id: true }
-	});
+	async function getOrgs() {
+		try {
+			return await prisma.organization.findMany({
+				where: { ownerId: session?.userId },
+				select: { name: true, id: true }
+			});
+		} catch (error) {
+			prismaError(error);
+			console.log('error: ', error);
+		}
+	}
 
 	// const form = await superValidate(importSchema);
 
-	return { orgs };
+	return { orgs: getOrgs() };
 };
 
 export const actions: Actions = {
-	newImport: async ({ request, locals }) => {
+	newImport: async ({ request, locals, url }) => {
 		const session = await locals.auth.validate();
 		const formData = await request.formData();
 		const { org, file }: any = Object.fromEntries(formData);
@@ -44,13 +52,7 @@ export const actions: Actions = {
 		});
 
 		if (duplicate) {
-			// console.log('duplicate: ', duplicate);
-			// rather than throw i could return everything
-			// throw redirect(301, `/import/duplicate?eventId=${duplicate.id}`);
-			return {
-				duplicate: true,
-				org
-			};
+			throw redirect(301, `/import/update?${url.search}&duplicate=1&eventId=${duplicate.id}`);
 		}
 
 		await Populate({

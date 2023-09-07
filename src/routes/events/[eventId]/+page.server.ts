@@ -35,10 +35,12 @@ export const load = (async ({ params, locals, url }) => {
 					venueName: true,
 					publisherId: true,
 					eventwebsite: true,
-					_count: { select: { comments: true } },
+					_count: { select: { comments: true, likes: true } },
 					comments: { select: { User: { select: { avatar: true, username: true } } }, take: 10 },
+					Organization: { select: { titleImage: true, name: true, id: true } },
 					Venue: { select: { name: true, website: true } },
-					Races: { orderBy: { name: 'asc' } }
+					Races: { orderBy: { name: 'asc' } },
+					likes: { select: { id: true, type: true, userId: true, itemId: true } }
 				}
 			});
 		} catch (error) {

@@ -8,17 +8,19 @@
 	import { Page } from '$components/layout';
 	import { Input, Button, Form, Hidden } from '$components/form';
 	import { formatDateTime } from '$lib/utils/formatters';
+	// import Like from '$lib/like/like.svelte';
+	import Likes from '$lib/likes/likes.svelte';
+	import type { Nullable } from 'vitest';
 
 	export let data: PageData;
 	export let form;
 	$: ({ event, comments } = data);
+	console.log('event: ', event);
 
-	let showRaces: boolean = false;
+	let showRaces: boolean = true;
 
-	// $: console.log('comments: ', comments)
-	// $: console.log('event: ', event);
-
-	function getHref(website) {
+	function getHref(website: string | null) {
+		if (!website) return null;
 		return website && website.startsWith('http://') ? website : `http://${website}`;
 	}
 
@@ -42,16 +44,26 @@
 		>
 			<div class="md:flex">
 				<div class="md:shrink-0">
+					<!-- {console.log('event?.Organization?.titleImage: ', event?.Organization?.titleImage)} -->
 					<img
 						class="h-48 w-full object-cover md:h-full md:w-48 rounded-br-full"
-						src={event?.titleImage ? event?.titleImage : 'https://picsum.photos/id/384/400/300/'}
+						src={event?.titleImage
+							? event?.titleImage
+							: event.Organization?.titleImage
+							? event.Organization.titleImage
+							: 'https://picsum.photos/id/384/400/300/'}
 						alt="Title for {event?.name}"
 					/>
 				</div>
 
-				<div class="pt-8 px-8">
-					<div class="uppercase tracking-wide text-xl text-accent font-semibold">
-						{@html event?.name}
+				<div class="pt-8 px-8 w-full">
+					<div class="flex justify-between w-full">
+						<div class="uppercase tracking-wide text-xl text-accent font-semibold">
+							{@html event?.name}
+						</div>
+						<div class="max-h-2">
+							<Likes userId={data.user?.userId} type="event" item={event} from={$page.url.href} />
+						</div>
 					</div>
 					{#if event?.Venue}
 						<div class="flex items-center gap-4">
@@ -71,7 +83,7 @@
 						</div>
 					{/if}
 
-					<p class="mt-2">
+					<p class="mt-2 opacity-70">
 						{event?.description ? event?.description : 'No description provided'}
 					</p>
 
@@ -141,7 +153,7 @@
 		</div>
 
 		<div class="mt-4">
-			<div class="flex gap-2 justify-between">
+			<div class="flex gap-2 justify-between items-end">
 				<div class="font-semibold">Comments:</div>
 
 				<div class="avatar-group -space-x-4">
@@ -163,12 +175,12 @@
 				</div>
 			</div>
 
-			<div class="divider" />
+			<div class="divider my-0" />
 
 			{#if comments}
 				{#each comments as comment}
 					<div class="flex items-start gap-2">
-						<div class="avatar pt-4">
+						<div class="avatar">
 							<div class="w-8 h-8 rounded-full">
 								<img alt={comment.User.username} src={comment.User.avatar} />
 							</div>
