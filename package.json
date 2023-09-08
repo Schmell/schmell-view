@@ -1,10 +1,10 @@
 {
-	"name": "schmell",
+	"name": "schmell-view",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"build": "prisma generate  && vite build",
+		"build": "prisma generate --no-engine  && vite build",
 		"preview": "vite preview",
 		"start": "node build",
 		"test": "playwright test",
@@ -51,6 +51,7 @@
 		"@lucia-auth/oauth": "^2.0.1",
 		"@paralleldrive/cuid2": "^2.2.2",
 		"@prisma/client": "^5.2.0",
+		"@prisma/extension-accelerate": "^0.6.2",
 		"@tanstack/svelte-table": "^8.9.5",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.0.0",

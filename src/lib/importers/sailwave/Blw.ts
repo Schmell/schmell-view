@@ -15,15 +15,18 @@ export default class Blw {
 			return item[0] === 'comphigh';
 		});
 		compBoats.sort().forEach((compBoat: any) => {
-			let competitor = {
+			let competitor: any = {
 				compId: '',
 				uniqueCompId: ''
 			};
 
 			competitor.compId = `${compBoat[2]}-${this.data.cuid}`;
 			// also need a uniqueCompId for connecting comps to users
-			// competitor.uniqueCompId = ""
+			competitor.uniqueCompId = `${competitor.boat}_${competitor.skipper}_${competitor.club}`;
 			let compRows = this.data.filter((item: any) => {
+				if (!item[0]) {
+					console.log('item: ', item);
+				}
 				var regex = new RegExp(`^comp`, 'g');
 				return item[0].match(regex) && item[2] === compBoat[2];
 			});
@@ -33,11 +36,12 @@ export default class Blw {
 			});
 			compData.push(competitor);
 		}); //each compBoats
-		const sorted = compData!.sort((a: any, b: any) => {
-			return a.boat - b.boat;
-		});
+		// const sorted = compData!.sort((a: any, b: any) => {
+		// 	return a.boat - b.boat;
+		// });
 
-		return sorted;
+		// return sorted;
+		return compData;
 	} // getComps
 
 	getResults(raceId) {
@@ -95,7 +99,7 @@ export default class Blw {
 
 	// I don't think i use this // each race has fleets
 	getFleets() {
-		// const data = await this.getFileData()
+		// Maybe need this to check against the race fleets?
 		var fleetsRaw: any[] = this.data.filter((item: any) => {
 			return item[0] === 'serpubgroupvalues';
 		});
@@ -238,6 +242,11 @@ export default class Blw {
 	} // getEvent()
 
 	getScoring() {
+		// THIS CAN BE INDIVIDUALLY APPLIED TO A FLEET,
+		// But not always which will make it hard
+		// it looks like the modifidied has a scrparent
+		// and a 1 in the [1] position in the array
+
 		const rows = this.data.filter((item: any) => {
 			const regex = new RegExp(`^scr`, 'g');
 			return item[0].match(regex);

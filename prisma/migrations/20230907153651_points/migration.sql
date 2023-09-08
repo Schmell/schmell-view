@@ -49,6 +49,7 @@ CREATE TABLE "Race" (
     "time" TEXT,
     "notes" TEXT,
     "sailed" TEXT,
+    "rating" TEXT,
     "resultColumns" JSONB,
     "rest" JSONB,
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
@@ -86,18 +87,20 @@ CREATE TABLE "Comp" (
 -- CreateTable
 CREATE TABLE "Result" (
     "id" TEXT NOT NULL,
-    "resultId" TEXT,
-    "finish" TEXT,
-    "start" TEXT,
+    "resultId" TEXT NOT NULL,
     "points" TEXT,
     "position" TEXT,
     "discard" TEXT,
-    "corrected" TEXT,
     "resultType" TEXT,
+    "code" TEXT,
+    "start" TEXT,
+    "finish" TEXT,
+    "corrected" TEXT,
     "elasped" TEXT,
-    "supposedRating" TEXT,
     "elapsedWin" TEXT,
     "ratingWin" TEXT,
+    "raceRating" TEXT,
+    "supposedRating" TEXT,
     "rrset" TEXT,
     "publisherId" TEXT NOT NULL,
     "eventId" TEXT,
@@ -117,6 +120,7 @@ CREATE TABLE "Organization" (
     "tag" TEXT,
     "website" TEXT,
     "email" TEXT,
+    "logo" TEXT,
     "titleImage" TEXT,
     "ownerId" TEXT,
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
@@ -175,6 +179,7 @@ CREATE TABLE "like" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "type" TEXT NOT NULL,
+    "itemId" TEXT,
     "seriesId" TEXT,
     "eventId" TEXT,
     "organizationId" TEXT,
@@ -277,6 +282,9 @@ CREATE INDEX "Comp_compId_idx" ON "Comp"("compId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Result_id_key" ON "Result"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Result_resultId_key" ON "Result"("resultId");
 
 -- CreateIndex
 CREATE INDEX "Result_raceId_idx" ON "Result"("raceId");

@@ -136,7 +136,8 @@ export async function Populate({ blw, userId, orgId }) {
 		return blw.getRaces(uniqueIdString).map((race) => {
 			return blw.getResults(race.raceId).map((result) => {
 				//  Note convert to numbers
-				// console.log('result: ', result);
+				// console.log('result: ', result.compId);
+
 				return {
 					resultId: result.resultId,
 					raceCompId: result.raceCompId,
@@ -171,82 +172,130 @@ export async function Populate({ blw, userId, orgId }) {
 
 	return addTables();
 
+	async function importModel() {
+		const comps = await compsCreate();
+		const races = await racesCreate();
+		const resultsArray = await resultsCreate();
+
+		console.log('Start import');
+		console.time('importModel');
+
+		const eventObj = prisma.event.upsert(eventCreate());
+
+		const compsObj = comps.map((comp) => {
+			return prisma.comp.upsert(comp);
+		});
+
+		const racesObj = races.map((race) => {
+			return prisma.race.upsert(race);
+		});
+
+		const resultsObj = resultsArray.map((results) => {
+			results.map((result) => {
+				const { raceCompId, ...rest } = result;
+				let placholder = 'hey';
+				// ${eventObj.id}
+
+				const uniqueRaceId = `${raceCompId}-`;
+
+				rest.resultId = uniqueRaceId;
+
+				return prisma.result.upsert({
+					where: { resultId: uniqueRaceId },
+					update: { ...rest },
+					create: { ...rest }
+				});
+			});
+		});
+
+		return await prisma.$transaction([eventObj, compsObj, racesObj, resultsObj]); // Operations succeed or fail together
+	}
+
 	async function addTables() {
-		try {
-			const comps = await compsCreate();
-			const races = await racesCreate();
-			const resultsArray = await resultsCreate();
+		// try {
+		// this try does not catch individual promises
+		const comps = await compsCreate();
+		const races = await racesCreate();
+		const resultsArray = await resultsCreate();
 
-			console.log('Start import');
-			console.time('time');
+		console.log('Start import');
+		console.time('time');
 
-			const newEvent = await prisma.event.upsert(eventCreate());
+		const newEvent = await prisma.event.upsert(eventCreate());
 
-			console.timeLog('time', 'event comlpete: ');
-			// console.log('scoringSystem(): ', scoringSystem());
+		console.timeLog('time', 'event comlpete: ');
 
-			await Promise.allSettled(
-				comps.map(async (comp) => {
-					return await prisma.comp.upsert(comp);
-				})
-			);
+		// console.log('scoringSystem(): ', scoringSystem());
 
-			console.timeLog('time', 'comps complete');
+		// await Promise.all(
+		// 	comps.map(async (comp) => {
+		// 		return await prisma.comp.upsert(comp);
+		// 	})
+		// );
+		// console.log('comps: ', comps);
+		await Promise.all(
+			comps.map(async (comp) => {
+				await prisma.comp.upsert(comp);
+			})
+		);
 
-			await Promise.allSettled(
-				races.map(async (race) => {
-					return await prisma.race.upsert(race);
-				})
-			);
+		console.timeLog('time', 'comps complete');
 
-			console.timeLog('time', 'races comlpete: ');
-			// console.log('resultsArray: ', resultsArray);
+		await Promise.allSettled(
+			races.map(async (race) => {
+				return await prisma.race.upsert(race);
+			})
+		);
 
-			await Promise.allSettled(
-				await resultsArray.map(async (results) => {
-					await results.map(async (result) => {
-						const { raceCompId, ...rest } = result;
-						const uniqueRaceId = `${raceCompId}-${newEvent.id}`;
-						rest.resultId = uniqueRaceId;
-						// await prisma.result.create({ data: rest });
-						await prisma.result.upsert({
-							where: { resultId: uniqueRaceId },
-							update: { ...rest },
-							create: { ...rest }
-						});
+		console.timeLog('time', 'races comlpete: ');
+
+		await Promise.allSettled(
+			await resultsArray.map(async (results) => {
+				await results.map(async (result) => {
+					const { raceCompId, ...rest } = result;
+
+					const uniqueRaceId = `${raceCompId}-${newEvent.id}`;
+
+					rest.resultId = uniqueRaceId;
+
+					return await prisma.result.upsert({
+						where: { resultId: uniqueRaceId },
+						update: { ...rest },
+						create: { ...rest }
 					});
-				})
-			);
+				});
+			})
+		);
 
-			console.timeLog('time', 'results comlpete ');
-			console.timeEnd('time');
+		console.timeLog('time', 'results comlpete ');
+		console.timeEnd('time');
 
-			return {
-				sucess: true
-			};
-			//
-		} catch (error: any) {
-			//
-			if (error instanceof Prisma.PrismaClientKnownRequestError) {
-				// Timeout error
-				if (error.code === 'P2024') {
-					console.log(error.meta?.cause);
-					throw fail(500, { message: error.meta?.cause });
-				}
+		return {
+			sucess: true
+		};
+		//
+		// } catch (error: any) {
+		// 	//
+		// 	if (error instanceof Prisma.PrismaClientKnownRequestError) {
+		// 		// Timeout error
+		// 		if (error.code === 'P2024') {
+		// 			console.log(error.meta?.cause);
+		// 			throw fail(500, { message: error.meta?.cause });
+		// 		}
 
-				if (error.code === 'P2025') {
-					console.log(error.meta?.cause);
-					// throw fail(500, { message: error.meta?.cause });
-					throw redirect(307, '/import');
-				}
+		// 		if (error.code === 'P2025') {
+		// 			console.log(error.meta?.cause);
+		// 			// throw fail(500, { message: error.meta?.cause });
+		// 			throw redirect(307, '/import');
+		// 		}
 
-				console.log('Prisma Known Request Error: ', error);
-				// throw redirect(307, '/import');
-				throw fail(500, { message: error.meta?.cause });
-			}
+		// 		console.log('Prisma Known Request Error: ', error);
+		// 		// throw redirect(307, '/import');
+		// 		throw fail(500, { message: error.meta?.cause });
+		// 	}
 
-			console.log('Import Error: ', error);
-			throw error(500, `Populate error: ${error}`);
-		}
+		// 	console.log('Import Error: ', error);
+		// 	throw error(500, `Populate error: ${error}`);
+		// } // catch
 	}
 } // populate

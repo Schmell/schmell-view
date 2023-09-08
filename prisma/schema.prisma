@@ -131,28 +131,28 @@ model Comp {
 model Result {
   id             String    @id @unique @default(cuid())
   resultId       String    @unique
-  finish         String?
-  start          String?
   points         String?
   position       String?
   discard        String?
-  raceRating     String?
-  corrected      String?
-  resultType     String?
+  resultType     String? // probably could be an enum, but they are a pain
   code           String?
+  start          String?
+  finish         String?
+  corrected      String?
   elasped        String?
-  supposedRating String?
   elapsedWin     String?
   ratingWin      String?
+  raceRating     String?
+  supposedRating String?
   rrset          String?
-  publisherId    String
-  eventId        String?
-  compId         String?
-  raceId         String?
   Comp           Comp?     @relation(fields: [compId], references: [id])
   Event          Event?    @relation(fields: [eventId], references: [id])
   Publisher      User      @relation(fields: [publisherId], references: [id])
   Race           Race?     @relation(fields: [raceId], references: [id])
+  publisherId    String
+  eventId        String?
+  compId         String?
+  raceId         String?
   createdAt      DateTime? @default(now())
   updatedAt      DateTime? @updatedAt
 

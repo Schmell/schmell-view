@@ -41,7 +41,9 @@ export const actions: Actions = {
 		const session = await locals.auth.validate();
 		const formData = await request.formData();
 		const { org, file }: any = Object.fromEntries(formData);
-		const csvArray = await csv({ noheader: true, output: 'csv' }).fromString(await file.text());
+		const csvArray = await csv({ noheader: true, output: 'csv', ignoreEmpty: true }).fromString(
+			await file.text()
+		);
 
 		const blw = new Blw({ data: csvArray });
 		const { uniqueIdString } = blw.getEvent();
