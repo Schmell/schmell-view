@@ -24,7 +24,8 @@
 
 	function infoValue() {
 		if (useCode) {
-			return info.getValue() ? info.getValue() : info.row.original.code ?? 'DNC';
+			console.log('info: ', info.row.original);
+			return info.getValue() ? info.getValue() : info.row.original.code;
 		}
 		return info.getValue() ?? '';
 	}
@@ -36,9 +37,6 @@
 	}
 </script>
 
-<div
-	class={cn('p-0 m-0 flex justify-center', className)}
-	class:opacity-60={discarded() || infoValue() === 'DNC'}
->
+<div class={cn('p-0 m-0 flex justify-center', className)} class:opacity-60={discarded()}>
 	{discarded() ? `(${infoValue()})` : infoValue()}
 </div>

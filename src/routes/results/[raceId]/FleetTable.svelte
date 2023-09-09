@@ -1,55 +1,66 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
-	import type { ColumnDef, TableOptions, SortDirection } from '@tanstack/svelte-table';
+	import { writable } from 'svelte/store'
+	import type { ColumnDef, TableOptions, SortDirection } from '@tanstack/svelte-table'
 	import {
 		createSvelteTable,
 		getCoreRowModel,
 		getSortedRowModel,
 		flexRender
-	} from '@tanstack/svelte-table';
-	import AscSort from './ascSort.svelte';
-	import DscSort from './dscSort.svelte';
-	import Empty from './empty.svelte';
-	import Cell from './cell.svelte';
+	} from '@tanstack/svelte-table'
+	import AscSort from './ascSort.svelte'
+	import DscSort from './dscSort.svelte'
+	import Empty from './empty.svelte'
+	import Cell from './cell.svelte'
 
-	export let race;
-	export let results;
-	export let fleetName;
-	// $: console.log('race: ', race);
-	const notypecheck = (x: any) => x;
+	export let race
+	export let results
+	export let fleetName
 
-	let columnVisibility = { fleet: false };
+	const notypecheck = (x: any) => x
+	// $: console.log('race ', race);
+	let columnVisibility
+
+	const finishType = race.starts.map((start) => {
+		if (start.fleet[1] === fleetName || start.fleet[5] === fleetName) {
+			return start.finishType
+		}
+	})
 
 	let resultRows = results.map((result) => {
 		return {
 			points: Number(result.points), // convert to number
 			position: Number(result.position), // named place on table
 			discard: Number(result.discard),
-			rank: Number(result.Comp?.rank) ?? '',
-			total: Number(result.Comp?.total) ?? '',
-			nett: Number(result.Comp?.nett) ?? '',
+			rank: Number(result.Comp?.rank),
+			total: Number(result.Comp?.total),
+			nett: Number(result.Comp?.nett),
 			finish: result.finish,
 			elapsed: result.elasped,
+			elapsedWin: result.elapsedWin,
+			ratingWin: result.ratingWin,
 			start: result.start,
 			corrected: result.corrected,
+			code: result.code,
 			fleet: result.Comp?.fleet ?? result.Comp?.division,
 			boat: result.Comp?.boat,
-			skipper: result.Comp?.skipper ?? 'No skipper'
-		};
-	});
+			skipper: result.Comp?.skipper ?? ''
+		}
+	})
 
 	type Result = {
-		points?: string;
-		rank?: string;
-		boat?: string;
-		skipper?: string;
-		code?: string;
-		finish?: string;
-		start?: string;
-		elapsed?: string;
-		corrected?: string;
-		[key: string]: any;
-	};
+		points?: string
+		rank?: string
+		boat?: string
+		skipper?: string
+		code?: string
+		start?: string
+		finish?: string
+		corrected?: string
+		elapsed?: string
+		elapsedWin: string
+		ratingWin: string
+		[key: string]: any
+	}
 
 	///////////////////////////////////////////////////////
 	const columns: ColumnDef<Result>[] = [
@@ -97,6 +108,21 @@
 					cell: (info) => flexRender(Cell, { info, discard: true, useCode: true })
 				},
 				{
+					accessorKey: 'elapsed',
+					header: 'Elapsed',
+					cell: (info) => flexRender(Cell, { info, discard: true, useCode: true })
+				},
+				{
+					accessorKey: 'elapsedWin',
+					header: 'elapsedWin',
+					cell: (info) => flexRender(Cell, { info, discard: true, useCode: true })
+				},
+				{
+					accessorKey: 'ratingWin',
+					header: 'ratingWin',
+					cell: (info) => flexRender(Cell, { info, discard: true, useCode: true })
+				},
+				{
 					accessorKey: 'nett',
 					header: 'Nett',
 					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
@@ -108,20 +134,20 @@
 				}
 			]
 		}
-	];
+	]
 	///////////////////////////////////////////////////////
 
-	let sorting = [{ id: 'points', desc: false }];
+	let sorting = [{ id: 'points', desc: false }]
 
 	function getSortSymbol(isSorted: boolean | SortDirection) {
-		return isSorted ? (isSorted === 'asc' ? AscSort : DscSort) : Empty;
+		return isSorted ? (isSorted === 'asc' ? AscSort : DscSort) : Empty
 	}
 
 	const setSorting = (updater) => {
 		if (updater instanceof Function) {
-			sorting = updater(sorting);
+			sorting = updater(sorting)
 		} else {
-			sorting = updater;
+			sorting = updater
 		}
 
 		options.update((old) => ({
@@ -130,8 +156,8 @@
 				...old.state,
 				sorting
 			}
-		}));
-	};
+		}))
+	}
 
 	const options = writable<TableOptions<Result>>({
 		data: resultRows,
@@ -145,13 +171,13 @@
 		getSortedRowModel: getSortedRowModel(),
 		onColumnVisibilityChange: setColumnVisibility
 		// debugTable: true
-	});
+	})
 
 	function setColumnVisibility(updater) {
 		if (updater instanceof Function) {
-			columnVisibility = updater(columnVisibility);
+			columnVisibility = updater(columnVisibility)
 		} else {
-			columnVisibility = updater;
+			columnVisibility = updater
 		}
 
 		options.update((old) => ({
@@ -160,25 +186,34 @@
 				...old.state,
 				columnVisibility
 			}
-		}));
+		}))
 	}
 
 	function getResultColumns() {
-		// this is to set default column visibilty from database
-		if (race?.Event?.resultColumns) {
-			// set event presets
-			setColumnVisibility(race?.Event?.resultColumns);
+		//
+		const defaultColumns = {
+			elapsed: false,
+			elapsedWin: false,
+			ratingWin: false,
+			total: false,
+			start: false,
+			finish: false
 		}
+
 		if (race?.resultColumns) {
-			// overide with eace presets
-			setColumnVisibility(race?.Event?.resultColumns);
+			return { ...defaultColumns, ...race?.resultColumns }
 		}
-		return columnVisibility;
+
+		if (race?.Event?.resultColumns) {
+			return { ...defaultColumns, ...race?.Event?.resultColumns }
+		}
+
+		return defaultColumns
 	}
 
-	$: columnVisibility = getResultColumns();
+	$: setColumnVisibility(getResultColumns())
 
-	const table = createSvelteTable(options);
+	const table = createSvelteTable(options)
 </script>
 
 <div class="my-8">

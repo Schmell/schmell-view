@@ -1,40 +1,40 @@
 <script script lang="ts">
-	import type { PageData } from './$types';
-	import { page } from '$app/stores';
-	import { enhance } from '$app/forms';
-	import Icon from '@iconify/svelte';
-	import { superForm } from 'sveltekit-superforms/client';
+	import { enhance } from '$app/forms'
+	import { page } from '$app/stores'
+	import { Button, Form, Hidden, Input } from '$components/form'
+	import { Page } from '$components/layout'
+	import Like from '$lib/like/like.svelte'
+	import { formatDateTime } from '$lib/utils/formatters'
+	import Icon from '@iconify/svelte'
+	import { superForm } from 'sveltekit-superforms/client'
+	import type { PageData } from './$types'
+	import Comment from '$lib/comment/comment.svelte'
+	import CommentForm from '$lib/comment/commentForm.svelte'
+	import Comments from '$lib/comment/comments.svelte'
 
-	import { Page } from '$components/layout';
-	import { Input, Button, Form, Hidden } from '$components/form';
-	import { formatDateTime } from '$lib/utils/formatters';
-	// import Like from '$lib/like/like.svelte';
-	import Likes from '$lib/likes/likes.svelte';
-	import type { Nullable } from 'vitest';
+	export let data: PageData
+	// export let form
+	$: ({ event, user } = data)
+	$: console.log('event: ', event)
+	$: console.log('user: ', user)
 
-	export let data: PageData;
-	export let form;
-	$: ({ event, comments } = data);
-	console.log('event: ', event);
-
-	let showRaces: boolean = true;
+	let showRaces: boolean = true
 
 	function getHref(website: string | null) {
-		if (!website) return null;
-		return website && website.startsWith('http://') ? website : `http://${website}`;
+		if (!website) return null
+		return website && website.startsWith('http://') ? website : `http://${website}`
 	}
 
-	function checkForUserLike(comment) {
-		if (comment.likes.some((like) => like.userId === data.user?.userId)) {
-			return true;
-		}
-		return false;
-	}
+	// function checkForUserLike(comment) {
+	// 	if (comment.Likes.some((like) => like.userId === data.user?.userId)) {
+	// 		return true
+	// 	}
+	// 	return false
+	// }
 
-	const commentFormObj = superForm(data.commentForm);
-	const { form: commentForm } = commentFormObj;
-
-	//
+	const commentFormObj = superForm(data.commentForm)
+	const deleteCommentFormObj = superForm(data.deleteCommentForm)
+	// deleteForm
 </script>
 
 {#if data}
@@ -62,7 +62,7 @@
 							{@html event?.name}
 						</div>
 						<div class="max-h-2">
-							<Likes userId={data.user?.userId} type="event" item={event} from={$page.url.href} />
+							<Like userId={data.user?.userId} type="event" item={event} />
 						</div>
 					</div>
 					{#if event?.Venue}
@@ -96,7 +96,7 @@
 				<button
 					class="btn btn-ghost btn-xs"
 					on:click={() => {
-						showRaces = !showRaces;
+						showRaces = !showRaces
 					}}
 				>
 					{showRaces ? '^ Hide Races' : '⌄ Show Races'}
@@ -142,8 +142,8 @@
 									{race.time ? `- ${race.time}` : ''}
 								</div>
 
-								<div class="badge badge-accent" class:badge-error={!race.sailed}>
-									{race.sailed ? 'Sailed' : 'Unsailed'}
+								<div class="badge badge-accent" class:badge-error={!Number(race.sailed)}>
+									{Number(race.sailed) ? 'Sailed' : 'Unsailed'}
 								</div>
 							</div>
 						</div>
@@ -152,13 +152,14 @@
 			{/if}
 		</div>
 
-		<div class="mt-4">
+		<!-- Comments component -->
+		<!-- <div class="mt-4">
 			<div class="flex gap-2 justify-between items-end">
 				<div class="font-semibold">Comments:</div>
 
 				<div class="avatar-group -space-x-4">
-					{#if event?.comments}
-						{#each event?.comments as comment}
+					{#if event?.Comments}
+						{#each event?.Comments as comment}
 							<div class="avatar">
 								<div class="w-6 bg-base-300">
 									<img alt={`@${comment?.User.username}`} src={comment?.User.avatar} />
@@ -169,15 +170,17 @@
 
 					<div class="avatar placeholder">
 						<div class="w-6 bg-neutral-focus text-neutral-content">
-							<span>+{event?._count.comments}</span>
+							<span>+{event?._count.Comments}</span>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div class="divider my-0" />
-
-			{#if comments}
+			<div class="divider my-0" /> -->
+		<Comments item={event} type="event" {user} formObj={commentFormObj} />
+		<!-- <Comment type="event" {user} item={event} formObj={commentFormObj} /> -->
+		<!-- Comments -->
+		<!-- {#if comments}
 				{#each comments as comment}
 					<div class="flex items-start gap-2">
 						<div class="avatar">
@@ -197,72 +200,38 @@
 								</div>
 							</div>
 							{#if data.user?.userId === comment.userId}
-								<div class="dropdown dropdown-end pb-1">
-									<!--svelte-ignore a11y-label-has-associated-control -->
-									<label tabindex="-1"> <Icon icon="mdi:dots-vertical" /> </label>
+								<div class="dropdown dropdown-end pb-1"> -->
+
+		<!--svelte-ignore a11y-label-has-associated-control -->
+		<!-- <label tabindex="-1"> <Icon icon="mdi:dots-vertical" /> </label>
 
 									<ul
 										tabindex="-1"
 										class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
 									>
 										<li><a href="/events/{event?.id}?editComment={comment.id}"> Edit </a></li>
-										<li>
-											<button formaction="?/deleteComment" class="text-error"> Delete </button>
-										</li>
+										<Form action="/api/comment/?/delete" formObj={deleteCommentFormObj}>
+											<li>
+												<input type="hidden" name="id" value={comment.id} />
+												<button class="text-error"> Delete </button>
+											</li>
+										</Form>
 									</ul>
 								</div>
 							{/if}
 							<div class="flex flex-col gap-4 justify-between relative">
-								<!-- like component -->
-								<div>
-									<form action="?/like" method="post" use:enhance>
-										<input type="hidden" name="eventId" value={event?.id} />
-
-										<input type="hidden" name="commentId" value={comment.id} />
-
-										<input type="hidden" name="likeId" value={form?.id} />
-
-										<div
-											class="flex items-center gap-2 px-2 rounded-full"
-											class:bg-accent={checkForUserLike(comment)}
-											class:bg-base-100={!checkForUserLike(comment)}
-										>
-											{#if checkForUserLike(comment)}
-												<button formaction="?/unlike">
-													<Icon class="text-base-100" icon="mdi:thumb-up" />
-												</button>
-											{:else}
-												<!-- can't like your own comment -->
-												<button disabled={data.user?.userId === comment.userId}>
-													<Icon icon="mdi:thumb-up-outline" />
-												</button>
-											{/if}
-
-											<div
-												class=" border-l-2 border-base-200 pl-2"
-												class:text-base-100={checkForUserLike(comment)}
-											>
-												{comment._count.likes}
-											</div>
-										</div>
-									</form>
-								</div>
-								<!-- like component -->
+								<Like
+									userId={data.user?.userId}
+									type="comment"
+									item={comment}
+									from={$page.url.href}
+								/>
 							</div>
 						</div>
 					</div>
 				{/each}
-			{/if}
-		</div>
-
-		<!-- Comment form -->
-		<Form action="?/comment" formObj={commentFormObj}>
-			<Input formObj={commentFormObj} name="comment" label="Add a comment" />
-			<input type="hidden" name="id" value={$commentForm.id ? $commentForm.id : 'new'} />
-			<Hidden name="type" formObj={commentFormObj} />
-			<!-- <div>commentId: {$commentForm}</div> -->
-			<Button type="submit">Submit</Button>
-			<!-- <Picker /> -->
-		</Form>
+			{/if} -->
+		<!-- Comments -->
+		<!-- </div> -->
 	</Page>
 {/if}

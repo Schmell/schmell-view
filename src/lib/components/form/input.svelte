@@ -1,30 +1,30 @@
 <script lang="ts">
-	import { afterUpdate } from 'svelte';
-	import Label from './label.svelte';
-	import ErrorLabel from './errorLabel.svelte';
-	import { cn } from '$lib/utils';
+	import { afterUpdate } from 'svelte'
+	import Label from './label.svelte'
+	import ErrorLabel from './errorLabel.svelte'
+	import { cn } from '$lib/utils'
 
-	export let formObj; // superForm object
-	export let name: string;
-	export let placeholder: string | undefined = undefined;
-	export let type: string | undefined = undefined;
-	export let label: string | undefined = undefined;
+	export let formObj // superForm object
+	export let name: string
+	export let placeholder: string | undefined = undefined
+	export let type: string | undefined = undefined
+	export let label: string | undefined = undefined
 
-	let className: string | undefined = undefined;
-	export { className as class };
+	let className: string | undefined = undefined
+	export { className as class }
 
-	let isRequired;
+	let isRequired
 
-	const { form, errors, constraints } = formObj;
+	const { form, errors, constraints } = formObj
 
 	afterUpdate(async () => {
 		//
-		const itemConstraint = await $constraints[name];
+		const itemConstraint = await $constraints[name]
 
 		if (itemConstraint?.required) {
-			isRequired = itemConstraint.required;
+			isRequired = itemConstraint.required
 		}
-	});
+	})
 </script>
 
 <div class="flex flex-col my-1 w-full">

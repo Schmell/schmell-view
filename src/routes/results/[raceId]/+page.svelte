@@ -59,11 +59,15 @@
 </script>
 
 <Page title={race?.Event?.name}>
-	{#each tables as table}
-		<FleetTable
-			race={data.race}
-			results={table}
-			fleetName={table[0].Comp?.fleet ?? table[0].Comp?.division}
-		/>
-	{/each}
+	{#if !Number(race?.sailed)}
+		<div class="bg-error w-full p-2 text-error-content rounded-md">This Race was not sailed</div>
+	{:else}
+		{#each tables as table}
+			<FleetTable
+				race={data.race}
+				results={table}
+				fleetName={table[0].Comp?.fleet ?? table[0].Comp?.division}
+			/>
+		{/each}
+	{/if}
 </Page>

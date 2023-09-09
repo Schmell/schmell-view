@@ -31,21 +31,22 @@ model Series {
   Events         Event[]
   Org            Organization? @relation(fields: [organizationId], references: [id])
   Publisher      User?         @relation(fields: [publisherId], references: [id])
-  follow         follow[]
-  like           like[]
+  Follows        Follow[]
+  Likes          Like[]
+  Comments       Comment[]
   Venues         Venue[]
 }
 
 model Event {
-  id             String         @id @default(cuid())
+  id             String        @id @default(cuid())
   eventeid       String
-  uniqueIdString String         @unique
+  uniqueIdString String        @unique
   name           String
   eventwebsite   String?
   venueName      String?
   description    String?
   titleImage     String?
-  public         Boolean        @default(true)
+  public         Boolean       @default(true)
   /// [fileInfo]
   fileInfo       Json?
   /// [resultColumns]
@@ -54,21 +55,23 @@ model Event {
   rest           Json?
   email          String?
   organizationId String?
-  Organization   Organization?  @relation(fields: [organizationId], references: [id])
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
   publisherId    String?
-  Publisher      User?          @relation(fields: [publisherId], references: [id])
+  Publisher      User?         @relation(fields: [publisherId], references: [id])
   seriesId       String?
-  Series         Series?        @relation(fields: [seriesId], references: [id])
+  Series         Series?       @relation(fields: [seriesId], references: [id])
   venueId        String?
-  Venue          Venue?         @relation(fields: [venueId], references: [id])
+  Venue          Venue?        @relation(fields: [venueId], references: [id])
   Races          Race[]
   Results        Result[]
-  follows        follow[]
-  likes          like[]
+  Follows        Follow[]
+  Likes          Like[]
   Comps          Comp[]
-  comments       eventComment[]
-  createdAt      DateTime?      @default(now())
-  updatedAt      DateTime?      @updatedAt
+  // Comments       EventComment[]
+  createdAt      DateTime?     @default(now())
+  updatedAt      DateTime?     @updatedAt
+  Comments       Comment[]
+  // EventComment   EventComment[]
 }
 
 model Race {
@@ -82,21 +85,21 @@ model Race {
   time             String?
   notes            String?
   sailed           String?
-  rating           String?
+  rating           String? // im not sure what this is
   resultColumns    Json?
   /// [raceRest]
   rest             Json?
-  createdAt        DateTime? @default(now())
-  updatedAt        DateTime? @updatedAt
   eventId          String?
   Event            Event?    @relation(fields: [eventId], references: [id])
   publisherId      String?
   Publisher        User?     @relation(fields: [publisherId], references: [id])
   Results          Result[]
-  follow           follow[]
-  like             like[]
+  Follows          Follow[]
+  Likes            Like[]
   Comps            Comp[]
-  compId           String?
+  Comments         Comment[]
+  createdAt        DateTime? @default(now())
+  updatedAt        DateTime? @updatedAt
 }
 
 model Comp {
@@ -119,8 +122,9 @@ model Comp {
   Publisher   User?     @relation(fields: [publisherId], references: [id])
   Events      Event[]
   Results     Result[]
-  follow      follow[]
-  like        like[]
+  Follows     Follow[]
+  Likes       Like[]
+  Commments   Comment[]
   Races       Race[]
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
@@ -172,8 +176,9 @@ model Organization {
   Owner       User?     @relation(fields: [ownerId], references: [id])
   Events      Event[]
   Series      Series[]
-  follow      follow[]
-  like        like[]
+  Follows     Follow[]
+  Likes       Like[]
+  Comments    Comment[]
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
 }
@@ -189,22 +194,48 @@ model Venue {
   Events      Event[]
   Publisher   User?     @relation(fields: [publisherId], references: [id])
   Series      Series[]
+  Likes       Like[]
+  Comments    Comment[]
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
 }
 
-model eventComment {
-  type      String?
-  ref       String?
-  comment   String
-  Event     Event?    @relation(fields: [eventId], references: [id])
-  eventId   String?
-  User      User      @relation(fields: [userId], references: [id])
-  userId    String
-  likes     like[]
-  id        String    @id @unique @default(cuid())
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+// model EventComment {
+//   type      String?
+//   ref       String?
+//   comment   String
+//   eventId   String?
+//   Event     Event?    @relation(fields: [eventId], references: [id])
+//   userId    String
+//   User      User      @relation(fields: [userId], references: [id])
+//   Likes     Like[]
+//   id        String    @id @unique @default(cuid())
+//   createdAt DateTime? @default(now())
+//   updatedAt DateTime? @updatedAt
+// }
+
+model Comment {
+  id             String        @id @unique @default(cuid())
+  type           String?
+  ref            String?
+  comment        String
+  eventId        String?
+  Event          Event?        @relation(fields: [eventId], references: [id])
+  userId         String
+  User           User          @relation(fields: [userId], references: [id])
+  Likes          Like[]
+  Race           Race?         @relation(fields: [raceId], references: [id])
+  raceId         String?
+  Series         Series?       @relation(fields: [seriesId], references: [id])
+  seriesId       String?
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  Venue          Venue?        @relation(fields: [venueId], references: [id])
+  venueId        String?
+  Comp           Comp?         @relation(fields: [compId], references: [id])
+  compId         String?
+  createdAt      DateTime?     @default(now())
+  updatedAt      DateTime?     @updatedAt
 }
 
 // enum CommentType {
@@ -215,7 +246,7 @@ model eventComment {
 //   comp
 // }
 
-model follow {
+model Follow {
   id             String        @id @unique @default(cuid())
   userId         String
   type           String
@@ -234,7 +265,7 @@ model follow {
   User           User          @relation(fields: [userId], references: [id])
 }
 
-model like {
+model Like {
   id             String        @id @unique @default(cuid())
   userId         String
   type           String
@@ -252,8 +283,12 @@ model like {
   Race           Race?         @relation(fields: [raceId], references: [id])
   Series         Series?       @relation(fields: [seriesId], references: [id])
   User           User          @relation(fields: [userId], references: [id])
-  eventComment   eventComment? @relation(fields: [eventCommentId], references: [id])
+  // eventComment   EventComment? @relation(fields: [eventCommentId], references: [id])
   eventCommentId String?
+  Comment        Comment?      @relation(fields: [commentId], references: [id])
+  commentId      String?
+  Venue          Venue?        @relation(fields: [venueId], references: [id])
+  venueId        String?
 }
 
 model User {
@@ -275,9 +310,10 @@ model User {
   Result         Result[]
   Organization   Organization[]
   Venue          Venue[]
-  eventComment   eventComment[]
-  follow         follow[]
-  like           like[]
+  // eventComment   EventComment[]
+  follow         Follow[]
+  like           Like[]
+  Comment        Comment[]
 }
 
 model UserSettings {

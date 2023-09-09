@@ -1,34 +1,34 @@
-import { prisma } from '$lib/server/prisma';
-import { error, fail, redirect } from '@sveltejs/kit';
-import Blw from './Blw';
-import { Prisma } from '@prisma/client';
+import { prisma } from '$lib/server/prisma'
+import { error, fail, redirect } from '@sveltejs/kit'
+import Blw from './Blw'
+import { Prisma } from '@prisma/client'
 
 export async function CheckForDuplicates({ data, file }) {
-	const blw = new Blw({ data, file });
+	const blw = new Blw({ data, file })
 
-	const event = blw.getEvent();
+	const event = blw.getEvent()
 
 	const usid =
 		event.name.split(' ').join('_') +
 		'-' +
 		event.eventeid +
 		'-' +
-		event.venueName.split(' ').join('_');
+		event.venueName.split(' ').join('_')
 
 	return await prisma.event.findUnique({
 		where: { uniqueIdString: usid.toLowerCase() }
-	});
+	})
 }
 
 export async function Populate({ blw, userId, orgId }) {
 	// if (!data) throw error(400, { message: 'Populate function requires data' });
 	// const blw = new Blw({ data, file });
-	const event = blw.getEvent();
-	const { uniqueIdString } = event;
+	const event = blw.getEvent()
+	const { uniqueIdString } = event
 
 	function eventCreate() {
 		//
-		const { venueemail, venuewebsite, venueburgee, ...rest } = event;
+		const { venueemail, venuewebsite, venueburgee, ...rest } = event
 		const eventObj = {
 			...rest,
 
@@ -50,25 +50,25 @@ export async function Populate({ blw, userId, orgId }) {
 					}
 				}
 			}
-		};
+		}
 		return {
 			// data: upObj
 			where: { uniqueIdString: uniqueIdString },
 			update: {},
 			create: eventObj
-		};
+		}
 	}
 
 	function scoringSystem() {
-		return blw.getScoring();
+		return blw.getScoring()
 	}
 
-	async function racesCreate() {
-		const compList = await blw.getComps().map((comp) => {
-			return { compId: comp.compId };
-		});
+	function racesCreate() {
+		const compList = blw.getComps().map((comp) => {
+			return { compId: comp.compId }
+		})
 
-		return await blw.getRaces(uniqueIdString).map((race) => {
+		return blw.getRaces(uniqueIdString).map((race) => {
 			return {
 				where: { uniqueRaceString: race.uniqueRaceString },
 				update: { ...race },
@@ -84,12 +84,12 @@ export async function Populate({ blw, userId, orgId }) {
 						connect: { id: userId }
 					}
 				}
-			};
-		});
+			}
+		})
 	}
 
-	async function compsCreate() {
-		return await blw.getComps().map((comp) => {
+	function compsCreate() {
+		return blw.getComps().map((comp) => {
 			// need to connect event somehow, because a comp can have multiple events
 			return {
 				where: { compId: comp.compId },
@@ -127,29 +127,26 @@ export async function Populate({ blw, userId, orgId }) {
 						connect: { id: userId }
 					}
 				}
-			};
-		});
+			}
+		})
 	}
 
-	async function resultsCreate() {
-		// const races = blw.getComps()
+	function resultsCreate() {
 		return blw.getRaces(uniqueIdString).map((race) => {
 			return blw.getResults(race.raceId).map((result) => {
-				//  Note convert to numbers
-				// console.log('result: ', result.compId);
-
 				return {
 					resultId: result.resultId,
 					raceCompId: result.raceCompId,
 					fleet: result.fleet,
-					points: result.points,
-					finish: result.finish,
 					start: result.start,
+					finish: result.finish,
+					points: result.points,
 					position: result.position,
+					resultType: result.resultType,
+					code: result.code,
 					discard: result.discard,
 					elasped: result.elasped,
 					corrected: result.corrected,
-					resultType: result.resultType,
 					elapsedWin: result.elapsedWin,
 					ratingWin: result.ratingWin,
 
@@ -165,137 +162,67 @@ export async function Populate({ blw, userId, orgId }) {
 					Race: {
 						connect: { uniqueRaceString: race.uniqueRaceString }
 					}
-				};
-			});
-		});
+				}
+			})
+		})
 	}
 
-	return addTables();
-
-	async function importModel() {
-		const comps = await compsCreate();
-		const races = await racesCreate();
-		const resultsArray = await resultsCreate();
-
-		console.log('Start import');
-		console.time('importModel');
-
-		const eventObj = prisma.event.upsert(eventCreate());
-
-		const compsObj = comps.map((comp) => {
-			return prisma.comp.upsert(comp);
-		});
-
-		const racesObj = races.map((race) => {
-			return prisma.race.upsert(race);
-		});
-
-		const resultsObj = resultsArray.map((results) => {
-			results.map((result) => {
-				const { raceCompId, ...rest } = result;
-				let placholder = 'hey';
-				// ${eventObj.id}
-
-				const uniqueRaceId = `${raceCompId}-`;
-
-				rest.resultId = uniqueRaceId;
-
-				return prisma.result.upsert({
-					where: { resultId: uniqueRaceId },
-					update: { ...rest },
-					create: { ...rest }
-				});
-			});
-		});
-
-		return await prisma.$transaction([eventObj, compsObj, racesObj, resultsObj]); // Operations succeed or fail together
-	}
+	return addTables()
 
 	async function addTables() {
-		// try {
-		// this try does not catch individual promises
-		const comps = await compsCreate();
-		const races = await racesCreate();
-		const resultsArray = await resultsCreate();
+		const comps = await compsCreate()
+		const races = await racesCreate()
+		const resultsArray = await resultsCreate()
 
-		console.log('Start import');
-		console.time('time');
+		console.log('Start import')
+		console.time('time')
 
-		const newEvent = await prisma.event.upsert(eventCreate());
+		const newEvent = await prisma.event.upsert(eventCreate())
 
-		console.timeLog('time', 'event comlpete: ');
+		console.timeLog('time', 'event comlpete: ')
 
-		// console.log('scoringSystem(): ', scoringSystem());
-
-		// await Promise.all(
-		// 	comps.map(async (comp) => {
-		// 		return await prisma.comp.upsert(comp);
-		// 	})
-		// );
-		// console.log('comps: ', comps);
 		await Promise.all(
 			comps.map(async (comp) => {
-				await prisma.comp.upsert(comp);
+				await prisma.comp.upsert(comp)
 			})
-		);
+		)
 
-		console.timeLog('time', 'comps complete');
+		console.timeLog('time', 'comps complete')
 
-		await Promise.allSettled(
+		await Promise.all(
 			races.map(async (race) => {
-				return await prisma.race.upsert(race);
+				return await prisma.race.upsert(race)
 			})
-		);
+		)
 
-		console.timeLog('time', 'races comlpete: ');
+		console.timeLog('time', 'races comlpete: ')
 
-		await Promise.allSettled(
+		await Promise.all(
 			await resultsArray.map(async (results) => {
 				await results.map(async (result) => {
-					const { raceCompId, ...rest } = result;
+					const { raceCompId, ...rest } = result
 
-					const uniqueRaceId = `${raceCompId}-${newEvent.id}`;
+					const uniqueRaceId = `${raceCompId}-${newEvent.id}`
 
-					rest.resultId = uniqueRaceId;
-
-					return await prisma.result.upsert({
-						where: { resultId: uniqueRaceId },
-						update: { ...rest },
-						create: { ...rest }
-					});
-				});
+					rest.resultId = uniqueRaceId
+					try {
+						return await prisma.result.upsert({
+							where: { resultId: uniqueRaceId },
+							update: { ...rest },
+							create: { ...rest }
+						})
+					} catch (e) {
+						return null
+					}
+				})
 			})
-		);
+		)
 
-		console.timeLog('time', 'results comlpete ');
-		console.timeEnd('time');
+		console.timeLog('time', 'results comlpete ')
+		console.timeEnd('time')
 
 		return {
 			sucess: true
-		};
-		//
-		// } catch (error: any) {
-		// 	//
-		// 	if (error instanceof Prisma.PrismaClientKnownRequestError) {
-		// 		// Timeout error
-		// 		if (error.code === 'P2024') {
-		// 			console.log(error.meta?.cause);
-		// 			throw fail(500, { message: error.meta?.cause });
-		// 		}
-
-		// 		if (error.code === 'P2025') {
-		// 			console.log(error.meta?.cause);
-		// 			// throw fail(500, { message: error.meta?.cause });
-		// 			throw redirect(307, '/import');
-		// 		}
-
-		// 		console.log('Prisma Known Request Error: ', error);
-		// 		// throw redirect(307, '/import');
-		// 		throw fail(500, { message: error.meta?.cause });
-		// 	}
-
-		// 	console.log('Import Error: ', error);
-		// 	throw error(500, `Populate error: ${error}`);
-		// } // catch
+		}
 	}
 } // populate
