@@ -30,7 +30,7 @@
 				{formatDateTime(item?.createdAt ?? new Date())}
 			</div>
 		</div>
-		{#if user.userId === item.User.id || user?.userId === item.publisherId}
+		{#if user.userId === item.User?.id || user?.userId === item.publisherId}
 			<div class="dropdown dropdown-end pb-1">
 				<!--svelte-ignore a11y-label-has-associated-control -->
 				<label tabindex="-1"> <Icon icon="mdi:dots-vertical" /> </label>

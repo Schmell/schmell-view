@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation'
+	import { cn } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import { error, fail } from '@sveltejs/kit'
+
+	let className: string | undefined = undefined
+	export { className as class }
 
 	export let userId: string | undefined
 	$: console.log('userId: ', userId)
@@ -61,7 +65,7 @@
 </script>
 
 <div
-	class="flex items-center gap-2 px-2 rounded-full"
+	class={cn('flex items-center gap-2 px-2 rounded-full', className)}
 	class:bg-accent={checkForUserLike(item)}
 	class:bg-base-100={!checkForUserLike(item)}
 >

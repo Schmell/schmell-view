@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { fade } from 'svelte/transition';
+	import { goto } from '$app/navigation'
 
-	export let title: string | null;
-	export let href: string | null;
+	export let title: string | null
+	export let href: string | null
+
+	let more = false
 	//
 </script>
 
@@ -15,7 +16,7 @@
 			class:smaller={title && title.length >= 28}
 			on:keyup
 			on:click={() => {
-				goto(`${href}`);
+				goto(`${href}`)
 			}}
 		>
 			{@html title}
@@ -27,8 +28,24 @@
 
 	<hr class="border-base-content opacity-25" />
 
-	<div class="pt-2 pl-4 pb-4">
+	<div class="pt-2 pl-4 mb-4 relative" class:line-clamp-3={!more}>
 		<slot />
+		{#if !more}
+			<button
+				on:click={() => {
+					more = !more
+				}}
+				class="btn btn-xs bg-base-100 text-accent-content shadow-md absolute bottom-0 right-0 mr-2"
+				>read more</button
+			>
+		{:else}
+			<button
+				on:click={() => {
+					more = !more
+				}}
+				class="btn btn-xs absolute bottom-0 right-0 mr-2">less</button
+			>
+		{/if}
 	</div>
 
 	<hr class="border-base-content opacity-25" />
