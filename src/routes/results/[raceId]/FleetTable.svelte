@@ -1,23 +1,24 @@
 <script lang="ts">
-	import { writable } from 'svelte/store'
-	import type { ColumnDef, TableOptions, SortDirection } from '@tanstack/svelte-table'
+	import type { ColumnDef, SortDirection, TableOptions } from '@tanstack/svelte-table'
 	import {
 		createSvelteTable,
+		flexRender,
 		getCoreRowModel,
-		getSortedRowModel,
-		flexRender
+		getSortedRowModel
 	} from '@tanstack/svelte-table'
+	import { Temporal } from '@js-temporal/polyfill'
+	import { writable } from 'svelte/store'
 	import AscSort from './ascSort.svelte'
+	import Cell from './cell.svelte'
 	import DscSort from './dscSort.svelte'
 	import Empty from './empty.svelte'
-	import Cell from './cell.svelte'
 
 	export let race
 	export let results
 	export let fleetName
 
 	const notypecheck = (x: any) => x
-	// $: console.log('race ', race);
+
 	let columnVisibility
 
 	const finishType = race.starts.map((start) => {
@@ -25,8 +26,42 @@
 			return start.finishType
 		}
 	})
+	console.log('finishType: ', finishType)
+
+	function calculateElapsed(start, finish, elapsed) {
+		// if no elapsed and finishtype === "Finish Time"
+		if (elapsed) return elapsed
+		if (!start || !finish) return null
+
+		const raceDate = race.date ?? Date.now().toString()
+
+		// console.log('start: ', start)
+		// console.log('finish: ', finish)
+		const startArray = start.split(':')
+		const startTime = Temporal.PlainTime.from({
+			hour: startArray[0],
+			minute: startArray[1],
+			second: startArray[2]
+		})
+		const finishArray = finish.split(':')
+		const finishTime = Temporal.PlainTime.from({
+			hour: finishArray[0],
+			minute: finishArray[1],
+			second: finishArray[2]
+		})
+
+		const elapsedTime = startTime.until(finishTime)
+		console.log('elapsedTime: ', elapsedTime.toString())
+
+		if (!elapsed && finishType === 'Finish Time') {
+			// turn start and finish into time codes and subtract
+			return
+		}
+	}
 
 	let resultRows = results.map((result) => {
+		const elapsedTime = calculateElapsed(result.start, result.finish, result.elapsed)
+		console.log('elapsedTime: ', elapsedTime)
 		return {
 			points: Number(result.points), // convert to number
 			position: Number(result.position), // named place on table
@@ -192,19 +227,24 @@
 	function getResultColumns() {
 		//
 		const defaultColumns = {
+			position: false,
+			skipper: false,
 			elapsed: false,
 			elapsedWin: false,
 			ratingWin: false,
 			total: false,
 			start: false,
-			finish: false
+			finish: false,
+			nett: true
 		}
 
 		if (race?.resultColumns) {
 			return { ...defaultColumns, ...race?.resultColumns }
 		}
+		// console.log('Event resultColumns: ', race?.Event)
 
 		if (race?.Event?.resultColumns) {
+			console.log('Event resultColumns: ', race?.Event?.resultColumns)
 			return { ...defaultColumns, ...race?.Event?.resultColumns }
 		}
 
@@ -219,9 +259,8 @@
 <div class="my-8">
 	<div class="flex justify-between mb-4">
 		<h2 class="text-4xl font-medium">{fleetName}</h2>
-		<label for="my-modal-3" class="btn btn-active">view</label>
 
-		<!-- Put this part before </body> tag -->
+		<!-- <label for="my-modal-3" class="btn btn-active">view</label>
 		<input type="checkbox" id="my-modal-3" class="modal-toggle" />
 		<div class="modal">
 			<div class="modal-box relative">
@@ -241,7 +280,7 @@
 					</div>
 				{/each}
 			</div>
-		</div>
+		</div> -->
 	</div>
 	<table class="table table-zebra w-full mr-10">
 		<thead>

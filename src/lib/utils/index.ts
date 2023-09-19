@@ -1,46 +1,51 @@
 export function svelog(item: any, title?: string) {
-	console.log(`${title ? title : 'svelog'}: `, item);
-	return '';
+	console.log(`${title ? title : 'svelog'}: `, item)
+	return ''
 }
 
 export function capitalizeFirstLetter(string: string) {
-	return string.charAt(0).toUpperCase() + string.slice(1);
+	return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { type ClassValue, clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
-	return twMerge(clsx(inputs));
+	return twMerge(clsx(inputs))
 }
 
 export function from(url: URL) {
-	const from = url.searchParams.get('from');
+	const from = url.searchParams.get('from')
 	if (from) {
-		return from;
+		return from
 	}
-	return '';
+	return ''
+}
+
+export function getHref(website: string | null) {
+	if (!website) return null
+	return website && website.startsWith('http://') ? website : `http://${website}`
 }
 
 export const serializeNonPOJOs = (value: object | null) => {
-	return structuredClone(value);
-};
+	return structuredClone(value)
+}
 
 /** Dispatch event on click outside of node */
 export function clickOutside(node) {
 	const handleClick = (event) => {
 		if (node && !node.contains(event.target) && !event.defaultPrevented) {
-			node.dispatchEvent(new CustomEvent('click_outside', node));
+			node.dispatchEvent(new CustomEvent('click_outside', node))
 		}
-	};
+	}
 
-	document.addEventListener('click', handleClick, true);
+	document.addEventListener('click', handleClick, true)
 
 	return {
 		destroy() {
-			document.removeEventListener('click', handleClick, true);
+			document.removeEventListener('click', handleClick, true)
 		}
-	};
+	}
 }
 
 export const themes = [
@@ -73,4 +78,4 @@ export const themes = [
 	'night',
 	'coffee',
 	'winter'
-];
+]

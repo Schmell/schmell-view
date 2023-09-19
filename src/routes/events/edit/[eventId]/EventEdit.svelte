@@ -1,18 +1,18 @@
 <script>
-	import { superForm } from 'sveltekit-superforms/client';
-	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
-	import { Button, Check, Form, Input, Textarea } from '$components/form';
-	import { eventSchema } from './eventSchema';
+	import { superForm } from 'sveltekit-superforms/client'
+	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte'
+	import { Button, Check, Form, Input, Textarea } from '$components/form'
+	import { eventSchema } from './eventSchema'
 	// import { EventSchema } from '$lib/server/generated/zod';
 
-	export let data;
+	export let data
 
 	const formObj = superForm(data.form, {
 		taintedMessage: 'Are you sure you want to leave?',
 		validators: eventSchema,
 		dataType: 'json'
-	});
-	$: ({ form } = formObj);
+	})
+	$: ({ form } = formObj)
 </script>
 
 <Form {formObj}>
@@ -35,45 +35,45 @@
 			<h6>Event Rankings</h6>
 			<div class="flex gap-4">
 				<span>
-					<Check name="rank" group="resultColumns" {formObj} />
+					<Check name="rank" {formObj} />
 				</span>
 				<span>
-					<Check name="nett" group="resultColumns" {formObj} />
+					<Check name="nett" {formObj} />
 				</span>
 				<span>
-					<Check name="total" group="resultColumns" {formObj} />
+					<Check name="total" {formObj} />
 				</span>
 			</div>
 			<div class="divider" />
 			<h6>Display names</h6>
 			<div class="flex gap-4">
 				<span>
-					<Check name="skipper" group="resultColumns" {formObj} />
+					<Check name="skipper" {formObj} />
 				</span>
 				<span>
-					<Check name="boat" group="resultColumns" {formObj} />
+					<Check name="boat" {formObj} />
 				</span>
 				<span>
-					<Check name="sailNo" group="resultColumns" {formObj} />
+					<Check name="sailNo" {formObj} />
 				</span>
 			</div>
 			<div class="divider" />
 			<h6>Race Outcomes</h6>
 			<div class="flex">
 				<span>
-					<Check name="points" group="resultColumns" {formObj} />
+					<Check name="points" {formObj} />
 				</span>
 				<span>
-					<Check name="position" group="resultColumns" {formObj} />
+					<Check name="position" {formObj} />
 				</span>
 				<span>
-					<Check name="finish" group="resultColumns" {formObj} />
+					<Check name="finish" {formObj} />
 				</span>
 				<span>
-					<Check name="corrected" group="resultColumns" {formObj} />
+					<Check name="corrected" {formObj} />
 				</span>
 				<span>
-					<Check name="elapsed" group="resultColumns" {formObj} />
+					<Check name="elapsed" {formObj} />
 				</span>
 			</div>
 		</div>

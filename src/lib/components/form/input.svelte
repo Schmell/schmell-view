@@ -39,6 +39,7 @@
 			placeholder={placeholder ?? ''}
 			aria-invalid={$errors.email ? 'true' : undefined}
 			bind:value={$form[name]}
+			on:change
 		/>
 	{:else if type === 'email'}
 		<input
@@ -49,6 +50,7 @@
 			placeholder={placeholder ?? ''}
 			aria-invalid={$errors.email ? 'true' : undefined}
 			bind:value={$form[name]}
+			on:change
 		/>
 	{:else}
 		<input
@@ -58,6 +60,7 @@
 			placeholder={placeholder ?? ''}
 			aria-invalid={$errors.email ? 'true' : undefined}
 			bind:value={$form[name]}
+			on:change
 		/>
 	{/if}
 

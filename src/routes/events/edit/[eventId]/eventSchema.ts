@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const eventSchema = z.object({
 	name: z.string(),
@@ -9,15 +9,15 @@ export const eventSchema = z.object({
 	titleImage: z.string().nullable(),
 	public: z.boolean(),
 	// resultColumns: z.any(),
-	rank: z.string().nullable(),
-	points: z.string().nullable(),
-	position: z.string().nullable(),
-	skipper: z.string().nullable(),
-	boat: z.string().nullable(),
-	finish: z.string().nullable(),
-	corrected: z.string().nullable(),
-	elapsed: z.string().nullable(),
-	nett: z.string().nullable(),
-	total: z.string().nullable()
+	rank: z.boolean().nullable().optional(),
+	points: z.boolean().nullable().optional(),
+	position: z.boolean().nullable().optional(),
+	skipper: z.boolean().nullable().optional(),
+	boat: z.boolean().nullable().optional(),
+	finish: z.boolean().nullable().optional(),
+	corrected: z.boolean().nullable().optional(),
+	elapsed: z.boolean().nullable().optional(),
+	nett: z.boolean().nullable().optional(),
+	total: z.boolean().nullable().optional()
 	// Venue: z.any()
-});
+})

@@ -1,14 +1,25 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
+	import { afterUpdate } from 'svelte'
 
 	export let title: string | null
 	export let href: string | null
 
 	let more = false
+
+	let empty
+	let slot: HTMLDivElement
 	//
+	afterUpdate(() => {
+		empty =
+			slot &&
+			((slot.innerHTML.length < 3 && slot.innerText.length < 3) ||
+				['undefined', 'null'].includes(slot.innerText))
+		// console.log('empty: ', empty)
+		console.log('slot: ', slot.innerText.length)
+	})
 </script>
 
-<!-- in:fade={{ duration: 1000 }} out:fade={{ duration: 750 }} -->
 <div class="item-card mb-4 snap-center">
 	<header class="min-h-12 flex items-center bg-base-200 rounded-tl-xl shadow-md">
 		<button
@@ -28,23 +39,32 @@
 
 	<hr class="border-base-content opacity-25" />
 
-	<div class="pt-2 pl-4 mb-4 relative" class:line-clamp-3={!more}>
+	<div class="hidden" bind:this={slot}><slot /></div>
+	<div
+		class="pt-2 pl-4 mb-6 relative min-h-8 bg-gradient-to-r from-base-100 to-base-200"
+		class:line-clamp-3={!more}
+	>
 		<slot />
-		{#if !more}
+	</div>
+	<div class="relative">
+		{#if !more && !empty}
 			<button
 				on:click={() => {
 					more = !more
 				}}
-				class="btn btn-xs bg-base-100 text-accent-content shadow-md absolute bottom-0 right-0 mr-2"
-				>read more</button
+				class="btn btn-xs bg-opacity-80 z-10 shadow-md absolute -bottom-1 right-0 mr-2"
 			>
-		{:else}
+				read more
+			</button>
+		{:else if !empty}
 			<button
 				on:click={() => {
 					more = !more
 				}}
-				class="btn btn-xs absolute bottom-0 right-0 mr-2">less</button
+				class="btn btn-xs absolute -bottom-1 right-0 mr-2"
 			>
+				less
+			</button>
 		{/if}
 	</div>
 
@@ -68,8 +88,6 @@
 		@apply bg-base-100 shadow-md;
 		@apply border-x-base-300 border-t-base-100 border-b-base-300;
 		min-height: 8em;
-		/* padding-top: 0.5em;
-		padding-left: 1em; */
 		border-width: 1px;
 		border-bottom-right-radius: 2em;
 		border-top-left-radius: 1em;

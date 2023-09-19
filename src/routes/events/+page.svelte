@@ -5,6 +5,8 @@
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
 	import Like from '$lib/like/like.svelte'
+	import { getHref } from '$lib/utils'
+	import { afterUpdate } from 'svelte'
 
 	export let data: PageData
 
@@ -68,21 +70,16 @@
 					</div>
 				{/if}
 			</div>
-
 			{#if event.description}
 				<div>
 					{event.description}
 				</div>
-			{:else}
-				<div class="opacity-0 select-none">0</div>
 			{/if}
-
-			<!-- use getHref here -->
-			<a
-				href={event.eventwebsite && event.eventwebsite.startsWith('http://')
-					? event.eventwebsite
-					: `http://${event.eventwebsite}`}>{event.eventwebsite}</a
-			>
+			<!-- {#if event.eventwebsite}
+					<a href={getHref(event.eventwebsite)}>
+						{event.eventwebsite}
+					</a>
+				{/if} -->
 
 			<div slot="bottom-left" class="p-2 text-xs text-base-content">
 				<div>
