@@ -5,22 +5,14 @@ import type { PageServerLoad } from './$types'
 export const load = (async ({ params }) => {
 	if (!params.raceId) throw fail(307, { message: 'No Race Id Provided' })
 
-	async function getVisibleColumns() {
-		// This should get resultColumns from the event first then the race
-		// return await prisma.event.findFirst({
-		// 	where: {id:  }
-		// })
-	}
-
 	async function getRace() {
-		// how to pass to routes
 		return await prisma.race.findFirst({
 			where: { id: params.raceId },
 			include: { Event: true }
 		})
 	}
 
-	const getResults = async () => {
+	async function getResults() {
 		try {
 			return await prisma.result.findMany({
 				where: { raceId: params.raceId },
@@ -32,6 +24,7 @@ export const load = (async ({ params }) => {
 			// return [{ error: 'no results' }]
 		}
 	}
+	// console.log('getResults: ', await getResults())
 	return {
 		results: await getResults(),
 		race: await getRace()

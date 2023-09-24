@@ -1,21 +1,21 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client'
 
 // for information about these interfaces
 declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			auth: import('lucia').AuthRequest;
-			from: string;
+			auth: import('lucia').AuthRequest
+			from: string
 		}
 		interface PageData {
-			flash?: { type: 'success' | 'error'; message: string };
+			flash?: { type: 'success' | 'error'; message: string }
 		}
 		// interface Platform {}
 	}
-	var prisma: PrismaClient;
+	var prisma: PrismaClient
 
 	// namespace svelte.JSX {
 	// 	interface HTMLAttributes<T> {
@@ -23,25 +23,25 @@ declare global {
 	// 	}
 	// }
 	interface HTMLAttributes<T> {
-		onclick_outside: () => void;
+		click_outside: () => void
 	}
 
 	namespace PrismaJson {
 		type compRest = {
-			rating?: string;
-			sailNo?: string;
-			nett?: string;
-			total?: string;
-		};
+			rating?: string
+			sailNo?: string
+			nett?: string
+			total?: string
+		}
 
-		type venueRest = {};
+		type venueRest = {}
 
 		export type eventRest = {
-			venuewebsite?: string;
-			venueemail?: string;
-			venueburgee?: string;
-			eventburgee?: string;
-		};
+			venuewebsite?: string
+			venueemail?: string
+			venueburgee?: string
+			eventburgee?: string
+		}
 
 		const resultColumns = z.object({
 			boat: z.boolean().nullable(),
@@ -55,34 +55,34 @@ declare global {
 			position: z.boolean().nullable(),
 			nett: z.boolean().nullable(),
 			total: z.boolean().nullable()
-		});
+		})
 
-		export type resultColumns = z.infer<typeof resultColumns>;
+		export type resultColumns = z.infer<typeof resultColumns>
 
 		type fileInfo = {
-			lastModified: string;
-		};
+			lastModified: string
+		}
 	}
 }
 
 /// <reference types="lucia" />
 declare global {
 	namespace Lucia {
-		type Auth = import('$lib/server/lucia').Auth;
+		type Auth = import('$lib/server/lucia').Auth
 		type DatabaseUserAttributes = {
-			facebook_username?: string;
-			google_username?: string;
-			github_username?: string;
-			username: string;
-			email?: string;
-			email_verified?: number;
-			name?: string;
-			firstname?: string;
-			lastname?: string;
-			avatar?: string;
-		};
-		type DatabaseSessionAttributes = {};
+			facebook_username?: string
+			google_username?: string
+			github_username?: string
+			username: string
+			email?: string
+			email_verified?: number
+			name?: string
+			firstname?: string
+			lastname?: string
+			avatar?: string
+		}
+		type DatabaseSessionAttributes = {}
 	}
 }
 
-export {};
+export {}

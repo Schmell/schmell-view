@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ColumnDef, SortDirection, TableOptions } from '@tanstack/svelte-table'
+	import type { Column, ColumnDef, SortDirection, TableOptions } from '@tanstack/svelte-table'
 	import {
 		createSvelteTable,
 		flexRender,
@@ -12,10 +12,13 @@
 	import Cell from './cell.svelte'
 	import DscSort from './dscSort.svelte'
 	import Empty from './empty.svelte'
+	import Icon from '@iconify/svelte'
+	import HeaderButton from './headerButton.svelte'
 
 	export let race
 	export let results
 	export let fleetName
+	// $: console.log('results: ', results)
 
 	const notypecheck = (x: any) => x
 
@@ -26,42 +29,53 @@
 			return start.finishType
 		}
 	})
-	console.log('finishType: ', finishType)
+	// console.log('finishType: ', finishType)
+
+	function getRaceDate() {
+		if (!race.date) {
+			return Temporal.Now.plainDateISO('Europe/London').toPlainDateTime()
+		}
+		const raceDateArray = race.date.split('/')
+		return Temporal.PlainDate.from({
+			day: raceDateArray[0],
+			month: raceDateArray[1],
+			year: raceDateArray[2]
+		}).toPlainDateTime()
+	}
 
 	function calculateElapsed(start, finish, elapsed) {
-		// if no elapsed and finishtype === "Finish Time"
+		// console.log(start, finish, elapsed)
 		if (elapsed) return elapsed
 		if (!start || !finish) return null
 
-		const raceDate = race.date ?? Date.now().toString()
+		const raceDate = getRaceDate()
 
-		// console.log('start: ', start)
-		// console.log('finish: ', finish)
 		const startArray = start.split(':')
-		const startTime = Temporal.PlainTime.from({
+
+		const startTime = raceDate.with({
 			hour: startArray[0],
 			minute: startArray[1],
 			second: startArray[2]
 		})
+
 		const finishArray = finish.split(':')
-		const finishTime = Temporal.PlainTime.from({
+
+		const finishTime = raceDate.with({
 			hour: finishArray[0],
 			minute: finishArray[1],
 			second: finishArray[2]
 		})
 
 		const elapsedTime = startTime.until(finishTime)
-		console.log('elapsedTime: ', elapsedTime.toString())
 
-		if (!elapsed && finishType === 'Finish Time') {
-			// turn start and finish into time codes and subtract
-			return
-		}
+		// Somtimes people will enter the results incorrectly ie: 12hr vs 24hr
+		if (elapsedTime.total({ unit: 'minute' }) < 0) return 'ERROR'
+
+		return Math.round(elapsedTime.total({ unit: 'minute' }) * 100) / 100
 	}
 
 	let resultRows = results.map((result) => {
 		const elapsedTime = calculateElapsed(result.start, result.finish, result.elapsed)
-		console.log('elapsedTime: ', elapsedTime)
 		return {
 			points: Number(result.points), // convert to number
 			position: Number(result.position), // named place on table
@@ -70,7 +84,7 @@
 			total: Number(result.Comp?.total),
 			nett: Number(result.Comp?.nett),
 			finish: result.finish,
-			elapsed: result.elasped,
+			elapsed: elapsedTime,
 			elapsedWin: result.elapsedWin,
 			ratingWin: result.ratingWin,
 			start: result.start,
@@ -100,27 +114,29 @@
 	///////////////////////////////////////////////////////
 	const columns: ColumnDef<Result>[] = [
 		{
-			header: `Points`,
+			header: 'Overall',
 			columns: [
 				{
 					accessorKey: 'rank',
 					header: 'Rank',
-					cell: (info) => flexRender(Cell, { info })
+					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
+				},
+
+				{
+					accessorKey: 'nett',
+					header: 'Nett',
+					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
 				},
 				{
-					accessorKey: 'points',
-					header: 'Points',
-					cell: (info) => flexRender(Cell, { info, discard: true })
-				},
-				{
-					accessorKey: 'position',
-					header: 'Place',
-					cell: (info) => flexRender(Cell, { info })
+					accessorKey: 'total',
+					header: 'Total',
+					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
 				}
 			]
 		},
 		{
 			header: `Name`,
+			cell: (info) => flexRender(HeaderButton, { info }),
 			columns: [
 				{
 					accessorKey: 'boat',
@@ -131,6 +147,11 @@
 					accessorKey: 'skipper',
 					header: 'Skipper',
 					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
+				},
+				{
+					accessorKey: 'sailno',
+					header: 'SailNo',
+					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
 				}
 			]
 		},
@@ -138,34 +159,44 @@
 			header: `Score`,
 			columns: [
 				{
+					accessorKey: 'points',
+					header: 'Points',
+					cell: (info) => flexRender(Cell, { info, discard: true, class: 'justify-start' })
+				},
+				{
+					accessorKey: 'position',
+					header: 'Place',
+					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
+				},
+				{
 					accessorKey: 'corrected',
 					header: 'Corrected',
-					cell: (info) => flexRender(Cell, { info, discard: true, useCode: true })
+					cell: (info) =>
+						flexRender(Cell, { info, discard: true, useCode: true, class: 'justify-start' })
 				},
 				{
 					accessorKey: 'elapsed',
 					header: 'Elapsed',
-					cell: (info) => flexRender(Cell, { info, discard: true, useCode: true })
+					cell: (info) =>
+						flexRender(Cell, { info, discard: true, useCode: true, class: 'justify-start' })
 				},
 				{
 					accessorKey: 'elapsedWin',
 					header: 'elapsedWin',
-					cell: (info) => flexRender(Cell, { info, discard: true, useCode: true })
+					cell: (info) =>
+						flexRender(Cell, { info, discard: true, useCode: true, class: 'justify-start' })
 				},
 				{
 					accessorKey: 'ratingWin',
 					header: 'ratingWin',
-					cell: (info) => flexRender(Cell, { info, discard: true, useCode: true })
+					cell: (info) =>
+						flexRender(Cell, { info, discard: true, useCode: true, class: 'justify-start' })
 				},
 				{
-					accessorKey: 'nett',
-					header: 'Nett',
-					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
-				},
-				{
-					accessorKey: 'total',
-					header: 'Total',
-					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
+					accessorKey: 'finish',
+					header: 'Finish',
+					cell: (info) =>
+						flexRender(Cell, { info, discard: true, useCode: true, class: 'justify-start' })
 				}
 			]
 		}
@@ -194,20 +225,6 @@
 		}))
 	}
 
-	const options = writable<TableOptions<Result>>({
-		data: resultRows,
-		columns,
-		state: {
-			sorting,
-			columnVisibility
-		},
-		onSortingChange: setSorting,
-		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		onColumnVisibilityChange: setColumnVisibility
-		// debugTable: true
-	})
-
 	function setColumnVisibility(updater) {
 		if (updater instanceof Function) {
 			columnVisibility = updater(columnVisibility)
@@ -227,8 +244,11 @@
 	function getResultColumns() {
 		//
 		const defaultColumns = {
+			points: true,
 			position: false,
 			skipper: false,
+			boat: true,
+			sailno: false,
 			elapsed: false,
 			elapsedWin: false,
 			ratingWin: false,
@@ -241,70 +261,221 @@
 		if (race?.resultColumns) {
 			return { ...defaultColumns, ...race?.resultColumns }
 		}
-		// console.log('Event resultColumns: ', race?.Event)
 
 		if (race?.Event?.resultColumns) {
-			console.log('Event resultColumns: ', race?.Event?.resultColumns)
 			return { ...defaultColumns, ...race?.Event?.resultColumns }
 		}
 
 		return defaultColumns
 	}
 
-	$: setColumnVisibility(getResultColumns())
+	const options = writable<TableOptions<Result>>({
+		data: resultRows,
+		columns,
+		state: {
+			sorting,
+			columnVisibility
+		},
+		enableRowSelection: true,
+		// enableMultiRowSelection: false,
+		onSortingChange: setSorting,
+		getCoreRowModel: getCoreRowModel(),
+		getSortedRowModel: getSortedRowModel(),
+		onColumnVisibilityChange: setColumnVisibility
+	})
 
 	const table = createSvelteTable(options)
+
+	$: setColumnVisibility(getResultColumns())
+
+	function setGroupView(column: Column<Result, unknown>, accessor: string[]) {
+		const resCols = getResultColumns()
+		column.columns.forEach((col) => {
+			if ([...accessor].includes(col.id)) {
+				resCols[col.id] = true
+			} else {
+				resCols[col.id] = false
+			}
+		})
+		setColumnVisibility(resCols)
+	}
+
+	function isVisible(colString: string): boolean {
+		const resCols = getResultColumns()
+		return resCols[colString]
+	}
+
+	const handleClick = () => {
+		const elem = document.activeElement
+		if (elem) {
+			// @ts-ignore
+			elem?.blur()
+		}
+	}
+
+	//
 </script>
 
 <div class="my-8">
 	<div class="flex justify-between mb-4">
 		<h2 class="text-4xl font-medium">{fleetName}</h2>
-
-		<!-- <label for="my-modal-3" class="btn btn-active">view</label>
-		<input type="checkbox" id="my-modal-3" class="modal-toggle" />
-		<div class="modal">
-			<div class="modal-box relative">
-				<label for="my-modal-3" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
-				<h3 class="text-lg font-bold">Choose View Options</h3>
-				{#each $table.getAllLeafColumns() as column}
-					<div class="px-1">
-						<label class="label">
-							<span class="label-text pr-1">{column.id.toLocaleUpperCase()}</span>
-							<input
-								type="checkbox"
-								class="checkbox checkbox-xs"
-								checked={column.getIsVisible()}
-								on:change={column.getToggleVisibilityHandler()}
-							/>
-						</label>
-					</div>
-				{/each}
-			</div>
-		</div> -->
 	</div>
-	<table class="table table-zebra w-full mr-10">
+
+	<table class="table table-sm md:table-lg table-zebra w-full mr-10">
 		<thead>
 			{#each $table.getHeaderGroups() as headerGroup}
 				<tr>
 					{#each headerGroup.headers as header}
 						<th colSpan={header.colSpan}>
 							{#if !header.isPlaceholder}
-								<button
-									class:cursor-pointer={header.column.getCanSort()}
-									class:select-none={header.column.getCanSort()}
-									class="flex"
-									on:click={header.column.getToggleSortingHandler()}
-									on:keyup
-								>
-									<svelte:component
-										this={notypecheck(
-											flexRender(header.column.columnDef.header, header.getContext())
-										)}
-									/>
-									<span class="pl-1">
-										<svelte:component this={getSortSymbol(header.column.getIsSorted())} />
-									</span>
-								</button>
+								<!--  -->
+								{#if ['Overall', 'Name', 'Score'].includes(header.column.id)}
+									<div class="dropdown dropdown-right">
+										<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+										<label
+											for=""
+											tabindex="0"
+											class="link link-hover decoration-none flex items-center gap-2"
+										>
+											<svelte:component
+												this={notypecheck(
+													flexRender(header.column.columnDef.header, header.getContext())
+												)}
+											/>
+											<Icon icon="material-symbols:arrow-drop-down-circle-outline" /></label
+										>
+										<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+										<ul
+											tabindex="0"
+											class="p-2 w-32 shadow menu dropdown-content z-[1] bg-base-100 rounded-box"
+										>
+											{#if header.column.id === 'Overall'}
+												<li>
+													<button on:click={() => setGroupView(header.column, ['rank'])}>
+														Rank
+													</button>
+												</li>
+												<li>
+													<button on:click={() => setGroupView(header.column, ['nett'])}>
+														Nett
+													</button>
+												</li>
+												<li>
+													<button on:click={() => setGroupView(header.column, ['total'])}>
+														Total
+													</button>
+												</li>
+											{:else if header.column.id === 'Name'}
+												<li>
+													<button on:click={() => setGroupView(header.column, ['boat'])}>
+														Boat
+													</button>
+												</li>
+												<li>
+													<button on:click={() => setGroupView(header.column, ['skipper'])}>
+														Skipper
+													</button>
+												</li>
+												<li>
+													<button on:click={() => setGroupView(header.column, ['sailno'])}>
+														Sail-No.
+													</button>
+												</li>
+											{:else if header.column.id === 'Score'}
+												<form
+													method="GET"
+													on:change={({ target }) => {
+														// @ts-ignore
+														const form = target?.form
+														const formObj = Object.fromEntries(new FormData(form))
+														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
+														handleClick()
+													}}
+													class="text-xs font-normal"
+												>
+													<label class="label">
+														<span class="label-text">Points</span>
+														<input
+															class=" checkbox checkbox-xs"
+															type="checkbox"
+															name="points"
+															aria-label="Points"
+														/>
+													</label>
+
+													<label class="label">
+														<span class="label-text">Corrected</span>
+
+														<input
+															checked={isVisible('corrected')}
+															class=" checkbox checkbox-xs"
+															type="checkbox"
+															name="corrected"
+															aria-label="Corrected"
+														/>
+													</label>
+
+													<label class="label">
+														<span class="label-text">Elapsed</span>
+														<input
+															class=" checkbox checkbox-xs"
+															type="checkbox"
+															name="elapsed"
+															aria-label="Elapsed"
+														/>
+													</label>
+
+													<label class="label">
+														<span class="label-text">Rating Win</span>
+														<input
+															class=" checkbox checkbox-xs"
+															type="checkbox"
+															name="ratingWin"
+															aria-label="Rating Win"
+														/>
+													</label>
+
+													<label class="label">
+														<span class="label-text">Elapsed Win</span>
+														<input
+															class=" checkbox checkbox-xs"
+															type="checkbox"
+															name="elapsedWin"
+															aria-label="Elapsed Win"
+														/>
+													</label>
+
+													<label class="label">
+														<span class="label-text">Finish</span>
+														<input
+															class=" checkbox checkbox-xs"
+															type="checkbox"
+															name="finish"
+															aria-label="Finish"
+														/>
+													</label>
+												</form>
+											{/if}
+										</ul>
+									</div>
+								{:else}
+									<button
+										class:cursor-pointer={header.column.getCanSort()}
+										class:select-none={header.column.getCanSort()}
+										class="flex"
+										on:click={header.column.getToggleSortingHandler()}
+										on:keyup
+									>
+										<svelte:component
+											this={notypecheck(
+												flexRender(header.column.columnDef.header, header.getContext())
+											)}
+										/>
+										<span class="pl-1">
+											<svelte:component this={getSortSymbol(header.column.getIsSorted())} />
+										</span>
+									</button>
+								{/if}
 							{/if}
 						</th>
 					{/each}
@@ -312,8 +483,17 @@
 			{/each}
 		</thead>
 		<tbody>
-			{#each $table.getRowModel().rows.slice(0, 10) as row}
-				<tr>
+			{#each $table.getRowModel().rows as row, i}
+				<tr
+					on:click={(e) => {
+						row.toggleSelected()
+						// console.log(row.getIsSelected())
+					}}
+					class:odd={i % 2 == 0 && !row.getIsSelected()}
+					class:even={!(i % 2 == 0) && !row.getIsSelected()}
+					class:selectedEven={row.getIsSelected() && i % 2 == 0}
+					class:selectedOdd={row.getIsSelected() && !(i % 2 == 0)}
+				>
 					{#each row.getVisibleCells() as cell}
 						<td>
 							<svelte:component
@@ -343,3 +523,23 @@
 		</tfoot>
 	</table>
 </div>
+
+<style>
+	/* tr:nth-child(odd) td {
+		@apply bg-base-100;
+	} */
+
+	.odd {
+		@apply bg-base-100;
+	}
+	.even {
+		@apply bg-base-200;
+	}
+
+	.selectedEven {
+		@apply bg-info border border-accent;
+	}
+	.selectedOdd {
+		@apply bg-info text-info-content border border-accent;
+	}
+</style>

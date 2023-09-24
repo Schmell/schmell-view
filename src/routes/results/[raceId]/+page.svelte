@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { Page } from '$components/layout';
-	import type { Comp, Result } from '@prisma/client';
-	import type { PageData } from './$types';
-	import FleetTable from './FleetTable.svelte';
+	import { Page } from '$components/layout'
+	import type { Comp, Result } from '@prisma/client'
+	import type { PageData } from './$types'
+	import FleetTable from './FleetTable.svelte'
 
-	export let data: PageData;
+	export let data: PageData
 	// console.log('data: ', data.results)
-	$: ({ race, results } = data);
-
+	$: ({ race, results } = data)
+	// $: console.log('results: ', results)
 	// make an arrays filtered by a set from fleet
 
 	// first step is turn the unique fleets if any in this race into an array
@@ -16,46 +16,46 @@
 			...new Set(
 				data.results?.map((item) => {
 					if (item.Comp?.fleet) {
-						return item.Comp?.fleet;
+						return item.Comp?.fleet
 					}
-					return item.Comp?.division;
+					return item.Comp?.division
 				})
 			)
-		];
+		]
 	}
 
 	function getFleetResults(key: string | null | undefined) {
 		return data.results?.filter((result) => {
-			// console.log('result: ', result.Comp);
+			// console.log('result: ', result)
 			if (result.Comp?.fleet) {
-				return result.Comp?.fleet === key;
+				return result.Comp?.fleet === key
 			} else if (result.Comp?.division) {
-				return result.Comp?.division === key;
+				return result.Comp?.division === key
 			}
 
 			// if there is no fleet or division
-			return result;
-		});
+			return result
+		})
 	}
 
-	let tables;
+	let tables
 
 	function fleetsTables() {
 		let fleetsTables: (Result & {
-			Comp: Comp | null;
-		})[] = [];
+			Comp: Comp | null
+		})[] = []
 
-		const unique = getUniqueFleetsArray();
+		const unique = getUniqueFleetsArray()
 
 		unique.forEach((uf) => {
-			let fleetResults = getFleetResults(uf);
-			if (fleetResults) fleetsTables.push(fleetResults as any);
-		});
+			let fleetResults = getFleetResults(uf)
+			if (fleetResults) fleetsTables.push(fleetResults as any)
+		})
 
-		return fleetsTables;
+		return fleetsTables
 	}
 
-	tables = fleetsTables();
+	tables = fleetsTables()
 </script>
 
 <Page title={race?.Event?.name}>

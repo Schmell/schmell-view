@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types'
-	import { Form } from 'formsnap'
+	import { FormPrimitive as Form } from '$lib/components/ui/form'
 	import { fullEventSchema } from './fullEventSchema'
 	import { Page } from '$components/layout'
 	import Textarea from './textarea.svelte'
