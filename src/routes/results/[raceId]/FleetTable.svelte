@@ -350,7 +350,50 @@
 											class="p-2 w-32 shadow menu dropdown-content z-[1] bg-base-100 rounded-box"
 										>
 											{#if header.column.id === 'Overall'}
-												<li>
+												<form
+													on:change={({ target }) => {
+														// @ts-ignore
+														const form = target?.form
+														const formObj = Object.fromEntries(new FormData(form))
+														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
+														handleClick()
+													}}
+													class="text-xs font-normal"
+												>
+													<label class="label">
+														<span class="label-text">Rank</span>
+														<input
+															checked={isVisible('rank')}
+															class=" checkbox checkbox-xs"
+															type="checkbox"
+															name="rank"
+															aria-label="Overall Event Ranking"
+														/>
+													</label>
+
+													<label class="label">
+														<span class="label-text">Nett</span>
+														<input
+															checked={isVisible('nett')}
+															class=" checkbox checkbox-xs"
+															type="checkbox"
+															name="nett"
+															aria-label="Nett Overall Score"
+														/>
+													</label>
+
+													<label class="label">
+														<span class="label-text">Total</span>
+														<input
+															checked={isVisible('total')}
+															class=" checkbox checkbox-xs"
+															type="checkbox"
+															name="total"
+															aria-label="Overall total before drops"
+														/>
+													</label>
+												</form>
+												<!-- <li>
 													<button on:click={() => setGroupView(header.column, ['rank'])}>
 														Rank
 													</button>
@@ -364,9 +407,52 @@
 													<button on:click={() => setGroupView(header.column, ['total'])}>
 														Total
 													</button>
-												</li>
+												</li> -->
 											{:else if header.column.id === 'Name'}
-												<li>
+												<form
+													on:change={({ target }) => {
+														// @ts-ignore
+														const form = target?.form
+														const formObj = Object.fromEntries(new FormData(form))
+														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
+														handleClick()
+													}}
+													class="text-xs font-normal"
+												>
+													<label class="label">
+														<span class="label-text">Boat</span>
+														<input
+															checked={isVisible('boat')}
+															class=" checkbox checkbox-xs"
+															type="checkbox"
+															name="boat"
+															aria-label="Boat"
+														/>
+													</label>
+
+													<label class="label">
+														<span class="label-text">Skipper</span>
+														<input
+															checked={isVisible('skipper')}
+															class=" checkbox checkbox-xs"
+															type="checkbox"
+															name="skipper"
+															aria-label="Skipper"
+														/>
+													</label>
+
+													<label class="label">
+														<span class="label-text">Sail No.</span>
+														<input
+															checked={isVisible('sailno')}
+															class=" checkbox checkbox-xs"
+															type="checkbox"
+															name="sailno"
+															aria-label="Sail Number"
+														/>
+													</label>
+												</form>
+												<!-- <li>
 													<button on:click={() => setGroupView(header.column, ['boat'])}>
 														Boat
 													</button>
@@ -380,10 +466,9 @@
 													<button on:click={() => setGroupView(header.column, ['sailno'])}>
 														Sail-No.
 													</button>
-												</li>
+												</li> -->
 											{:else if header.column.id === 'Score'}
 												<form
-													method="GET"
 													on:change={({ target }) => {
 														// @ts-ignore
 														const form = target?.form
@@ -396,6 +481,7 @@
 													<label class="label">
 														<span class="label-text">Points</span>
 														<input
+															checked={isVisible('points')}
 															class=" checkbox checkbox-xs"
 															type="checkbox"
 															name="points"
@@ -418,6 +504,7 @@
 													<label class="label">
 														<span class="label-text">Elapsed</span>
 														<input
+															checked={isVisible('elapsed')}
 															class=" checkbox checkbox-xs"
 															type="checkbox"
 															name="elapsed"
@@ -428,6 +515,7 @@
 													<label class="label">
 														<span class="label-text">Rating Win</span>
 														<input
+															checked={isVisible('ratingWin')}
 															class=" checkbox checkbox-xs"
 															type="checkbox"
 															name="ratingWin"
@@ -438,6 +526,7 @@
 													<label class="label">
 														<span class="label-text">Elapsed Win</span>
 														<input
+															checked={isVisible('elapsedWin')}
 															class=" checkbox checkbox-xs"
 															type="checkbox"
 															name="elapsedWin"
@@ -448,6 +537,7 @@
 													<label class="label">
 														<span class="label-text">Finish</span>
 														<input
+															checked={isVisible('finish')}
 															class=" checkbox checkbox-xs"
 															type="checkbox"
 															name="finish"
