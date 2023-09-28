@@ -14,6 +14,8 @@
 	import Empty from './empty.svelte'
 	import Icon from '@iconify/svelte'
 	import HeaderButton from './headerButton.svelte'
+	import { columnVisibiltyStore } from './stores'
+	import { enhance } from '$app/forms'
 
 	export let race
 	export let results
@@ -23,6 +25,8 @@
 	const notypecheck = (x: any) => x
 
 	let columnVisibility
+
+	// let cv = columnVisibiltyStore(getResultColumns())
 
 	const finishType = race.starts.map((start) => {
 		if (start.fleet[1] === fleetName || start.fleet[5] === fleetName) {
@@ -114,29 +118,7 @@
 	///////////////////////////////////////////////////////
 	const columns: ColumnDef<Result>[] = [
 		{
-			header: 'Overall',
-			columns: [
-				{
-					accessorKey: 'rank',
-					header: 'Rank',
-					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
-				},
-
-				{
-					accessorKey: 'nett',
-					header: 'Nett',
-					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
-				},
-				{
-					accessorKey: 'total',
-					header: 'Total',
-					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
-				}
-			]
-		},
-		{
 			header: `Name`,
-			cell: (info) => flexRender(HeaderButton, { info }),
 			columns: [
 				{
 					accessorKey: 'boat',
@@ -197,6 +179,27 @@
 					header: 'Finish',
 					cell: (info) =>
 						flexRender(Cell, { info, discard: true, useCode: true, class: 'justify-start' })
+				}
+			]
+		},
+		{
+			header: 'Overall',
+			columns: [
+				{
+					accessorKey: 'rank',
+					header: 'Rank',
+					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
+				},
+
+				{
+					accessorKey: 'nett',
+					header: 'Nett',
+					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
+				},
+				{
+					accessorKey: 'total',
+					header: 'Total',
+					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
 				}
 			]
 		}
@@ -289,15 +292,16 @@
 	$: setColumnVisibility(getResultColumns())
 
 	function setGroupView(column: Column<Result, unknown>, accessor: string[]) {
-		const resCols = getResultColumns()
+		const accessorList = {}
 		column.columns.forEach((col) => {
 			if ([...accessor].includes(col.id)) {
-				resCols[col.id] = true
+				accessorList[col.id] = true
 			} else {
-				resCols[col.id] = false
+				accessorList[col.id] = false
 			}
 		})
-		setColumnVisibility(resCols)
+
+		setColumnVisibility({ ...columnVisibility, ...accessorList })
 	}
 
 	function isVisible(colString: string): boolean {
@@ -321,7 +325,7 @@
 		<h2 class="text-4xl font-medium">{fleetName}</h2>
 	</div>
 
-	<table class="table table-sm md:table-lg table-zebra w-full mr-10">
+	<table class="table table-md md:table-sm table-zebra w-full mr-10">
 		<thead>
 			{#each $table.getHeaderGroups() as headerGroup}
 				<tr>
@@ -351,14 +355,17 @@
 										>
 											{#if header.column.id === 'Overall'}
 												<form
+													method="post"
 													on:change={({ target }) => {
 														// @ts-ignore
+														// console.log('header: ', header.get)
 														const form = target?.form
 														const formObj = Object.fromEntries(new FormData(form))
 														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
 														handleClick()
 													}}
 													class="text-xs font-normal"
+													use:enhance
 												>
 													<label class="label">
 														<span class="label-text">Rank</span>
@@ -393,23 +400,9 @@
 														/>
 													</label>
 												</form>
-												<!-- <li>
-													<button on:click={() => setGroupView(header.column, ['rank'])}>
-														Rank
-													</button>
-												</li>
-												<li>
-													<button on:click={() => setGroupView(header.column, ['nett'])}>
-														Nett
-													</button>
-												</li>
-												<li>
-													<button on:click={() => setGroupView(header.column, ['total'])}>
-														Total
-													</button>
-												</li> -->
 											{:else if header.column.id === 'Name'}
 												<form
+													method="post"
 													on:change={({ target }) => {
 														// @ts-ignore
 														const form = target?.form
@@ -418,6 +411,7 @@
 														handleClick()
 													}}
 													class="text-xs font-normal"
+													use:enhance
 												>
 													<label class="label">
 														<span class="label-text">Boat</span>
@@ -452,23 +446,9 @@
 														/>
 													</label>
 												</form>
-												<!-- <li>
-													<button on:click={() => setGroupView(header.column, ['boat'])}>
-														Boat
-													</button>
-												</li>
-												<li>
-													<button on:click={() => setGroupView(header.column, ['skipper'])}>
-														Skipper
-													</button>
-												</li>
-												<li>
-													<button on:click={() => setGroupView(header.column, ['sailno'])}>
-														Sail-No.
-													</button>
-												</li> -->
 											{:else if header.column.id === 'Score'}
 												<form
+													method="post"
 													on:change={({ target }) => {
 														// @ts-ignore
 														const form = target?.form
@@ -477,6 +457,7 @@
 														handleClick()
 													}}
 													class="text-xs font-normal"
+													use:enhance
 												>
 													<label class="label">
 														<span class="label-text">Points</span>
