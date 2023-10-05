@@ -7,10 +7,10 @@
 
 	export let formObj
 	export let item
-	$: console.log('item: ', item)
+	// $: console.log('item: ', item)
 	// export let type
 	export let user
-	$: console.log('user: ', user)
+	// $: console.log('user: ', user)
 </script>
 
 <div class="flex items-start gap-2">

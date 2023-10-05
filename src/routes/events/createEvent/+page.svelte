@@ -41,7 +41,6 @@
 
 <Page title="Create Event">
 	{#if showImport}
-		<!-- <ImportForm {orgs} {...$$props} action="?/newImport" /> -->
 		<div>
 			<ul class="steps w-full maw-w-md mb-2">
 				<li class="step" class:step-primary={step === 'start'}>Add Organization</li>

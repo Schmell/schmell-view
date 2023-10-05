@@ -6,7 +6,32 @@ export const load = (async ({ params }) => {
 		try {
 			return await prisma.organization.findUniqueOrThrow({
 				where: { id: params.orgId },
-				include: { Events: true }
+				include: {
+					Events: {
+						include: {
+							Races: true,
+							Organization: true,
+							Comments: { include: { User: true } },
+							Likes: true,
+							Follows: true
+						}
+					},
+					_count: { select: { Comments: true, Likes: true } },
+					Comments: {
+						select: {
+							comment: true,
+							id: true,
+							type: true,
+							User: true,
+							Likes: true,
+
+							_count: { select: { Likes: true } }
+						}
+					},
+					Likes: true,
+					Owner: true,
+					Addresses: true
+				}
 			})
 		} catch (error) {
 			console.error('error: ', error)

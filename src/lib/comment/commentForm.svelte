@@ -10,7 +10,7 @@
 </script>
 
 <Form {action} {formObj}>
-	<Input {formObj} name="comment" label=" " placeholder="add a comment" class="label-text-xs" />
+	<Input {formObj} name="comment" label=" " placeholder="add a comment" />
 	<input type="hidden" name="itemId" value={itemId} />
 	<input type="hidden" name="type" value={type} />
 	<input type="hidden" name="userId" value={user?.userId} />

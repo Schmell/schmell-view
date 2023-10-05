@@ -1,63 +1,91 @@
 <script lang="ts">
-	import { Page } from '$components/layout';
-	import Icon from '@iconify/svelte';
-	import type { Organization } from '@prisma/client';
-	import type { PageData } from './$types';
+	import { Page } from '$components/layout'
+	import Icon from '@iconify/svelte'
+	import type { Organization } from '@prisma/client'
+	import type { PageData } from './$types'
+	import Like from '$lib/like/like.svelte'
 
-	export let data: PageData;
-	console.log('data: ', data);
-	$: ({ org } = data);
+	export let data: PageData
+	// console.log('data: ', data);
+	$: ({ org, user } = data)
 
 	const getHref = (org: Organization | undefined) => {
-		if (!org) return null;
+		if (!org) return null
 		return org?.website && org.website.startsWith('http://')
 			? org.website
-			: `http://${org?.website}`;
-	};
+			: `http://${org?.website}`
+	}
 </script>
 
 <Page title={org?.name}>
-	<div class="max-w-md mx-auto bg-base-100 rounded-xl shadow-md overflow-hidden md:max-w-2xl">
-		<div class="md:flex">
-			<div class="md:shrink-0">
-				<img
-					class="h-48 w-full object-cover md:h-full md:w-48 rounded-br-full"
-					src={org?.titleImage ? org?.titleImage : 'https://picsum.photos/id/384/400/300/'}
-					alt="Title for {org?.name}"
-				/>
-			</div>
-			<div class="pt-8 pb-4 px-8">
-				<div class="uppercase tracking-wide text-sm text-accent font-semibold">
-					{@html org?.name}
+	{#if !org}
+		<div>No Organization provided</div>
+	{:else}
+		<div class="max-w-md mx-auto bg-base-100 rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+			<div class="md:flex">
+				<div class="relative">
+					{#if org.logo}
+						<div class="absolute z-10 top-1 left-1 w-10">
+							<img src={org.logo} alt={org.name} />
+						</div>
+					{/if}
+					<img
+						class="h-48 w-full object-cover md:h-full md:w-48 rounded-br-full"
+						src={org.titleImage ? org.titleImage : 'https://picsum.photos/id/384/400/300/'}
+						alt="Title image for {org.name}"
+					/>
+					<!-- Likes and Follows -->
+					<div class="absolute right-1 -bottom-4 z-10 flex flex-col gap-1">
+						<div class="bg-base-100 p-1 rounded-full shadow-lg">
+							<Like type="organization" item={org} userId={data.user?.userId} class="" />
+						</div>
+
+						<div class="p-1 bg-base-100 shadow-lg rounded-full">
+							<button class="btn btn-xs btn-outline btn-accent rounded-full bg-base-100">
+								follow
+							</button>
+						</div>
+					</div>
 				</div>
-				<a
-					href={getHref(org)}
-					class="block mt-1 text-lg leading-tight font-medium text-base-content hover:underline"
-				>
-					{org?.email}
-				</a>
-				<p class="mt-2 text-base-content">
-					{@html org?.description ? org?.description : 'No description provided'}
-				</p>
-				<a href={getHref(org)} class="text-secondary">{org?.website} </a>
+				<div class="pt-8 pb-4 px-8">
+					<div class="uppercase tracking-wide text-sm text-accent font-semibold">
+						{@html org.name}
+					</div>
+					<a
+						href={getHref(org)}
+						class="block mt-1 text-lg leading-tight font-medium text-base-content hover:underline"
+					>
+						{org?.email}
+					</a>
+					<p class="mt-2 text-base-content">
+						{@html org.description ? org.description : 'No description provided'}
+					</p>
+					<a href={getHref(org)} class="text-secondary"> {org.website} </a>
+				</div>
+			</div>
+			<!-- Tools -->
+			<div class="px-4 pb-4 flex justify-end">
+				<!-- <div class="tooltip tooltip-top" data-tip="View Competitors">
+					<a href="/comps/{org.id}" class="btn btn-ghost p-1">
+						<Icon class="text-3xl text-primary" icon="material-symbols:groups-outline-rounded" />
+					</a>
+				</div> -->
+				<div class="tooltip tooltip-top" data-tip="View Events">
+					<a href="/events/org/{org.id}" class="btn btn-ghost p-1">
+						<Icon class="text-3xl text-primary" icon="material-symbols:preview" />
+					</a>
+				</div>
+				{#if user?.userId === org.ownerId}
+					<div class="tooltip tooltip-top" data-tip="Edit Organization">
+						<a
+							href="/organization/edit/{org.id}?from=/organization/view/{org.id}"
+							class="btn btn-ghost p-1"
+						>
+							<Icon class="text-3xl  text-primary" icon="material-symbols:edit-outline" />
+						</a>
+					</div>
+				{/if}
 			</div>
 		</div>
-		<div class="px-4 pb-4 flex justify-end">
-			<div class="tooltip tooltip-top" data-tip="View Competitors">
-				<a href="/comps/{org?.id}" class="btn btn-ghost p-1">
-					<Icon class="text-3xl text-primary" icon="material-symbols:groups-outline-rounded" />
-				</a>
-			</div>
-			<div class="tooltip tooltip-top" data-tip="View Races">
-				<a href="/races/{org?.id}" class="btn btn-ghost p-1">
-					<Icon class="text-3xl text-primary" icon="material-symbols:preview" />
-				</a>
-			</div>
-			<div class="tooltip tooltip-top" data-tip="Edit Event">
-				<a href="/event/{org?.id}" class="btn btn-ghost p-1">
-					<Icon class="text-3xl  text-primary" icon="material-symbols:edit-outline" />
-				</a>
-			</div>
-		</div>
-	</div>
+	{/if}
 </Page>

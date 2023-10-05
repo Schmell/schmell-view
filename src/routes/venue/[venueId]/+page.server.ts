@@ -20,6 +20,19 @@ export const load = (async ({ params, url }) => {
 							Follows: true
 						}
 					},
+					_count: { select: { Comments: true, Likes: true } },
+					Comments: {
+						select: {
+							comment: true,
+							id: true,
+							type: true,
+							User: true,
+							Likes: true,
+
+							_count: { select: { Likes: true } }
+						}
+					},
+					Likes: true,
 					Publisher: true,
 					Addresses: true
 				}

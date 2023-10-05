@@ -5,6 +5,8 @@
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
 	import { Accordion, Collapsible } from 'bits-ui'
+	import Comments from '$lib/comment/comments.svelte'
+	import { superForm } from 'sveltekit-superforms/client'
 
 	export let data: PageData
 	$: ({ venue } = data)
@@ -20,12 +22,16 @@
 	}
 
 	function checkForImage(imageString) {
-		if (imageString.startsWith('http://') || imageString.startsWith('data:image'))
+		if (
+			imageString.startsWith('http://') ||
+			imageString.startsWith('https://') ||
+			imageString.startsWith('data:image')
+		)
 			return imageString
 		return ''
 	}
 
-	// const commentFormObj = superForm(data.commentForm)
+	const commentFormObj = superForm(data.commentForm)
 </script>
 
 <Page title={venue.name}>
@@ -49,9 +55,20 @@
 					alt={venue.name}
 				/>
 			</div>
-			<div class="absolute right-0 bottom-0 z-10 bg-base-100 p-2 rounded-full shadow-lg">
-				<Like type="venue" item={venue} userId={data.user?.userId} />
+
+			<!-- Likes and Follows -->
+			<div class="absolute -right-2 -bottom-4 z-10 flex flex-col gap-1">
+				<!-- <Icon class="text-xl" icon="material-symbols:bookmark-add-outline-rounded" /> -->
+				<div class="bg-base-100 p-1 rounded-full shadow-lg">
+					<Like type="venue" item={venue} userId={data.user?.userId} class="" />
+				</div>
+				<div class="p-1 bg-base-100 shadow-lg rounded-full">
+					<button class="btn btn-xs btn-outline btn-accent rounded-full bg-base-100"
+						>follow
+					</button>
+				</div>
 			</div>
+			<!--  -->
 		</div>
 		{#if venue.description}
 			<div
@@ -61,7 +78,8 @@
 			</div>
 		{/if}
 
-		<div class="flex justify-between items-center">
+		<!-- Links -->
+		<div class="py-2 flex justify-between items-center">
 			<div class="flex gap-2 items-center pt-4 text-md font-bold">
 				<Icon icon="gridicons:popout" />
 				<a href={getHref(venue.website)}>{venue.website ? venue.website : 'no website provided'}</a>
@@ -83,44 +101,29 @@
 			<div class="w-full">
 				<div class="text-sm w-full flex gap-2 justify-between">
 					<!--  -->
-					<!-- <div>
+					<div>
 						<Accordion.Root>
-							<Accordion.Item>
-							  <Accordion.Header>
-								<Accordion.Trigger />
-							  </Accordion.Header>
-							  <Accordion.Content />
-							</Accordion.Item>
-						  </Accordion.Root>
-					</div> -->
-					<!--  -->
-					<div class="">
-						{#each venue.Addresses as address, i}
-							<Collapsible.Root
-								open={!(i > 0)}
-								onOpenChange={(e) => {
-									console.log('e: ', e)
-								}}
-							>
-								<Collapsible.Trigger
-									name={address.id}
-									class="flex gap-2 w-full justify-between items-center"
-								>
-									<div class="text-lg">
-										{address.name}
-									</div>
-									<Icon icon="mdi:chevron-down" />
-								</Collapsible.Trigger>
-								<Collapsible.Content class="pb-2 pt-1">
-									<div class="text-xs">
-										<p>{address.street ?? ''},</p>
-										<span>{address.city}, </span>
-										<span>{address.state}, </span>
-										<p>{address.code}</p>
-									</div>
-								</Collapsible.Content>
-							</Collapsible.Root>
-						{/each}
+							{#each venue.Addresses as address, i}
+								<Accordion.Item value={address.name}>
+									<Accordion.Header>
+										<Accordion.Trigger class="flex gap-2 w-full justify-between items-center">
+											<div class="text-lg">
+												{address.name}
+											</div>
+											<Icon icon="mdi:chevron-down" />
+										</Accordion.Trigger>
+									</Accordion.Header>
+									<Accordion.Content class="pb-2 pt-1">
+										<div class="text-xs">
+											<p>{address.street ?? ''},</p>
+											<span>{address.city}, </span>
+											<span>{address.state}, </span>
+											<p>{address.code}</p>
+										</div>
+									</Accordion.Content>
+								</Accordion.Item>
+							{/each}
+						</Accordion.Root>
 					</div>
 
 					<div>
@@ -135,7 +138,7 @@
 				</div>
 			</div>
 		</div>
-
+		<Comments item={venue} type="venue" user={data.user} formObj={commentFormObj} />
 		<div class="flex w-full max-w-md justify-end">
 			{#if !showEvents}
 				<div class="tooltip tooltip-top" data-tip="Show Events">

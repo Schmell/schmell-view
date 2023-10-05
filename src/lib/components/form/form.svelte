@@ -1,13 +1,13 @@
 <script lang="ts">
 	// import { enhance } from '$app/forms';
-	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
-	import { dev } from '$app/environment';
+	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte'
+	import { dev } from '$app/environment'
 
-	export let formObj;
-	export let noDebug: boolean | undefined = false;
-	export let action: string | undefined = undefined;
+	export let formObj
+	export let noDebug: boolean | undefined = false
+	export let action: string | undefined = undefined
 
-	const { form: debug, message, enhance } = formObj;
+	const { form: debug, message, enhance } = formObj
 </script>
 
 <form method="post" {action} use:enhance>

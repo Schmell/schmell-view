@@ -3,15 +3,11 @@
 	import CommentForm from './commentForm.svelte'
 
 	export let item
-	$: console.log('item: ', item)
 	export let user
-	// $: console.log('user: ', user)
 	export let formObj
-	// export let itemId
 	export let type
 </script>
 
-<!-- Comments component -->
 <div class="mt-4">
 	<div class="flex gap-2 justify-between items-end">
 		<div class="font-semibold">Comments:</div>
@@ -35,7 +31,7 @@
 		</div>
 	</div>
 
-	<div class="divider my-0" />
+	<hr />
 	<CommentForm action="/api/comment/?/comment" {formObj} {type} {user} itemId={item.id ?? ''} />
 	{#each item.Comments as i}
 		<!-- {@debug i} -->

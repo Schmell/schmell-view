@@ -1,28 +1,28 @@
 <script lang="ts">
-	import '../app.css';
-	import type { SubmitFunction } from '@sveltejs/kit';
-	import { slide } from 'svelte/transition';
-	import Icon from '@iconify/svelte';
-	import { clickOutside } from '$lib/utils';
-	import { page } from '$app/stores';
+	import '../app.css'
+	import type { SubmitFunction } from '@sveltejs/kit'
+	import { slide } from 'svelte/transition'
+	import Icon from '@iconify/svelte'
+	import { clickOutside } from '$lib/utils'
+	import { page } from '$app/stores'
 
-	export let data;
-	$: ({ user } = data);
+	export let data
+	$: ({ user } = data)
 
-	let open = false;
+	let open = false
 
 	function handleClickOutside() {
-		open = false;
+		open = false
 	}
 
-	const toggleOpen = () => (open = !open);
+	const toggleOpen = () => (open = !open)
 
 	const submitUpdateTheme: SubmitFunction = ({ action }) => {
-		const theme = action.searchParams.get('theme');
+		const theme = action.searchParams.get('theme')
 		if (theme) {
-			document.documentElement.setAttribute('data-theme', theme);
+			document.documentElement.setAttribute('data-theme', theme)
 		}
-	};
+	}
 </script>
 
 <div class="max-w-sm">
@@ -72,9 +72,6 @@
 				transition:slide
 			>
 				<ul class="link-list">
-					<a href="/import" on:click={toggleOpen}>
-						<Icon icon="material-symbols:upload-rounded" /> Import
-					</a>
 					<a href="/events" on:click={toggleOpen}>
 						<Icon icon="material-symbols:calendar-month" /> Events
 					</a>
@@ -88,6 +85,9 @@
 						<Icon icon="material-symbols:breaking-news-alt-1-outline" /> News
 					</a>
 					<a href="/series" on:click={toggleOpen}> <Icon icon="mdi:award" /> Series </a>
+					<a href="/import" on:click={toggleOpen}>
+						<Icon icon="material-symbols:upload-rounded" /> Import
+					</a>
 				</ul>
 			</section>
 		{/if}

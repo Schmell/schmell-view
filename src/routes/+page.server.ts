@@ -6,15 +6,28 @@ import { auth } from '$lib/server/lucia'
 
 export const load: PageServerLoad = loadFlash(async (event) => {
 	const { locals } = event
-	const session = await locals.auth.validate()
 
+	const session = await locals.auth.validate()
 	if (!session) throw redirect(302, '/auth/login')
 
 	async function getUserEvents() {
 		try {
 			return await prisma.event.findMany({
 				where: { publisherId: session?.user.userId },
-				include: { Organization: { select: { id: true, name: true } } }
+				include: {
+					Organization: {
+						select: {
+							id: true,
+							name: true,
+							Likes: true,
+							Follows: true,
+							_count: { select: { Likes: true, Follows: true } }
+						}
+					},
+					Likes: true,
+					Follows: true,
+					_count: { select: { Likes: true, Follows: true } }
+				}
 			})
 		} catch (error) {
 			console.log('error: ', error)
@@ -22,10 +35,49 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 		}
 	}
 
+	async function getUserOrganizations() {
+		try {
+			return await prisma.organization.findMany({
+				where: { ownerId: session?.user.userId },
+				include: {
+					_count: { select: { Likes: true, Follows: true } },
+					Likes: true,
+					Follows: true
+				}
+			})
+		} catch (error) {
+			console.log('error: ', error)
+			throw fail(400, { message: 'Fail query on User Likes' })
+		}
+	}
+
+	async function getUserSeries() {
+		try {
+			return await prisma.series.findMany({
+				where: { publisherId: session?.user.userId },
+				include: {
+					Events: true,
+					Likes: true,
+					Follows: true,
+					Organization: true,
+					Publisher: true
+				}
+			})
+		} catch (error) {
+			console.log('error: ', error)
+			throw fail(400, { message: 'Fail query on User Likes' })
+		}
+	}
+
 	async function getUserFollowing() {
 		try {
 			return await prisma.follow.findMany({
-				where: { userId: session?.user.userId }
+				where: { userId: session?.user.userId },
+				include: {
+					Event: true,
+					Organization: true,
+					Comp: true
+				}
 			})
 		} catch (error) {
 			console.log('error: ', error)
@@ -37,7 +89,7 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 		try {
 			return await prisma.like.findMany({
 				where: { userId: session?.user.userId },
-				include: { Event: true, Organization: true, Comp: true, User: true }
+				include: { Event: true, Organization: true, Venue: true, Comp: true, User: true }
 			})
 		} catch (error) {
 			console.log('error: ', error)
@@ -47,6 +99,8 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 
 	return {
 		// user: session.user
+		organizations: getUserOrganizations(),
+		series: getUserSeries(),
 		events: getUserEvents(),
 		following: getUserFollowing(),
 		likes: getUserLikes()

@@ -38,7 +38,7 @@
 			class="mt-18 mb-8 max-w-md mx-auto bg-base-100 rounded-xl shadow-md overflow-hidden md:max-w-2xl"
 		>
 			<div class="md:flex">
-				<div class="md:shrink-0">
+				<div class="md:shrink-0 flex relative">
 					<!-- {console.log('event?.Organization?.titleImage: ', event?.Organization?.titleImage)} -->
 					<img
 						class="h-48 w-full object-cover md:h-full md:w-48 rounded-br-full"
@@ -49,16 +49,29 @@
 							: 'https://picsum.photos/id/384/400/300/'}
 						alt="Title for {event?.name}"
 					/>
+					<div class="absolute right-2 -bottom-4 z-10 flex flex-col gap-1">
+						<!-- <Icon class="text-xl" icon="material-symbols:bookmark-add-outline-rounded" /> -->
+						<div class="bg-base-100 p-1 rounded-full shadow-lg">
+							<Like type="venue" item={event} userId={data.user?.userId} class="" />
+						</div>
+						<div class="p-1 bg-base-100 shadow-lg rounded-full">
+							<button class="btn btn-xs btn-outline btn-accent rounded-full bg-base-100">
+								follow
+							</button>
+						</div>
+					</div>
 				</div>
+				<!-- Likes and Follows -->
+				<!--  -->
 
 				<div class="pt-8 px-8 w-full">
 					<div class="flex justify-between w-full">
 						<div class="uppercase tracking-wide text-xl text-accent font-semibold">
 							{@html event?.name}
 						</div>
-						<div class="max-h-2">
+						<!-- <div class="max-h-2">
 							<Like userId={data.user?.userId} type="event" item={event} />
-						</div>
+						</div> -->
 					</div>
 					{#if event?.Venue}
 						<div class="flex items-center gap-4">
@@ -147,86 +160,6 @@
 			{/if}
 		</div>
 
-		<!-- Comments component -->
-		<!-- <div class="mt-4">
-			<div class="flex gap-2 justify-between items-end">
-				<div class="font-semibold">Comments:</div>
-
-				<div class="avatar-group -space-x-4">
-					{#if event?.Comments}
-						{#each event?.Comments as comment}
-							<div class="avatar">
-								<div class="w-6 bg-base-300">
-									<img alt={`@${comment?.User.username}`} src={comment?.User.avatar} />
-								</div>
-							</div>
-						{/each}
-					{/if}
-
-					<div class="avatar placeholder">
-						<div class="w-6 bg-neutral-focus text-neutral-content">
-							<span>+{event?._count.Comments}</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="divider my-0" /> -->
 		<Comments item={event} type="event" {user} formObj={commentFormObj} />
-		<!-- <Comment type="event" {user} item={event} formObj={commentFormObj} /> -->
-		<!-- Comments -->
-		<!-- {#if comments}
-				{#each comments as comment}
-					<div class="flex items-start gap-2">
-						<div class="avatar">
-							<div class="w-8 h-8 rounded-full">
-								<img alt={comment.User.username} src={comment.User.avatar} />
-							</div>
-						</div>
-
-						<div class="flex gap-2 py-2 items-end w-full justify-between pr-4">
-							<div class="w-full">
-								<div class="font-semibold">
-									<a href="/user/{comment.User.id}">{`@${comment.User.username}`}</a>
-								</div>
-								<div>{@html comment.comment}</div>
-								<div class="text-xs text-accent">
-									{formatDateTime(comment?.createdAt ?? new Date())}
-								</div>
-							</div>
-							{#if data.user?.userId === comment.userId}
-								<div class="dropdown dropdown-end pb-1"> -->
-
-		<!--svelte-ignore a11y-label-has-associated-control -->
-		<!-- <label tabindex="-1"> <Icon icon="mdi:dots-vertical" /> </label>
-
-									<ul
-										tabindex="-1"
-										class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-									>
-										<li><a href="/events/{event?.id}?editComment={comment.id}"> Edit </a></li>
-										<Form action="/api/comment/?/delete" formObj={deleteCommentFormObj}>
-											<li>
-												<input type="hidden" name="id" value={comment.id} />
-												<button class="text-error"> Delete </button>
-											</li>
-										</Form>
-									</ul>
-								</div>
-							{/if}
-							<div class="flex flex-col gap-4 justify-between relative">
-								<Like
-									userId={data.user?.userId}
-									type="comment"
-									item={comment}
-									from={$page.url.href}
-								/>
-							</div>
-						</div>
-					</div>
-				{/each}
-			{/if} -->
-		<!-- Comments -->
-		<!-- </div> -->
 	</Page>
 {/if}

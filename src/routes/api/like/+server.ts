@@ -20,6 +20,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 					return await prisma.like.create({
 						data: {
 							type: 'event',
+							itemId: itemId!,
 							Event: { connect: { id: itemId! } },
 							User: { connect: { id: session!.user!.userId } }
 						}
@@ -33,7 +34,37 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 					return await prisma.like.create({
 						data: {
 							type: 'comment',
+							itemId: itemId!,
 							Comment: { connect: { id: itemId! } },
+							User: { connect: { id: session!.user!.userId } }
+						}
+					})
+				} catch (error) {
+					console.log('error: ', error)
+				}
+
+			case 'venue':
+				console.log('venue: ')
+				try {
+					return await prisma.like.create({
+						data: {
+							type: 'venue',
+							itemId: itemId!,
+							Venue: { connect: { id: itemId! } },
+							User: { connect: { id: session!.user!.userId } }
+						}
+					})
+				} catch (error) {
+					console.log('error: ', error)
+				}
+			case 'organization':
+				console.log('venue: ')
+				try {
+					return await prisma.like.create({
+						data: {
+							type: 'organization',
+							itemId: itemId!,
+							Organization: { connect: { id: itemId! } },
 							User: { connect: { id: session!.user!.userId } }
 						}
 					})
