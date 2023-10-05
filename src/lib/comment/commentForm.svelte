@@ -4,7 +4,7 @@
 	export let formObj
 	export let itemId
 	export let type
-	$: console.log('type: ', type)
+	// $: console.log('type: ', type)
 	export let action
 	export let user
 </script>

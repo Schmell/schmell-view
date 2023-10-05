@@ -1,22 +1,17 @@
 <script script lang="ts">
-	import { enhance } from '$app/forms'
 	import { page } from '$app/stores'
-	import { Button, Form, Hidden, Input } from '$components/form'
 	import { Page } from '$components/layout'
+	import Comments from '$lib/comment/comments.svelte'
 	import Like from '$lib/like/like.svelte'
-	import { formatDateTime } from '$lib/utils/formatters'
 	import Icon from '@iconify/svelte'
 	import { superForm } from 'sveltekit-superforms/client'
 	import type { PageData } from './$types'
-	import Comment from '$lib/comment/comment.svelte'
-	import CommentForm from '$lib/comment/commentForm.svelte'
-	import Comments from '$lib/comment/comments.svelte'
 
 	export let data: PageData
 	// export let form
 	$: ({ event, user } = data)
-	$: console.log('event: ', event)
-	$: console.log('user: ', user)
+	// $: console.log('event: ', event)
+	// $: console.log('user: ', user)
 
 	let showRaces: boolean = true
 
@@ -84,7 +79,7 @@
 					{/if}
 
 					<p class="mt-2 opacity-70">
-						{event?.description ? event?.description : 'No description provided'}
+						{@html event?.description ? event?.description : 'No description provided'}
 					</p>
 
 					<a href={getHref(event?.eventwebsite)} class="text-secondary">{event?.eventwebsite} </a>

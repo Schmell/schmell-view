@@ -1,9 +1,9 @@
 <script>
 	import { superForm } from 'sveltekit-superforms/client'
 	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte'
-	import { Button, Check, Form, Input, Textarea } from '$components/form'
+	import { Button, Check, Form, Input, Textarea, Label } from '$components/form'
 	import { eventSchema } from './eventSchema'
-	// import { EventSchema } from '$lib/server/generated/zod';
+	import { dev } from '$app/environment'
 
 	export let data
 
@@ -12,6 +12,7 @@
 		validators: eventSchema,
 		dataType: 'json'
 	})
+
 	$: ({ form } = formObj)
 </script>
 
@@ -22,65 +23,88 @@
 			<input type="checkbox" name="public" class="toggle toggle-success" checked={$form.public} />
 		</label>
 	</div>
+
 	<Input name="name" {formObj} />
 	<Textarea name="description" {formObj} />
 	<Input name="eventwebsite" label="Website" {formObj} />
 	<Input name="email" {formObj} />
 
+	<div class="pb-4">
+		<Label name="Venue" {formObj} />
+		<select
+			name="venueId"
+			class="select select-bordered w-full max-w-md"
+			bind:value={$form.venueId}
+		>
+			{#each data.venues as venue}
+				<option value={venue.id} selected={$form.venueId}>
+					{venue.name}
+				</option>
+			{/each}
+		</select>
+	</div>
+
 	<Input name="titleImage" label="Title Image Url" {formObj} />
-	<fieldset name="resultColumns">
+
+	<!-- <fieldset name="resultColumns">
 		<h3>Result Columns</h3>
 		<div class="divider m-0" />
 		<div class="">
 			<h6>Event Rankings</h6>
 			<div class="flex gap-4">
 				<span>
-					<Check name="rank" {formObj} />
+					<Check label="Rank" name="resultColumns.rank" {formObj} />
 				</span>
 				<span>
-					<Check name="nett" {formObj} />
+					<Check label="Nett" name="resultColumns.nett" {formObj} />
 				</span>
 				<span>
-					<Check name="total" {formObj} />
+					<Check label="Total" name="resultColumns.total" {formObj} />
 				</span>
 			</div>
+
 			<div class="divider" />
+
 			<h6>Display names</h6>
 			<div class="flex gap-4">
 				<span>
-					<Check name="skipper" {formObj} />
+					<Check label="Skipper" name="resultColumns.skipper" {formObj} />
 				</span>
 				<span>
-					<Check name="boat" {formObj} />
+					<Check label="Boat" name="resultColumns.boat" {formObj} />
 				</span>
 				<span>
-					<Check name="sailNo" {formObj} />
+					<Check label="Sail No." name="resultColumns.sailNo" {formObj} />
 				</span>
 			</div>
+
 			<div class="divider" />
+
 			<h6>Race Outcomes</h6>
 			<div class="flex">
 				<span>
-					<Check name="points" {formObj} />
+					<Check label="Points" name="resultColumns.points" {formObj} />
 				</span>
 				<span>
-					<Check name="position" {formObj} />
+					<Check label="Position" name="resultColumns.position" {formObj} />
 				</span>
 				<span>
-					<Check name="finish" {formObj} />
+					<Check label="Finish" name="resultColumns.finish" {formObj} />
 				</span>
 				<span>
-					<Check name="corrected" {formObj} />
+					<Check label="Corrected" name="resultColumns.corrected" {formObj} />
 				</span>
 				<span>
-					<Check name="elapsed" {formObj} />
+					<Check label="Elapsed" name="resultColumns.elapsed" {formObj} />
 				</span>
 			</div>
 		</div>
-	</fieldset>
-	<Input name="Venue" {formObj} />
+	</fieldset> -->
+
 	<Button>Submit</Button>
 </Form>
-<div class="mt-8">
-	<SuperDebug data={$form} />
-</div>
+{#if dev}
+	<div class="mt-8">
+		<SuperDebug data={$form} />
+	</div>
+{/if}

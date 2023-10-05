@@ -2,10 +2,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// generator json {
-//   provider  = "prisma-json-types-generator"
-//   namespace = "PrismaJson"
-// }
+generator json {
+  provider  = "prisma-json-types-generator"
+  namespace = "PrismaJson"
+}
 
 generator zod {
   provider                 = "zod-prisma-types"
@@ -24,17 +24,17 @@ model Series {
   name           String
   description    String? /// @zod.string.optional
   rest           Json?
-  organizationId String?
-  publisherId    String?
-  createdAt      DateTime?     @default(now())
-  updatedAt      DateTime?     @updatedAt
   Events         Event[]
-  Org            Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  publisherId    String?
   Publisher      User?         @relation(fields: [publisherId], references: [id])
   Follows        Follow[]
   Likes          Like[]
   Comments       Comment[]
   Venues         Venue[]
+  createdAt      DateTime?     @default(now())
+  updatedAt      DateTime?     @updatedAt
 }
 
 model Event {
@@ -55,13 +55,13 @@ model Event {
   rest           Json?
   email          String?
   organizationId String?
-  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  Organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   publisherId    String?
-  Publisher      User?         @relation(fields: [publisherId], references: [id])
+  Publisher      User?         @relation(fields: [publisherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   seriesId       String?
-  Series         Series?       @relation(fields: [seriesId], references: [id])
+  Series         Series?       @relation(fields: [seriesId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   venueId        String?
-  Venue          Venue?        @relation(fields: [venueId], references: [id])
+  Venue          Venue?        @relation(fields: [venueId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   Races          Race[]
   Results        Result[]
   Follows        Follow[]
@@ -90,9 +90,9 @@ model Race {
   /// [raceRest]
   rest             Json?
   eventId          String?
-  Event            Event?    @relation(fields: [eventId], references: [id])
+  Event            Event?    @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   publisherId      String?
-  Publisher        User?     @relation(fields: [publisherId], references: [id])
+  Publisher        User?     @relation(fields: [publisherId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   Results          Result[]
   Follows          Follow[]
   Likes            Like[]
@@ -103,31 +103,33 @@ model Race {
 }
 
 model Comp {
-  id          String    @id @default(cuid())
-  compId      String    @unique // right now this will only be unique on the same event
-  raceId      String?
-  club        String?
-  boat        String?
-  skipper     String?
-  fleet       String?
-  division    String?
-  rating      String?
-  rank        String?
-  nett        String?
-  total       String?
+  id           String    @id @default(cuid())
+  compId       String    @unique // right now this will only be unique on the same event
+  uniqueCompId String?   @unique
+  raceId       String?
+  club         String?
+  boat         String?
+  skipper      String?
+  sailno       String?
+  fleet        String?
+  division     String?
+  rating       String?
+  rank         String?
+  nett         String?
+  total        String?
   /// [compRest]
-  rest        Json?
-  image       String?
-  publisherId String?
-  Publisher   User?     @relation(fields: [publisherId], references: [id])
-  Events      Event[]
-  Results     Result[]
-  Follows     Follow[]
-  Likes       Like[]
-  Commments   Comment[]
-  Races       Race[]
-  createdAt   DateTime? @default(now())
-  updatedAt   DateTime? @updatedAt
+  rest         Json?
+  image        String?
+  publisherId  String?
+  Publisher    User?     @relation(fields: [publisherId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  Events       Event[]
+  Results      Result[]
+  Follows      Follow[]
+  Likes        Like[]
+  Commments    Comment[]
+  Races        Race[]
+  createdAt    DateTime? @default(now())
+  updatedAt    DateTime? @updatedAt
 
   @@index([compId])
 }
@@ -149,10 +151,10 @@ model Result {
   raceRating     String?
   supposedRating String?
   rrset          String?
-  Comp           Comp?     @relation(fields: [compId], references: [id])
-  Event          Event?    @relation(fields: [eventId], references: [id])
-  Publisher      User      @relation(fields: [publisherId], references: [id])
-  Race           Race?     @relation(fields: [raceId], references: [id])
+  Comp           Comp?     @relation(fields: [compId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Event          Event?    @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Publisher      User?     @relation(fields: [publisherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Race           Race?     @relation(fields: [raceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   publisherId    String
   eventId        String?
   compId         String?
@@ -181,38 +183,46 @@ model Organization {
   Comments    Comment[]
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
+  Addresses   Address[]
 }
 
 model Venue {
   id          String    @id @unique @default(cuid())
   name        String    @unique
+  description String?
   website     String?
   email       String?
+  phone       String?
   burgee      String?
-  address     Json?
-  publisherId String?
+  titleImage  String?
   Events      Event[]
-  Publisher   User?     @relation(fields: [publisherId], references: [id])
   Series      Series[]
   Likes       Like[]
   Comments    Comment[]
+  Addresses   Address[]
+  publisherId String?
+  Publisher   User?     @relation(fields: [publisherId], references: [id], onDelete: SetNull)
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
 }
 
-// model EventComment {
-//   type      String?
-//   ref       String?
-//   comment   String
-//   eventId   String?
-//   Event     Event?    @relation(fields: [eventId], references: [id])
-//   userId    String
-//   User      User      @relation(fields: [userId], references: [id])
-//   Likes     Like[]
-//   id        String    @id @unique @default(cuid())
-//   createdAt DateTime? @default(now())
-//   updatedAt DateTime? @updatedAt
-// }
+model Address {
+  id             String        @id @unique @default(cuid())
+  name           String        @default("Mailing Address")
+  street         String?
+  city           String?
+  state          String?
+  country        String?
+  code           String?
+  Venue          Venue?        @relation(fields: [venueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  venueId        String?
+  Organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  organizationId String?
+  Publisher      User?         @relation(fields: [publisherId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  publisherId    String?
+  // User           User?         @relation(fields: [userId], references: [id])
+  // userId         String?
+}
 
 model Comment {
   id             String        @id @unique @default(cuid())
@@ -220,31 +230,23 @@ model Comment {
   ref            String?
   comment        String
   eventId        String?
-  Event          Event?        @relation(fields: [eventId], references: [id])
+  Event          Event?        @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId         String
-  User           User          @relation(fields: [userId], references: [id])
+  User           User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Likes          Like[]
-  Race           Race?         @relation(fields: [raceId], references: [id])
+  Race           Race?         @relation(fields: [raceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   raceId         String?
-  Series         Series?       @relation(fields: [seriesId], references: [id])
+  Series         Series?       @relation(fields: [seriesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   seriesId       String?
-  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  Organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   organizationId String?
-  Venue          Venue?        @relation(fields: [venueId], references: [id])
+  Venue          Venue?        @relation(fields: [venueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   venueId        String?
-  Comp           Comp?         @relation(fields: [compId], references: [id])
+  Comp           Comp?         @relation(fields: [compId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   compId         String?
   createdAt      DateTime?     @default(now())
   updatedAt      DateTime?     @updatedAt
 }
-
-// enum CommentType {
-//   series
-//   event
-//   race
-//   result
-//   comp
-// }
 
 model Follow {
   id             String        @id @unique @default(cuid())
@@ -257,12 +259,12 @@ model Follow {
   compId         String?
   updatedAt      DateTime      @updatedAt
   createdAt      DateTime      @default(now())
-  Comp           Comp?         @relation(fields: [compId], references: [id])
-  Event          Event?        @relation(fields: [eventId], references: [id])
-  Organization   Organization? @relation(fields: [organizationId], references: [id])
-  Race           Race?         @relation(fields: [raceId], references: [id])
-  Series         Series?       @relation(fields: [seriesId], references: [id])
-  User           User          @relation(fields: [userId], references: [id])
+  Comp           Comp?         @relation(fields: [compId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Event          Event?        @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Race           Race?         @relation(fields: [raceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Series         Series?       @relation(fields: [seriesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  User           User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Like {
@@ -277,17 +279,17 @@ model Like {
   compId         String?
   updatedAt      DateTime      @updatedAt
   createdAt      DateTime      @default(now())
-  Comp           Comp?         @relation(fields: [compId], references: [id])
-  Event          Event?        @relation(fields: [eventId], references: [id])
-  Organization   Organization? @relation(fields: [organizationId], references: [id])
-  Race           Race?         @relation(fields: [raceId], references: [id])
-  Series         Series?       @relation(fields: [seriesId], references: [id])
-  User           User          @relation(fields: [userId], references: [id])
+  Comp           Comp?         @relation(fields: [compId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Event          Event?        @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Race           Race?         @relation(fields: [raceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Series         Series?       @relation(fields: [seriesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  User           User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   // eventComment   EventComment? @relation(fields: [eventCommentId], references: [id])
   eventCommentId String?
-  Comment        Comment?      @relation(fields: [commentId], references: [id])
+  Comment        Comment?      @relation(fields: [commentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   commentId      String?
-  Venue          Venue?        @relation(fields: [venueId], references: [id])
+  Venue          Venue?        @relation(fields: [venueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   venueId        String?
 }
 
@@ -314,6 +316,7 @@ model User {
   follow         Follow[]
   like           Like[]
   Comment        Comment[]
+  Address        Address[]
 }
 
 model UserSettings {
@@ -321,7 +324,7 @@ model UserSettings {
   theme    String?
   language String? @default("english")
   userId   String? @unique
-  user     User?   @relation(fields: [userId], references: [id])
+  user     User?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Session {

@@ -15,8 +15,6 @@
 			slot &&
 			((slot.innerHTML.length < 3 && slot.innerText.length < 3) ||
 				['undefined', 'null'].includes(slot.innerText))
-		// console.log('empty: ', empty)
-		console.log('slot: ', slot.innerText.length)
 	})
 </script>
 

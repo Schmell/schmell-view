@@ -1,33 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import { ItemCard, Page } from '$components/layout'
+	import Like from '$lib/like/like.svelte'
 	import { formatDateTime } from '$lib/utils/formatters'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
-	import Like from '$lib/like/like.svelte'
-	import { getHref } from '$lib/utils'
-	import { afterUpdate } from 'svelte'
 
 	export let data: PageData
 
 	$: ({ events, user } = data)
-
-	// async function like(type, item) {
-	// 	// console.log('item: ', item);
-	// 	try {
-	// 		return await fetch(`/api/like?likeType=${type}&itemId=${item.id}`, {
-	// 			method: 'GET',
-
-	// 			headers: {
-	// 				'content-type': 'application/json'
-	// 			}
-	// 		});
-	// 	} catch (error) {
-	// 		console.log('error: ', error);
-	// 		throw fail(400, { message: 'add like error' });
-	// 	}
-	// }
-	// $: console.log('events: ', events)
 </script>
 
 <Page title="Events">

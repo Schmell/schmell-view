@@ -1,7 +1,5 @@
 import { prisma } from '$lib/server/prisma'
-import { error, fail, redirect } from '@sveltejs/kit'
 import Blw from './Blw'
-import { Prisma } from '@prisma/client'
 
 export async function CheckForDuplicates({ data, file }) {
 	const blw = new Blw({ data, file })
@@ -21,8 +19,7 @@ export async function CheckForDuplicates({ data, file }) {
 }
 
 export async function Populate({ blw, userId, orgId }) {
-	// if (!data) throw error(400, { message: 'Populate function requires data' });
-	// const blw = new Blw({ data, file });
+	// ///////////////////
 	const event = blw.getEvent()
 	const { uniqueIdString } = event
 
@@ -52,20 +49,17 @@ export async function Populate({ blw, userId, orgId }) {
 			}
 		}
 		return {
-			// data: upObj
 			where: { uniqueIdString: uniqueIdString },
 			update: {},
 			create: eventObj
 		}
 	}
 
-	function scoringSystem() {
-		return blw.getScoring()
-	}
-
 	function racesCreate() {
 		const compList = blw.getComps().map((comp) => {
+			// This is where we can join comps over multiple events
 			return { compId: comp.compId }
+			// return { uniqueCompId: comp.uniqueCompId }
 		})
 
 		return blw.getRaces(uniqueIdString).map((race) => {
@@ -90,13 +84,16 @@ export async function Populate({ blw, userId, orgId }) {
 
 	function compsCreate() {
 		return blw.getComps().map((comp) => {
-			// need to connect event somehow, because a comp can have multiple events
+			// Comps need to get a uniqueId so we can re-use comps which allow for
+			// Users to attach there profile to and also will let people follow
 			return {
+				// where: { uniqueCompId: comp.uniqueCompId },
 				where: { compId: comp.compId },
 				update: {
 					club: comp.club,
 					boat: comp.boat,
 					skipper: comp.helmname,
+					uniqueCompId: comp.uniqueCompId,
 					fleet: comp.fleet,
 					division: comp.division,
 					rank: comp.rank,
@@ -108,11 +105,14 @@ export async function Populate({ blw, userId, orgId }) {
 						connect: [{ uniqueIdString: uniqueIdString }]
 					}
 				},
+
 				create: {
 					compId: comp.compId,
 					club: comp.club,
 					boat: comp.boat,
+					sailno: comp.sailno,
 					skipper: comp.helmname,
+					uniqueCompId: comp.uniqueCompId,
 					fleet: comp.fleet,
 					division: comp.division,
 					rank: comp.rank,
@@ -167,6 +167,10 @@ export async function Populate({ blw, userId, orgId }) {
 		})
 	}
 
+	function scoringSystem() {
+		return blw.getScoring()
+	}
+
 	return addTables()
 
 	async function addTables() {
@@ -183,7 +187,7 @@ export async function Populate({ blw, userId, orgId }) {
 
 		await Promise.all(
 			comps.map(async (comp) => {
-				await prisma.comp.upsert(comp)
+				return await prisma.comp.upsert(comp)
 			})
 		)
 

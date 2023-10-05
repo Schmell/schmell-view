@@ -8,7 +8,6 @@ export const eventSchema = z.object({
 	description: z.string().nullable(),
 	titleImage: z.string().nullable(),
 	public: z.boolean(),
-	// resultColumns: z.any(),
 	rank: z.boolean().nullable().optional(),
 	points: z.boolean().nullable().optional(),
 	position: z.boolean().nullable().optional(),
@@ -18,6 +17,21 @@ export const eventSchema = z.object({
 	corrected: z.boolean().nullable().optional(),
 	elapsed: z.boolean().nullable().optional(),
 	nett: z.boolean().nullable().optional(),
-	total: z.boolean().nullable().optional()
-	// Venue: z.any()
+	total: z.boolean().nullable().optional(),
+	Venue: z.any().nullable(),
+	venueId: z.string().nullable(),
+	resultColumns: z
+		.object({
+			rank: z.boolean().nullable().optional(),
+			points: z.boolean().nullable().optional(),
+			position: z.boolean().nullable().optional(),
+			skipper: z.boolean().nullable().optional(),
+			boat: z.boolean().nullable().optional(),
+			finish: z.boolean().nullable().optional(),
+			corrected: z.boolean().nullable().optional(),
+			elapsed: z.boolean().nullable().optional(),
+			nett: z.boolean().nullable().optional(),
+			total: z.boolean().nullable().optional()
+		})
+		.nullable()
 })

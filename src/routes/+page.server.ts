@@ -36,7 +36,8 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 	async function getUserLikes() {
 		try {
 			return await prisma.like.findMany({
-				where: { userId: session?.user.userId }
+				where: { userId: session?.user.userId },
+				include: { Event: true, Organization: true, Comp: true, User: true }
 			})
 		} catch (error) {
 			console.log('error: ', error)

@@ -34,6 +34,15 @@ declare global {
 			total?: string
 		}
 
+		type venueAddress = {
+			street?: string
+			city?: string
+			state?: string
+			country?: string
+			code?: string
+			phone?: string
+		}
+
 		type venueRest = {}
 
 		export type eventRest = {

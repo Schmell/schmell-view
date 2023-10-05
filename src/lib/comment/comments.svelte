@@ -3,7 +3,7 @@
 	import CommentForm from './commentForm.svelte'
 
 	export let item
-	// $: console.log('item: ', item)
+	$: console.log('item: ', item)
 	export let user
 	// $: console.log('user: ', user)
 	export let formObj

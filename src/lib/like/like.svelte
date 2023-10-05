@@ -8,14 +8,12 @@
 	export { className as class }
 
 	export let userId: string | undefined
-	$: console.log('userId: ', userId)
 
 	if (!userId) {
 		throw error(400, 'Invalid userId in like component')
 	}
 
 	export let item
-	$: console.log('item: ', item)
 
 	export let type: string
 
@@ -35,6 +33,7 @@
 	}
 
 	function checkForUserLike(item) {
+		if (!item.Likes) return false
 		if (item.Likes.some((like) => like.userId === userId)) {
 			return true
 		}

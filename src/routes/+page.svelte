@@ -1,5 +1,7 @@
 <script lang="ts">
 	import Page from '$lib/components/layout/Page.svelte'
+	import { formatTime } from '$lib/utils/formatters.js'
+	import { capitalizeFirstLetter } from '$lib/utils/index.js'
 	import Icon from '@iconify/svelte'
 	import { Accordion } from 'bits-ui'
 
@@ -31,6 +33,7 @@
 						<Icon icon="material-symbols:arrow-drop-down-circle-outline" />
 					</Accordion.Trigger>
 				</Accordion.Header>
+
 				<Accordion.Content class="p-2">
 					<div class="flex flex-col gap-2">
 						{#each events as event}
@@ -39,7 +42,7 @@
 								class="pt-2 pl-2 flex justify-between border-l-4 border-accent w-full"
 							>
 								<div>
-									{event.name}
+									{@html event.name}
 								</div>
 								<a href="/Organization/{event.organizationId}" class="text-xs"
 									>{event.Organization?.name}</a
@@ -57,6 +60,7 @@
 						<Icon icon="material-symbols:arrow-drop-down-circle-outline" />
 					</Accordion.Trigger>
 				</Accordion.Header>
+
 				<Accordion.Content class="p-2">This is the first accordion content</Accordion.Content>
 			</Accordion.Item>
 
@@ -67,7 +71,32 @@
 						<Icon icon="material-symbols:arrow-drop-down-circle-outline" />
 					</Accordion.Trigger>
 				</Accordion.Header>
-				<Accordion.Content class="p-2">This is the first accordion content</Accordion.Content>
+
+				<Accordion.Content class="p-2 pl-4">
+					{#each likes as like}
+						{#if like.type === 'event'}
+							<a
+								href="/events/{like.Event?.id}"
+								class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-accent w-full rounded-lg shadow-xl"
+							>
+								<div class="capitalize w-full pl-2 font-bold rounded-r-xl bg-info bg-opacity-10">
+									{like.type}
+								</div>
+								<div class="flex justify-between w-full pl-4">
+									<div>
+										{like.Event?.name}
+										<div class="text-xs opacity-40">
+											{like.createdAt.toLocaleDateString()}
+										</div>
+									</div>
+									<button class="pr-4">
+										<Icon icon="mdi:dislike-outline" />
+									</button>
+								</div>
+							</a>
+						{/if}
+					{/each}
+				</Accordion.Content>
 			</Accordion.Item>
 		</Accordion.Root>
 		<!-- <form method="post" action="?/logout" use:enhance>

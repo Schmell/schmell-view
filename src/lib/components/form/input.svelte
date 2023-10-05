@@ -52,6 +52,17 @@
 			bind:value={$form[name]}
 			on:change
 		/>
+	{:else if type === 'address'}
+		<input
+			class={cn('input input-bordered w-full max-w-lg', className)}
+			class:input-error={$errors[name]}
+			{name}
+			type="text"
+			placeholder={placeholder ?? ''}
+			aria-invalid={$errors.email ? 'true' : undefined}
+			bind:value={$form.address[name]}
+			on:change
+		/>
 	{:else}
 		<input
 			class={cn('input input-bordered w-full max-w-lg', className)}

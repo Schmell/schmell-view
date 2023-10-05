@@ -19,28 +19,32 @@ export default class Blw {
 				compId: '',
 				uniqueCompId: ''
 			}
+			// console.log('compBoat: ', compBoat)
 
 			competitor.compId = `${compBoat[2]}-${this.data.cuid}`
 			// also need a uniqueCompId for connecting comps to users
-			competitor.uniqueCompId = `${competitor.boat}_${competitor.skipper}_${competitor.club}`
+
 			let compRows = this.data.filter((item: any) => {
-				if (!item[0]) {
-					console.log('item: ', item)
-				}
+				if (!item[0]) return false
+
 				var regex = new RegExp(`^comp`, 'g')
 				return item[0].match(regex) && item[2] === compBoat[2]
 			})
+
 			compRows.forEach((item: any) => {
 				const newName = item[0].replace('comp', '')
 				competitor[newName] = item[1] ?? ''
 			})
+
+			competitor.uniqueCompId = ` ${competitor.sailNo ?? 0}_${competitor.boat ?? 'none'}_${
+				competitor.helname ?? 'none'
+			}_${competitor.club ?? 'none'} `
+
+			console.log('competitor: ', competitor)
+
 			compData.push(competitor)
 		}) //each compBoats
-		// const sorted = compData!.sort((a: any, b: any) => {
-		// 	return a.boat - b.boat;
-		// });
 
-		// return sorted;
 		return compData
 	} // getComps
 
@@ -56,10 +60,8 @@ export default class Blw {
 			// Results in blw file have no prefix to speak of (just an r)
 			// So we need to find each row individually
 			const resultRow = {
-				// resultId: `${result[3]}-${result[2]}-${this.data.cuid}`,
 				raceCompId: `${result[3]}-${result[2]}`,
 				compId: `${result[2]}-${this.data.cuid}`,
-
 				finish: this.resultHelp('rft', this.data, result),
 				start: this.resultHelp('rst', this.data, result),
 				points: this.resultHelp('rpts', this.data, result),
@@ -95,17 +97,6 @@ export default class Blw {
 		}
 	}
 
-	// I don't think i use this // each race has fleets
-	getFleets() {
-		// Maybe need this to check against the race fleets?
-		var fleetsRaw: any[] = this.data.filter((item: any) => {
-			return item[0] === 'serpubgroupvalues'
-		})
-		var fleets = fleetsRaw[0][1].match(/[^|]+/g)
-
-		return fleets
-	}
-
 	getRaces(uniqueIdString: string) {
 		// new object to be returned
 		let raceData: any = []
@@ -131,6 +122,7 @@ export default class Blw {
 			raceObj.uniqueRaceString = uniqueIdString + '_' + race[3]
 
 			let resultRows = this.data.filter((item: any) => {
+				if (!item[0]) return false
 				var regex = new RegExp(`^race`, 'g')
 				return item[0].match(regex) && item[3] === race[3]
 			})
@@ -141,11 +133,8 @@ export default class Blw {
 				// Format the starts to object
 				if (item[0] === 'racestart') {
 					const racestartString = item[1].split('|')
-
 					let fleet = racestartString[0].split('^')
-
 					let start = racestartString[1]
-
 					let finishType = racestartString[2] ?? ''
 					let startName = racestartString[3] ?? ''
 					let raceDistance = racestartString[4] ?? ''
@@ -154,7 +143,6 @@ export default class Blw {
 					let windDir = racestartString[4] ?? ''
 					// remove the undefined
 					if (!fleet) fleet = 'none'
-
 					// This will stop undefined or null
 					try {
 						start = formatTime(start)
@@ -197,11 +185,9 @@ export default class Blw {
 
 	getEvent() {
 		const eventRows = this.data.filter((item: any) => {
-			if (item[0]) {
-				const regex = new RegExp(`^ser`, 'g')
-				return item[0].match(regex)
-			}
-			//
+			if (!item[0]) return false
+			const regex = new RegExp(`^ser`, 'g')
+			return item[0].match(regex)
 		})
 
 		let eventObj: any = {
@@ -246,6 +232,7 @@ export default class Blw {
 		// and a 1 in the [1] position in the array
 
 		const rows = this.data.filter((item: any) => {
+			if (!item[0]) return false
 			const regex = new RegExp(`^scr`, 'g')
 			return item[0].match(regex)
 		})

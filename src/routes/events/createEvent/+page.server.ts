@@ -35,7 +35,6 @@ export const actions: Actions = {
 	setOrg: async ({ locals, request }) => {
 		const session = await locals.auth.validate()
 		const formObj: any = Object.fromEntries(await request.formData())
-		console.log('formObj: ', formObj)
 	},
 
 	newImport: async ({ request, locals, url }) => {

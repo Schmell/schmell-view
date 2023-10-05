@@ -1,32 +1,48 @@
 import { superValidate } from 'sveltekit-superforms/server'
-import { error, fail, redirect } from '@sveltejs/kit'
+import { fail, redirect } from '@sveltejs/kit'
 import { prisma } from '$lib/server/prisma.js'
 import { eventSchema } from './eventSchema.js'
 
-export const load = async ({ params }) => {
+export const load = async ({ params, locals }) => {
+	const session = await locals.auth.validate()
 	async function getEvent() {
 		try {
 			return await prisma.event.findUnique({
-				where: { id: params.eventId }
+				where: { id: params.eventId },
+				include: { Venue: true }
 			})
 		} catch (error) {
 			throw fail(404, { message: `edit event error: ${error}` })
 		}
 	}
 
-	if (params.eventId === 'new') {
-		return { form: await superValidate({ name: 'new' }, eventSchema) }
+	async function getVenues() {
+		try {
+			return await prisma.venue.findMany({
+				where: { publisherId: session?.user.userId }
+			})
+		} catch (error) {
+			throw fail(404, { message: `get venue in event edit page error: ${error}` })
+		}
 	}
 
-	const form = await superValidate(await getEvent(), eventSchema)
-	return { form }
+	if (params.eventId === 'new') {
+		return {
+			venues: await getVenues(),
+			form: await superValidate({ name: 'new' }, eventSchema)
+		}
+	}
+
+	return {
+		venues: await getVenues(),
+		form: await superValidate(await getEvent(), eventSchema)
+	}
 }
 
 export const actions = {
 	default: async ({ request, params, url }) => {
 		const form = await superValidate(request, eventSchema)
-
-		console.log('form: ', form.data)
+		// console.log('form: ', form)
 
 		if (!form.valid) {
 			return fail(400, { form })
@@ -43,6 +59,8 @@ export const actions = {
 			elapsed,
 			nett,
 			total,
+			venueId,
+			Venue,
 			...rest
 		} = form.data
 
@@ -62,12 +80,13 @@ export const actions = {
 						elapsed: elapsed ?? false,
 						nett: nett ?? false,
 						total: total ?? false
-					}
+					},
+					venueId: venueId
 				}
 			})
-		} catch (err) {
-			console.log('err: ', err)
-			throw error(400, 'Error updating the event')
+		} catch (error) {
+			console.log('error: ', error)
+			throw fail(400, { message: 'Error updating the event' })
 		}
 
 		throw redirect(302, `${url.searchParams.get('from')}`)

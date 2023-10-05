@@ -94,7 +94,7 @@
 									name="file"
 									class="file-input file-input-bordered file-input-accent w-full max-w-lg"
 									on:change={(e) => {
-										console.log(e.target)
+										// console.log(e.target)
 									}}
 								/>
 							{/if}

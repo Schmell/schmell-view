@@ -18,7 +18,7 @@
 
 	// const { form, errors, constraints } = formObj
 	const { value, errors, constraints } = formFieldProxy(formObj, name)
-	// $: console.log('form: ', $form);
+	$: console.log('form: ', $value)
 	$: boolValue = value as Writable<boolean>
 	afterUpdate(async () => {
 		//
