@@ -1,5 +1,5 @@
 import { prisma } from '$lib/server/prisma'
-import { redirect } from '@sveltejs/kit'
+import { fail, redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ locals, url }) => {
@@ -12,17 +12,35 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const skip = url.searchParams.get('skip')
 	const take = url.searchParams.get('take')
 
-	const events = await prisma.event.findMany({
-		include: {
-			Publisher: true,
-			Likes: { select: { id: true, eventId: true, userId: true } },
-			_count: { select: { Likes: true } }
-		},
-		skip: Number(skip ?? 0),
-		take: Number(take ?? 10),
+	async function getEvents() {
+		try {
+			return await prisma.event.findMany({
+				include: {
+					Publisher: true,
+					Likes: { select: { id: true, eventId: true, userId: true } },
+					_count: { select: { Likes: true } }
+				},
+				skip: Number(skip ?? 0),
+				take: Number(take ?? 10),
 
-		orderBy: sort()
-	})
+				orderBy: sort()
+			})
+		} catch (error) {
+			throw fail(500, { message: 'Get event Fail' })
+		}
+	}
+
+	// const events = await prisma.event.findMany({
+	// 	include: {
+	// 		Publisher: true,
+	// 		Likes: { select: { id: true, eventId: true, userId: true } },
+	// 		_count: { select: { Likes: true } }
+	// 	},
+	// 	skip: Number(skip ?? 0),
+	// 	take: Number(take ?? 10),
+
+	// 	orderBy: sort()
+	// })
 
 	function sort() {
 		let sort = {}
@@ -37,6 +55,6 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	}
 
 	return {
-		events
+		events: getEvents()
 	}
 }
