@@ -47,6 +47,7 @@ model Event {
   description    String?
   titleImage     String?
   public         Boolean       @default(true)
+  complete       Boolean       @default(false)
   /// [fileInfo]
   fileInfo       Json?
   /// [resultColumns]
@@ -204,6 +205,7 @@ model Venue {
   Publisher   User?     @relation(fields: [publisherId], references: [id], onDelete: SetNull)
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
+  Follow      Follow[]
 }
 
 model Address {
@@ -261,25 +263,31 @@ model Comment {
   compId         String?
   createdAt      DateTime?     @default(now())
   updatedAt      DateTime?     @updatedAt
+  Follow         Follow[]
 }
 
 model Follow {
   id             String        @id @unique @default(cuid())
-  userId         String
   type           String
-  seriesId       String?
-  eventId        String?
-  organizationId String?
-  raceId         String?
-  compId         String?
-  updatedAt      DateTime      @updatedAt
-  createdAt      DateTime      @default(now())
+  itemId         String?
+  Comment        Comment?      @relation(fields: [commentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Comp           Comp?         @relation(fields: [compId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Event          Event?        @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Venue          Venue?        @relation(fields: [venueId], references: [id])
   Race           Race?         @relation(fields: [raceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Series         Series?       @relation(fields: [seriesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   User           User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId         String
+  commentId      String?
+  compId         String?
+  eventId        String?
+  organizationId String?
+  venueId        String?
+  raceId         String?
+  seriesId       String?
+  updatedAt      DateTime      @updatedAt
+  createdAt      DateTime      @default(now())
 }
 
 model Like {

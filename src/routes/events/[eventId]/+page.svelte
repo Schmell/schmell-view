@@ -6,6 +6,8 @@
 	import Icon from '@iconify/svelte'
 	import { superForm } from 'sveltekit-superforms/client'
 	import type { PageData } from './$types'
+	import Follow from '$lib/follow/follow.svelte'
+	import LikeFollow from '$lib/like/like-follow.svelte'
 
 	export let data: PageData
 	// export let form
@@ -26,6 +28,15 @@
 	// 	}
 	// 	return false
 	// }
+	function checkForImage(imageString) {
+		if (
+			imageString.startsWith('http://') ||
+			imageString.startsWith('https://') ||
+			imageString.startsWith('data:image')
+		)
+			return imageString
+		return ''
+	}
 
 	const commentFormObj = superForm(data.commentForm)
 	const deleteCommentFormObj = superForm(data.deleteCommentForm)
@@ -40,6 +51,14 @@
 			<div class="md:flex">
 				<div class="md:shrink-0 flex relative">
 					<!-- {console.log('event?.Organization?.titleImage: ', event?.Organization?.titleImage)} -->
+					{#if checkForImage(event.Venue?.burgee)}
+						<img
+							class="absolute z-10 left-2 top-2 rounded-full shadow-xl"
+							width="60px"
+							src={event.Venue?.burgee}
+							alt={event.Venue?.name}
+						/>
+					{/if}
 					<img
 						class="h-48 w-full object-cover md:h-full md:w-48 rounded-br-full"
 						src={event?.titleImage
@@ -49,29 +68,15 @@
 							: 'https://picsum.photos/id/384/400/300/'}
 						alt="Title for {event?.name}"
 					/>
-					<div class="absolute right-2 -bottom-4 z-10 flex flex-col gap-1">
-						<!-- <Icon class="text-xl" icon="material-symbols:bookmark-add-outline-rounded" /> -->
-						<div class="bg-base-100 p-1 rounded-full shadow-lg">
-							<Like type="venue" item={event} userId={data.user?.userId} class="" />
-						</div>
-						<div class="p-1 bg-base-100 shadow-lg rounded-full">
-							<button class="btn btn-xs btn-outline btn-accent rounded-full bg-base-100">
-								follow
-							</button>
-						</div>
-					</div>
+
+					<LikeFollow item={event} userId={user?.userId} type="event" />
 				</div>
-				<!-- Likes and Follows -->
-				<!--  -->
 
 				<div class="pt-8 px-8 w-full">
 					<div class="flex justify-between w-full">
 						<div class="uppercase tracking-wide text-xl text-accent font-semibold">
 							{@html event?.name}
 						</div>
-						<!-- <div class="max-h-2">
-							<Like userId={data.user?.userId} type="event" item={event} />
-						</div> -->
 					</div>
 					{#if event?.Venue}
 						<div class="flex items-center gap-4">

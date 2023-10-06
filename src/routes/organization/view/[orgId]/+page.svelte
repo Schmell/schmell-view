@@ -4,6 +4,7 @@
 	import type { Organization } from '@prisma/client'
 	import type { PageData } from './$types'
 	import Like from '$lib/like/like.svelte'
+	import LikeFollow from '$lib/like/like-follow.svelte'
 
 	export let data: PageData
 	// console.log('data: ', data);
@@ -29,23 +30,14 @@
 							<img src={org.logo} alt={org.name} />
 						</div>
 					{/if}
+
 					<img
 						class="h-48 w-full object-cover md:h-full md:w-48 rounded-br-full"
 						src={org.titleImage ? org.titleImage : 'https://picsum.photos/id/384/400/300/'}
 						alt="Title image for {org.name}"
 					/>
 					<!-- Likes and Follows -->
-					<div class="absolute right-1 -bottom-4 z-10 flex flex-col gap-1">
-						<div class="bg-base-100 p-1 rounded-full shadow-lg">
-							<Like type="organization" item={org} userId={data.user?.userId} class="" />
-						</div>
-
-						<div class="p-1 bg-base-100 shadow-lg rounded-full">
-							<button class="btn btn-xs btn-outline btn-accent rounded-full bg-base-100">
-								follow
-							</button>
-						</div>
-					</div>
+					<LikeFollow item={org} userId={user?.userId} type="organization" />
 				</div>
 				<div class="pt-8 pb-4 px-8">
 					<div class="uppercase tracking-wide text-sm text-accent font-semibold">
@@ -65,16 +57,12 @@
 			</div>
 			<!-- Tools -->
 			<div class="px-4 pb-4 flex justify-end">
-				<!-- <div class="tooltip tooltip-top" data-tip="View Competitors">
-					<a href="/comps/{org.id}" class="btn btn-ghost p-1">
-						<Icon class="text-3xl text-primary" icon="material-symbols:groups-outline-rounded" />
-					</a>
-				</div> -->
 				<div class="tooltip tooltip-top" data-tip="View Events">
 					<a href="/events/org/{org.id}" class="btn btn-ghost p-1">
 						<Icon class="text-3xl text-primary" icon="material-symbols:preview" />
 					</a>
 				</div>
+
 				{#if user?.userId === org.ownerId}
 					<div class="tooltip tooltip-top" data-tip="Edit Organization">
 						<a

@@ -53,7 +53,7 @@
 			</div>
 			{#if event.description}
 				<div>
-					{event.description}
+					{@html event.description}
 				</div>
 			{/if}
 			<!-- {#if event.eventwebsite}

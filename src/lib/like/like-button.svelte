@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation'
 	import { cn } from '$lib/utils'
+	// import { cn } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import { error, fail } from '@sveltejs/kit'
 
-	let _class: string | undefined = undefined
-	export { _class as class }
+	let className: string | undefined = undefined
+	export { className as class }
 
 	export let userId: string | undefined
 
@@ -63,36 +64,23 @@
 	}
 </script>
 
-<div
-	class={cn('flex items-center gap-2 px-2 rounded-full', _class)}
-	class:bg-accent={checkForUserLike(item)}
-	class:bg-base-100={!checkForUserLike(item)}
->
-	{#if checkForUserLike(item)}
-		<button
-			on:click={() => {
-				// third prop is unlike
-				like(type, item, getUserLikedId(item))
-			}}
-		>
-			<Icon class="text-base-100" icon="mdi:thumb-up" />
-		</button>
-	{:else}
-		<!-- can't like your own comment -->
-		<button
-			disabled={userId === item.User?.id || userId === item.publisherId}
-			on:click={() => {
-				like(type, item, false)
-			}}
-		>
-			<Icon icon="mdi:thumb-up-outline" />
-		</button>
-	{/if}
-
-	<div
-		class="border-l-2 border-base-200 pl-2 cursor-default"
-		class:text-base-100={checkForUserLike(item)}
+{#if checkForUserLike(item)}
+	<button
+		on:click={() => {
+			// third prop is unlike
+			like(type, item, getUserLikedId(item))
+		}}
 	>
-		{item._count ? item._count.Likes : 0}
-	</div>
-</div>
+		<Icon class={cn('text-base-100', className)} icon="mdi:thumb-up" />
+	</button>
+{:else}
+	<!-- can't like your own comment -->
+	<button
+		disabled={userId === item.User?.id || userId === item.publisherId}
+		on:click={() => {
+			like(type, item, false)
+		}}
+	>
+		<Icon class={cn('text-base-100', className)} icon="mdi:thumb-up-outline" />
+	</button>
+{/if}

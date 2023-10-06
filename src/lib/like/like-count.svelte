@@ -4,8 +4,8 @@
 	import Icon from '@iconify/svelte'
 	import { error, fail } from '@sveltejs/kit'
 
-	let _class: string | undefined = undefined
-	export { _class as class }
+	let className: string | undefined = undefined
+	export { className as class }
 
 	export let userId: string | undefined
 
@@ -64,7 +64,7 @@
 </script>
 
 <div
-	class={cn('flex items-center gap-2 px-2 rounded-full', _class)}
+	class={cn('flex items-center gap-2 px-2 rounded-full', className)}
 	class:bg-accent={checkForUserLike(item)}
 	class:bg-base-100={!checkForUserLike(item)}
 >

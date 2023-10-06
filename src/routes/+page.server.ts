@@ -10,6 +10,14 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 	const session = await locals.auth.validate()
 	if (!session) throw redirect(302, '/auth/login')
 
+	// async function getSailedRaceCount() {
+	// 	try {
+	// 		return await prisma.race.count({
+	// 			where: { sailed: '1' }
+	// 		})
+	// 	} catch (error) {}
+	// }
+
 	async function getUserEvents() {
 		try {
 			return await prisma.event.findMany({
@@ -24,9 +32,13 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 							_count: { select: { Likes: true, Follows: true } }
 						}
 					},
+					Races: { select: { _count: true } },
+					Venue: true,
 					Likes: true,
 					Follows: true,
-					_count: { select: { Likes: true, Follows: true } }
+					_count: {
+						select: { Likes: true, Follows: true, Comps: true, Races: { where: { sailed: '1' } } }
+					}
 				}
 			})
 		} catch (error) {
@@ -40,7 +52,7 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 			return await prisma.organization.findMany({
 				where: { ownerId: session?.user.userId },
 				include: {
-					_count: { select: { Likes: true, Follows: true } },
+					_count: { select: { Likes: true, Follows: true, Events: true, Series: true } },
 					Likes: true,
 					Follows: true
 				}
@@ -74,8 +86,10 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 			return await prisma.follow.findMany({
 				where: { userId: session?.user.userId },
 				include: {
+					Series: true,
 					Event: true,
 					Organization: true,
+					Venue: true,
 					Comp: true
 				}
 			})
@@ -99,6 +113,7 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 
 	return {
 		// user: session.user
+		// sailed: getSailedRaceCount(),
 		organizations: getUserOrganizations(),
 		series: getUserSeries(),
 		events: getUserEvents(),

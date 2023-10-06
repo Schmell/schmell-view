@@ -7,13 +7,13 @@
 
 	let more = false
 
-	let empty
+	let needMore
 	let slot: HTMLDivElement
 	//
 	afterUpdate(() => {
-		empty =
+		needMore =
 			slot &&
-			((slot.innerHTML.length < 3 && slot.innerText.length < 3) ||
+			((slot.innerHTML.length < 140 && slot.innerText.length < 140) ||
 				['undefined', 'null'].includes(slot.innerText))
 	})
 </script>
@@ -45,7 +45,7 @@
 		<slot />
 	</div>
 	<div class="relative">
-		{#if !more && !empty}
+		{#if !more && !needMore}
 			<button
 				on:click={() => {
 					more = !more
@@ -54,7 +54,7 @@
 			>
 				read more
 			</button>
-		{:else if !empty}
+		{:else if !needMore}
 			<button
 				on:click={() => {
 					more = !more

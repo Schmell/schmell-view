@@ -29,6 +29,7 @@ export const load = (async ({ params }) => {
 						}
 					},
 					Likes: true,
+					Follows: true,
 					Owner: true,
 					Addresses: true
 				}

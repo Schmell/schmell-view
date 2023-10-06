@@ -36,7 +36,7 @@ export const load = (async ({ params, url }) => {
 					venueName: true,
 					publisherId: true,
 					eventwebsite: true,
-					_count: { select: { Comments: true, Likes: true } },
+					_count: { select: { Comments: true, Likes: true, Follows: true } },
 					Comments: {
 						select: {
 							comment: true,
@@ -49,10 +49,11 @@ export const load = (async ({ params, url }) => {
 						}
 					},
 					Organization: { select: { titleImage: true, name: true, id: true } },
-					Venue: { select: { name: true, website: true } },
+					Venue: { select: { name: true, website: true, burgee: true } },
 					// User: { select: { name: true, website: true } },
 					Races: { orderBy: { name: 'asc' } },
-					Likes: { select: { id: true, type: true, userId: true, itemId: true } }
+					Likes: { select: { id: true, type: true, userId: true, itemId: true } },
+					Follows: { select: { id: true, type: true, userId: true, itemId: true } }
 				}
 			})
 		} catch (error) {

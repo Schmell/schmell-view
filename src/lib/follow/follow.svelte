@@ -14,38 +14,39 @@
 	}
 
 	export let item
+	$: console.log('item: ', item)
 
 	export let type: string
 
-	let likeAction: Response | undefined
+	let followAction: Response | undefined
 
-	$: if (likeAction?.ok) {
+	$: if (followAction?.ok) {
 		invalidateAll()
 	}
 
-	function getUserLikedId(item) {
-		const liked = item.Likes.find((like) => {
-			const liked = like.userId === userId
-			if (liked) return like
+	function getUserFollowedId(item) {
+		const followed = item.follow.find((follow) => {
+			const followed = follow.userId === userId
+			if (follow) return followed
 		})
 
-		return liked.id
+		return followed.id
 	}
 
-	function checkForUserLike(item) {
-		if (!item.Likes) return false
-		if (item.Likes.some((like) => like.userId === userId)) {
+	function checkForUserFollow(item) {
+		if (!item.Follow) return false
+		if (item.Follow.some((follow) => follow.userId === userId)) {
 			return true
 		}
 
 		return false
 	}
 
-	async function like(type: string, item, unlike = false) {
+	async function follow(type: string, item, unfollow = false) {
 		try {
-			likeAction = await fetch(
+			followAction = await fetch(
 				`/api/like?likeType=${type}&itemId=${item.id}${
-					unlike ? `&unlike=${getUserLikedId(item)}` : ''
+					unfollow ? `&unfollow=${getUserFollowedId(item)}` : ''
 				}`,
 
 				{
@@ -58,21 +59,21 @@
 		} catch (error) {
 			console.log('error: ', error)
 
-			throw fail(400, { message: 'add like error' })
+			throw fail(400, { message: 'add follow error' })
 		}
 	}
 </script>
 
 <div
 	class={cn('flex items-center gap-2 px-2 rounded-full', _class)}
-	class:bg-accent={checkForUserLike(item)}
-	class:bg-base-100={!checkForUserLike(item)}
+	class:bg-accent={checkForUserFollow(item)}
+	class:bg-base-100={!checkForUserFollow(item)}
 >
-	{#if checkForUserLike(item)}
+	{#if checkForUserFollow(item)}
 		<button
 			on:click={() => {
 				// third prop is unlike
-				like(type, item, getUserLikedId(item))
+				follow(type, item, getUserFollowedId(item))
 			}}
 		>
 			<Icon class="text-base-100" icon="mdi:thumb-up" />
@@ -82,17 +83,17 @@
 		<button
 			disabled={userId === item.User?.id || userId === item.publisherId}
 			on:click={() => {
-				like(type, item, false)
+				follow(type, item, false)
 			}}
 		>
-			<Icon icon="mdi:thumb-up-outline" />
+			<Icon icon="material-symbols:bookmark-add-outline-rounded" />
 		</button>
 	{/if}
 
 	<div
 		class="border-l-2 border-base-200 pl-2 cursor-default"
-		class:text-base-100={checkForUserLike(item)}
+		class:text-base-100={checkForUserFollow(item)}
 	>
-		{item._count ? item._count.Likes : 0}
+		{item._count ? item._count.Follows : 0}
 	</div>
 </div>
