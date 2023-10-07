@@ -101,15 +101,15 @@
 						</div>
 					{/if}
 
-					<p class="mt-2 opacity-70">
+					<p class="py-2 opacity-70">
 						{@html event?.description ? event?.description : 'No description provided'}
 					</p>
-					<div class="flex justify-between">
-						<a href={getHref(event?.eventwebsite)} class="flex items-center gap-1 text-secondary font-semibold uppercase"><Icon icon="gridicons:popout" /> {event?.eventwebsite} </a>
-						<div>
-							
+
+					<div class="">
+						<a href="/organization/{event.Organization?.id}" class="underline">
 							{event.Organization?.name}
-						</div>
+						</a>
+						<a href={getHref(event?.eventwebsite)} class="flex items-center gap-1 text-secondary font-semibold uppercase"> <Icon icon="gridicons:popout" /> {event?.eventwebsite} </a>
 					</div>
 				</div>
 			</div>

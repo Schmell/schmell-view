@@ -7,6 +7,7 @@ export const actions = {
 		const { locals, request } = req
 		const session = await locals.auth.validate()
 		if (!session) throw fail(400, { message: 'Not authorised to comment' })
+		
 		const formObj = Object.fromEntries(await request.formData()) as Record<string, string>
 		const { id, type, itemId, comment } = formObj
 

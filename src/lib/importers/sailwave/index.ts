@@ -19,7 +19,7 @@ export async function CheckForDuplicates({ data, file }) {
 }
 
 export async function Populate({ blw, userId, orgId }) {
-	// ///////////////////
+	////////////////////////////////////////////////////
 	const event = blw.getEvent()
 	const { uniqueIdString } = event
 
@@ -93,7 +93,7 @@ export async function Populate({ blw, userId, orgId }) {
 					club: comp.club,
 					boat: comp.boat,
 					skipper: comp.helmname,
-					uniqueCompId: comp.uniqueCompId,
+					// uniqueCompId: comp.uniqueCompId,
 					fleet: comp.fleet,
 					division: comp.division,
 					rank: comp.rank,
@@ -112,7 +112,7 @@ export async function Populate({ blw, userId, orgId }) {
 					boat: comp.boat,
 					sailno: comp.sailno,
 					skipper: comp.helmname,
-					uniqueCompId: comp.uniqueCompId,
+					// uniqueCompId: comp.uniqueCompId,
 					fleet: comp.fleet,
 					division: comp.division,
 					rank: comp.rank,

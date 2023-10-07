@@ -27,10 +27,11 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 					},
 					Races: { select: { _count: true } },
 					Venue: true,
+					
 					Likes: true,
 					Follows: true,
 					_count: {
-						select: { Likes: true, Follows: true, Comps: true, Races: { where: { sailed: '1' } } }
+						select: { Likes: true, Follows: true,  Comps: true, Races: { where: { sailed: '1' } } }
 					}
 				}
 			})
@@ -100,7 +101,19 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 		try {
 			return await prisma.like.findMany({
 				where: { userId: session?.user.userId },
-				include: { Event: true, Organization: true, Venue: true, Comp: true, User: true }
+				include: { 
+					Event: true, 
+					Organization: true, 
+					Comment:{include: {
+						User:true, 
+						Venue:true, 
+						Organization:true, 
+						Event:true,
+						Comp:true,
+					}}, 
+					Venue: true, 
+					Comp: true, 
+					User: true }
 			})
 		} catch (error) {
 			prismaError(error)

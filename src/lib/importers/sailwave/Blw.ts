@@ -40,7 +40,7 @@ export default class Blw {
 				competitor.helname ?? 'none'
 			}_${competitor.club ?? 'none'} `
 
-			console.log('competitor: ', competitor)
+			// console.log('competitor: ', competitor)
 
 			compData.push(competitor)
 		}) //each compBoats
@@ -244,7 +244,6 @@ export default class Blw {
 			obj[property] = item[1]
 		})
 
-		// console.log('Scoring rows: ', rows);
 
 		const { ratingsystem, ratsysa, ratsysb, ...rest } = obj
 
