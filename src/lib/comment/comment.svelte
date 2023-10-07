@@ -7,7 +7,7 @@
 
 	export let formObj
 	export let item
-	// $: console.log('item: ', item)
+	$: console.log('page: ', $page)
 	// export let type
 	export let user
 	// $: console.log('user: ', user)
@@ -37,7 +37,7 @@
 
 				<ul
 					tabindex="-1"
-					class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+					class="dropdown-content z-10 menu p-2 shadow bg-base-100 rounded-box w-52"
 				>
 					<li><a href="/events/{item?.id}?editComment={item.id}"> Edit </a></li>
 					<Form action="/api/comment/?/delete" {formObj}>

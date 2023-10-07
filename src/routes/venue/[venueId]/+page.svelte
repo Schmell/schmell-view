@@ -64,18 +64,21 @@
 		/ 
 		<span class="pr-4 pl-2 flex items-center text-xs"> {venue._count.Follows} <Icon icon="mdi:bell-ring"/> </span>
 	</div>
-	
+
 	{#if venue.description}
 		<div
-			class="mt-4 p-4 text-lg bg-base-300 border-base-300 border-b-2 border-l-2 rounded-xl shadow-lg"
+			class="mt-4 p-4 relative text-lg bg-base-300 border-base-300 border-b-2 border-l-2 rounded-xl shadow-lg"
 		>
+		<div class="absolute uppercase drop-shadow-md -top-4 -left-0 tracking-wide text-xl text-accent font-semibold">
+			{@html venue.name}
+		</div>
 			{@html venue.description}
 		</div>
 	{/if}
 
 	<!-- Links -->
 	<div class="py-2 flex justify-between items-center">
-		<div class="flex gap-2 items-center pt-4 text-md font-bold">
+		<div class="flex gap-2 items-center pt-4 text-md font-bold uppercase">
 			<Icon icon="gridicons:popout" />
 			<a href={getHref(venue.website)}>{venue.website ? venue.website : 'no website provided'}</a>
 		</div>

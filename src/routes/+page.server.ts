@@ -1,22 +1,15 @@
 import { redirect, type Actions, fail } from '@sveltejs/kit'
 import { loadFlash } from 'sveltekit-flash-message/server'
-
 import type { PageServerLoad } from './$types'
 import { auth } from '$lib/server/lucia'
+import { prismaError } from '$lib/error-handling'
+import { prisma } from '$lib/server/prisma'
 
 export const load: PageServerLoad = loadFlash(async (event) => {
-	const { locals } = event
+	const { locals, url } = event
 
 	const session = await locals.auth.validate()
-	if (!session) throw redirect(302, '/auth/login')
-
-	// async function getSailedRaceCount() {
-	// 	try {
-	// 		return await prisma.race.count({
-	// 			where: { sailed: '1' }
-	// 		})
-	// 	} catch (error) {}
-	// }
+	if (!session) throw redirect(302, `/auth/login?from=${url.pathname}`)
 
 	async function getUserEvents() {
 		try {
@@ -42,6 +35,7 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 				}
 			})
 		} catch (error) {
+			prismaError(error)
 			console.log('error: ', error)
 			throw fail(400, { message: 'Fail query on User Events' })
 		}
@@ -58,6 +52,7 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 				}
 			})
 		} catch (error) {
+			prismaError(error)
 			console.log('error: ', error)
 			throw fail(400, { message: 'Fail query on User Likes' })
 		}
@@ -76,6 +71,7 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 				}
 			})
 		} catch (error) {
+			prismaError(error)
 			console.log('error: ', error)
 			throw fail(400, { message: 'Fail query on User Likes' })
 		}
@@ -94,6 +90,7 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 				}
 			})
 		} catch (error) {
+			prismaError(error)
 			console.log('error: ', error)
 			throw fail(400, { message: 'Fail query on User Following' })
 		}
@@ -106,14 +103,13 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 				include: { Event: true, Organization: true, Venue: true, Comp: true, User: true }
 			})
 		} catch (error) {
+			prismaError(error)
 			console.log('error: ', error)
 			throw fail(400, { message: 'Fail query on User Likes' })
 		}
 	}
 
 	return {
-		// user: session.user
-		// sailed: getSailedRaceCount(),
 		organizations: getUserOrganizations(),
 		series: getUserSeries(),
 		events: getUserEvents(),
