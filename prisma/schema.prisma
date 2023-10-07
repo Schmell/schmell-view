@@ -199,13 +199,13 @@ model Venue {
   Events      Event[]
   Series      Series[]
   Likes       Like[]
+  Follows     Follow[]
   Comments    Comment[]
   Addresses   Address[]
   publisherId String?
   Publisher   User?     @relation(fields: [publisherId], references: [id], onDelete: SetNull)
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
-  Follow      Follow[]
 }
 
 model Address {

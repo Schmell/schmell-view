@@ -1,4 +1,6 @@
 import { fail } from '@sveltejs/kit'
+import { prismaError } from '$lib/error-handling'
+import { prisma } from '$lib/server/prisma'
 
 export const actions = {
 	comment: async (req) => {
@@ -15,6 +17,7 @@ export const actions = {
 			try {
 				return await prisma.comment.upsert({ ...data })
 			} catch (error) {
+				prismaError(error)
 				console.log('error: ', error)
 			}
 		}

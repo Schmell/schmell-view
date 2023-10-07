@@ -71,7 +71,11 @@
 
 					<LikeFollow item={event} userId={user?.userId} type="event" />
 				</div>
-
+				<div class="flex justify-end  text-sm">
+					<span class="pr-1 flex items-center text-xs"> {event._count.Likes} <Icon class="px-1 text-lg" icon="mdi:thumbs-up"/> </span>
+					/ 
+					<span class="pr-2 pl-2 flex items-center text-xs"> {event._count.Follows} <Icon class="px-1 text-lg" icon="mdi:bell-ring"/> </span>
+				</div>
 				<div class="pt-8 px-8 w-full">
 					<div class="flex justify-between w-full">
 						<div class="uppercase tracking-wide text-xl text-accent font-semibold">
@@ -89,8 +93,9 @@
 							<div>-</div>
 							<a
 								href={getHref(event.Venue.website)}
-								class="mt-1 text-xs leading-tight text-base-content hover:underline"
+								class="mt-1 flex gap-1 items-center text-xs leading-tight text-base-content hover:underline"
 							>
+								<Icon icon="gridicons:popout" />
 								{event.Venue.website}
 							</a>
 						</div>
@@ -100,8 +105,9 @@
 						{@html event?.description ? event?.description : 'No description provided'}
 					</p>
 					<div class="flex justify-between">
-						<a href={getHref(event?.eventwebsite)} class="text-secondary">{event?.eventwebsite} </a>
+						<a href={getHref(event?.eventwebsite)} class="flex items-center gap-1 text-secondary font-semibold uppercase"><Icon icon="gridicons:popout" /> {event?.eventwebsite} </a>
 						<div>
+							
 							{event.Organization?.name}
 						</div>
 					</div>

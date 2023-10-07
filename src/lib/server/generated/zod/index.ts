@@ -809,10 +809,10 @@ export const VenueIncludeSchema: z.ZodType<Prisma.VenueInclude> = z.object({
   Events: z.union([z.boolean(),z.lazy(() => EventFindManyArgsSchema)]).optional(),
   Series: z.union([z.boolean(),z.lazy(() => SeriesFindManyArgsSchema)]).optional(),
   Likes: z.union([z.boolean(),z.lazy(() => LikeFindManyArgsSchema)]).optional(),
+  Follows: z.union([z.boolean(),z.lazy(() => FollowFindManyArgsSchema)]).optional(),
   Comments: z.union([z.boolean(),z.lazy(() => CommentFindManyArgsSchema)]).optional(),
   Addresses: z.union([z.boolean(),z.lazy(() => AddressFindManyArgsSchema)]).optional(),
   Publisher: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
-  Follow: z.union([z.boolean(),z.lazy(() => FollowFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => VenueCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -829,9 +829,9 @@ export const VenueCountOutputTypeSelectSchema: z.ZodType<Prisma.VenueCountOutput
   Events: z.boolean().optional(),
   Series: z.boolean().optional(),
   Likes: z.boolean().optional(),
+  Follows: z.boolean().optional(),
   Comments: z.boolean().optional(),
   Addresses: z.boolean().optional(),
-  Follow: z.boolean().optional(),
 }).strict();
 
 export const VenueSelectSchema: z.ZodType<Prisma.VenueSelect> = z.object({
@@ -849,10 +849,10 @@ export const VenueSelectSchema: z.ZodType<Prisma.VenueSelect> = z.object({
   Events: z.union([z.boolean(),z.lazy(() => EventFindManyArgsSchema)]).optional(),
   Series: z.union([z.boolean(),z.lazy(() => SeriesFindManyArgsSchema)]).optional(),
   Likes: z.union([z.boolean(),z.lazy(() => LikeFindManyArgsSchema)]).optional(),
+  Follows: z.union([z.boolean(),z.lazy(() => FollowFindManyArgsSchema)]).optional(),
   Comments: z.union([z.boolean(),z.lazy(() => CommentFindManyArgsSchema)]).optional(),
   Addresses: z.union([z.boolean(),z.lazy(() => AddressFindManyArgsSchema)]).optional(),
   Publisher: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
-  Follow: z.union([z.boolean(),z.lazy(() => FollowFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => VenueCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -2086,10 +2086,10 @@ export const VenueWhereInputSchema: z.ZodType<Prisma.VenueWhereInput> = z.object
   Events: z.lazy(() => EventListRelationFilterSchema).optional(),
   Series: z.lazy(() => SeriesListRelationFilterSchema).optional(),
   Likes: z.lazy(() => LikeListRelationFilterSchema).optional(),
+  Follows: z.lazy(() => FollowListRelationFilterSchema).optional(),
   Comments: z.lazy(() => CommentListRelationFilterSchema).optional(),
   Addresses: z.lazy(() => AddressListRelationFilterSchema).optional(),
   Publisher: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
-  Follow: z.lazy(() => FollowListRelationFilterSchema).optional()
 }).strict();
 
 export const VenueOrderByWithRelationInputSchema: z.ZodType<Prisma.VenueOrderByWithRelationInput> = z.object({
@@ -2107,10 +2107,10 @@ export const VenueOrderByWithRelationInputSchema: z.ZodType<Prisma.VenueOrderByW
   Events: z.lazy(() => EventOrderByRelationAggregateInputSchema).optional(),
   Series: z.lazy(() => SeriesOrderByRelationAggregateInputSchema).optional(),
   Likes: z.lazy(() => LikeOrderByRelationAggregateInputSchema).optional(),
+  Follows: z.lazy(() => FollowOrderByRelationAggregateInputSchema).optional(),
   Comments: z.lazy(() => CommentOrderByRelationAggregateInputSchema).optional(),
   Addresses: z.lazy(() => AddressOrderByRelationAggregateInputSchema).optional(),
-  Publisher: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
-  Follow: z.lazy(() => FollowOrderByRelationAggregateInputSchema).optional()
+  Publisher: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
 }).strict();
 
 export const VenueWhereUniqueInputSchema: z.ZodType<Prisma.VenueWhereUniqueInput> = z.union([
@@ -2143,10 +2143,10 @@ export const VenueWhereUniqueInputSchema: z.ZodType<Prisma.VenueWhereUniqueInput
   Events: z.lazy(() => EventListRelationFilterSchema).optional(),
   Series: z.lazy(() => SeriesListRelationFilterSchema).optional(),
   Likes: z.lazy(() => LikeListRelationFilterSchema).optional(),
+  Follows: z.lazy(() => FollowListRelationFilterSchema).optional(),
   Comments: z.lazy(() => CommentListRelationFilterSchema).optional(),
   Addresses: z.lazy(() => AddressListRelationFilterSchema).optional(),
   Publisher: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
-  Follow: z.lazy(() => FollowListRelationFilterSchema).optional()
 }).strict());
 
 export const VenueOrderByWithAggregationInputSchema: z.ZodType<Prisma.VenueOrderByWithAggregationInput> = z.object({
@@ -3985,10 +3985,10 @@ export const VenueCreateInputSchema: z.ZodType<Prisma.VenueCreateInput> = z.obje
   Events: z.lazy(() => EventCreateNestedManyWithoutVenueInputSchema).optional(),
   Series: z.lazy(() => SeriesCreateNestedManyWithoutVenuesInputSchema).optional(),
   Likes: z.lazy(() => LikeCreateNestedManyWithoutVenueInputSchema).optional(),
+  Follows: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional(),
   Comments: z.lazy(() => CommentCreateNestedManyWithoutVenueInputSchema).optional(),
   Addresses: z.lazy(() => AddressCreateNestedManyWithoutVenueInputSchema).optional(),
-  Publisher: z.lazy(() => UserCreateNestedOneWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional()
+  Publisher: z.lazy(() => UserCreateNestedOneWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedCreateInputSchema: z.ZodType<Prisma.VenueUncheckedCreateInput> = z.object({
@@ -4006,9 +4006,9 @@ export const VenueUncheckedCreateInputSchema: z.ZodType<Prisma.VenueUncheckedCre
   Events: z.lazy(() => EventUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
   Series: z.lazy(() => SeriesUncheckedCreateNestedManyWithoutVenuesInputSchema).optional(),
   Likes: z.lazy(() => LikeUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
+  Follows: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
   Comments: z.lazy(() => CommentUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Addresses: z.lazy(() => AddressUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
+  Addresses: z.lazy(() => AddressUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueUpdateInputSchema: z.ZodType<Prisma.VenueUpdateInput> = z.object({
@@ -4025,10 +4025,10 @@ export const VenueUpdateInputSchema: z.ZodType<Prisma.VenueUpdateInput> = z.obje
   Events: z.lazy(() => EventUpdateManyWithoutVenueNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUpdateManyWithoutVenuesNestedInputSchema).optional(),
   Likes: z.lazy(() => LikeUpdateManyWithoutVenueNestedInputSchema).optional(),
+  Follows: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentUpdateManyWithoutVenueNestedInputSchema).optional(),
   Addresses: z.lazy(() => AddressUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Publisher: z.lazy(() => UserUpdateOneWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional()
+  Publisher: z.lazy(() => UserUpdateOneWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedUpdateInputSchema: z.ZodType<Prisma.VenueUncheckedUpdateInput> = z.object({
@@ -4046,9 +4046,9 @@ export const VenueUncheckedUpdateInputSchema: z.ZodType<Prisma.VenueUncheckedUpd
   Events: z.lazy(() => EventUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUncheckedUpdateManyWithoutVenuesNestedInputSchema).optional(),
   Likes: z.lazy(() => LikeUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
+  Follows: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Addresses: z.lazy(() => AddressUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
+  Addresses: z.lazy(() => AddressUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const VenueCreateManyInputSchema: z.ZodType<Prisma.VenueCreateManyInput> = z.object({
@@ -4389,7 +4389,7 @@ export const FollowCreateInputSchema: z.ZodType<Prisma.FollowCreateInput> = z.ob
   Comp: z.lazy(() => CompCreateNestedOneWithoutFollowsInputSchema).optional(),
   Event: z.lazy(() => EventCreateNestedOneWithoutFollowsInputSchema).optional(),
   Organization: z.lazy(() => OrganizationCreateNestedOneWithoutFollowsInputSchema).optional(),
-  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowInputSchema).optional(),
+  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowsInputSchema).optional(),
   Race: z.lazy(() => RaceCreateNestedOneWithoutFollowsInputSchema).optional(),
   Series: z.lazy(() => SeriesCreateNestedOneWithoutFollowsInputSchema).optional(),
   User: z.lazy(() => UserCreateNestedOneWithoutFollowInputSchema)
@@ -4421,7 +4421,7 @@ export const FollowUpdateInputSchema: z.ZodType<Prisma.FollowUpdateInput> = z.ob
   Comp: z.lazy(() => CompUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Event: z.lazy(() => EventUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Organization: z.lazy(() => OrganizationUpdateOneWithoutFollowsNestedInputSchema).optional(),
-  Venue: z.lazy(() => VenueUpdateOneWithoutFollowNestedInputSchema).optional(),
+  Venue: z.lazy(() => VenueUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Race: z.lazy(() => RaceUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUpdateOneWithoutFollowsNestedInputSchema).optional(),
   User: z.lazy(() => UserUpdateOneRequiredWithoutFollowNestedInputSchema).optional()
@@ -7474,6 +7474,13 @@ export const LikeCreateNestedManyWithoutVenueInputSchema: z.ZodType<Prisma.LikeC
   connect: z.union([ z.lazy(() => LikeWhereUniqueInputSchema),z.lazy(() => LikeWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
+export const FollowCreateNestedManyWithoutVenueInputSchema: z.ZodType<Prisma.FollowCreateNestedManyWithoutVenueInput> = z.object({
+  create: z.union([ z.lazy(() => FollowCreateWithoutVenueInputSchema),z.lazy(() => FollowCreateWithoutVenueInputSchema).array(),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema),z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FollowCreateManyVenueInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
 export const CommentCreateNestedManyWithoutVenueInputSchema: z.ZodType<Prisma.CommentCreateNestedManyWithoutVenueInput> = z.object({
   create: z.union([ z.lazy(() => CommentCreateWithoutVenueInputSchema),z.lazy(() => CommentCreateWithoutVenueInputSchema).array(),z.lazy(() => CommentUncheckedCreateWithoutVenueInputSchema),z.lazy(() => CommentUncheckedCreateWithoutVenueInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => CommentCreateOrConnectWithoutVenueInputSchema),z.lazy(() => CommentCreateOrConnectWithoutVenueInputSchema).array() ]).optional(),
@@ -7492,13 +7499,6 @@ export const UserCreateNestedOneWithoutVenueInputSchema: z.ZodType<Prisma.UserCr
   create: z.union([ z.lazy(() => UserCreateWithoutVenueInputSchema),z.lazy(() => UserUncheckedCreateWithoutVenueInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutVenueInputSchema).optional(),
   connect: z.lazy(() => UserWhereUniqueInputSchema).optional()
-}).strict();
-
-export const FollowCreateNestedManyWithoutVenueInputSchema: z.ZodType<Prisma.FollowCreateNestedManyWithoutVenueInput> = z.object({
-  create: z.union([ z.lazy(() => FollowCreateWithoutVenueInputSchema),z.lazy(() => FollowCreateWithoutVenueInputSchema).array(),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema),z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => FollowCreateManyVenueInputEnvelopeSchema).optional(),
-  connect: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const EventUncheckedCreateNestedManyWithoutVenueInputSchema: z.ZodType<Prisma.EventUncheckedCreateNestedManyWithoutVenueInput> = z.object({
@@ -7521,6 +7521,13 @@ export const LikeUncheckedCreateNestedManyWithoutVenueInputSchema: z.ZodType<Pri
   connect: z.union([ z.lazy(() => LikeWhereUniqueInputSchema),z.lazy(() => LikeWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
+export const FollowUncheckedCreateNestedManyWithoutVenueInputSchema: z.ZodType<Prisma.FollowUncheckedCreateNestedManyWithoutVenueInput> = z.object({
+  create: z.union([ z.lazy(() => FollowCreateWithoutVenueInputSchema),z.lazy(() => FollowCreateWithoutVenueInputSchema).array(),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema),z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FollowCreateManyVenueInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
 export const CommentUncheckedCreateNestedManyWithoutVenueInputSchema: z.ZodType<Prisma.CommentUncheckedCreateNestedManyWithoutVenueInput> = z.object({
   create: z.union([ z.lazy(() => CommentCreateWithoutVenueInputSchema),z.lazy(() => CommentCreateWithoutVenueInputSchema).array(),z.lazy(() => CommentUncheckedCreateWithoutVenueInputSchema),z.lazy(() => CommentUncheckedCreateWithoutVenueInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => CommentCreateOrConnectWithoutVenueInputSchema),z.lazy(() => CommentCreateOrConnectWithoutVenueInputSchema).array() ]).optional(),
@@ -7533,13 +7540,6 @@ export const AddressUncheckedCreateNestedManyWithoutVenueInputSchema: z.ZodType<
   connectOrCreate: z.union([ z.lazy(() => AddressCreateOrConnectWithoutVenueInputSchema),z.lazy(() => AddressCreateOrConnectWithoutVenueInputSchema).array() ]).optional(),
   createMany: z.lazy(() => AddressCreateManyVenueInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => AddressWhereUniqueInputSchema),z.lazy(() => AddressWhereUniqueInputSchema).array() ]).optional(),
-}).strict();
-
-export const FollowUncheckedCreateNestedManyWithoutVenueInputSchema: z.ZodType<Prisma.FollowUncheckedCreateNestedManyWithoutVenueInput> = z.object({
-  create: z.union([ z.lazy(() => FollowCreateWithoutVenueInputSchema),z.lazy(() => FollowCreateWithoutVenueInputSchema).array(),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema),z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => FollowCreateManyVenueInputEnvelopeSchema).optional(),
-  connect: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const EventUpdateManyWithoutVenueNestedInputSchema: z.ZodType<Prisma.EventUpdateManyWithoutVenueNestedInput> = z.object({
@@ -7583,6 +7583,20 @@ export const LikeUpdateManyWithoutVenueNestedInputSchema: z.ZodType<Prisma.LikeU
   deleteMany: z.union([ z.lazy(() => LikeScalarWhereInputSchema),z.lazy(() => LikeScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const FollowUpdateManyWithoutVenueNestedInputSchema: z.ZodType<Prisma.FollowUpdateManyWithoutVenueNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FollowCreateWithoutVenueInputSchema),z.lazy(() => FollowCreateWithoutVenueInputSchema).array(),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema),z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FollowUpsertWithWhereUniqueWithoutVenueInputSchema),z.lazy(() => FollowUpsertWithWhereUniqueWithoutVenueInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FollowCreateManyVenueInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FollowUpdateWithWhereUniqueWithoutVenueInputSchema),z.lazy(() => FollowUpdateWithWhereUniqueWithoutVenueInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FollowUpdateManyWithWhereWithoutVenueInputSchema),z.lazy(() => FollowUpdateManyWithWhereWithoutVenueInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FollowScalarWhereInputSchema),z.lazy(() => FollowScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
 export const CommentUpdateManyWithoutVenueNestedInputSchema: z.ZodType<Prisma.CommentUpdateManyWithoutVenueNestedInput> = z.object({
   create: z.union([ z.lazy(() => CommentCreateWithoutVenueInputSchema),z.lazy(() => CommentCreateWithoutVenueInputSchema).array(),z.lazy(() => CommentUncheckedCreateWithoutVenueInputSchema),z.lazy(() => CommentUncheckedCreateWithoutVenueInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => CommentCreateOrConnectWithoutVenueInputSchema),z.lazy(() => CommentCreateOrConnectWithoutVenueInputSchema).array() ]).optional(),
@@ -7619,20 +7633,6 @@ export const UserUpdateOneWithoutVenueNestedInputSchema: z.ZodType<Prisma.UserUp
   delete: z.union([ z.boolean(),z.lazy(() => UserWhereInputSchema) ]).optional(),
   connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => UserUpdateToOneWithWhereWithoutVenueInputSchema),z.lazy(() => UserUpdateWithoutVenueInputSchema),z.lazy(() => UserUncheckedUpdateWithoutVenueInputSchema) ]).optional(),
-}).strict();
-
-export const FollowUpdateManyWithoutVenueNestedInputSchema: z.ZodType<Prisma.FollowUpdateManyWithoutVenueNestedInput> = z.object({
-  create: z.union([ z.lazy(() => FollowCreateWithoutVenueInputSchema),z.lazy(() => FollowCreateWithoutVenueInputSchema).array(),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema),z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema).array() ]).optional(),
-  upsert: z.union([ z.lazy(() => FollowUpsertWithWhereUniqueWithoutVenueInputSchema),z.lazy(() => FollowUpsertWithWhereUniqueWithoutVenueInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => FollowCreateManyVenueInputEnvelopeSchema).optional(),
-  set: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
-  disconnect: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
-  delete: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
-  connect: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
-  update: z.union([ z.lazy(() => FollowUpdateWithWhereUniqueWithoutVenueInputSchema),z.lazy(() => FollowUpdateWithWhereUniqueWithoutVenueInputSchema).array() ]).optional(),
-  updateMany: z.union([ z.lazy(() => FollowUpdateManyWithWhereWithoutVenueInputSchema),z.lazy(() => FollowUpdateManyWithWhereWithoutVenueInputSchema).array() ]).optional(),
-  deleteMany: z.union([ z.lazy(() => FollowScalarWhereInputSchema),z.lazy(() => FollowScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const EventUncheckedUpdateManyWithoutVenueNestedInputSchema: z.ZodType<Prisma.EventUncheckedUpdateManyWithoutVenueNestedInput> = z.object({
@@ -7676,6 +7676,20 @@ export const LikeUncheckedUpdateManyWithoutVenueNestedInputSchema: z.ZodType<Pri
   deleteMany: z.union([ z.lazy(() => LikeScalarWhereInputSchema),z.lazy(() => LikeScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const FollowUncheckedUpdateManyWithoutVenueNestedInputSchema: z.ZodType<Prisma.FollowUncheckedUpdateManyWithoutVenueNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FollowCreateWithoutVenueInputSchema),z.lazy(() => FollowCreateWithoutVenueInputSchema).array(),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema),z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => FollowUpsertWithWhereUniqueWithoutVenueInputSchema),z.lazy(() => FollowUpsertWithWhereUniqueWithoutVenueInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => FollowCreateManyVenueInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => FollowUpdateWithWhereUniqueWithoutVenueInputSchema),z.lazy(() => FollowUpdateWithWhereUniqueWithoutVenueInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => FollowUpdateManyWithWhereWithoutVenueInputSchema),z.lazy(() => FollowUpdateManyWithWhereWithoutVenueInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => FollowScalarWhereInputSchema),z.lazy(() => FollowScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
 export const CommentUncheckedUpdateManyWithoutVenueNestedInputSchema: z.ZodType<Prisma.CommentUncheckedUpdateManyWithoutVenueNestedInput> = z.object({
   create: z.union([ z.lazy(() => CommentCreateWithoutVenueInputSchema),z.lazy(() => CommentCreateWithoutVenueInputSchema).array(),z.lazy(() => CommentUncheckedCreateWithoutVenueInputSchema),z.lazy(() => CommentUncheckedCreateWithoutVenueInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => CommentCreateOrConnectWithoutVenueInputSchema),z.lazy(() => CommentCreateOrConnectWithoutVenueInputSchema).array() ]).optional(),
@@ -7702,20 +7716,6 @@ export const AddressUncheckedUpdateManyWithoutVenueNestedInputSchema: z.ZodType<
   update: z.union([ z.lazy(() => AddressUpdateWithWhereUniqueWithoutVenueInputSchema),z.lazy(() => AddressUpdateWithWhereUniqueWithoutVenueInputSchema).array() ]).optional(),
   updateMany: z.union([ z.lazy(() => AddressUpdateManyWithWhereWithoutVenueInputSchema),z.lazy(() => AddressUpdateManyWithWhereWithoutVenueInputSchema).array() ]).optional(),
   deleteMany: z.union([ z.lazy(() => AddressScalarWhereInputSchema),z.lazy(() => AddressScalarWhereInputSchema).array() ]).optional(),
-}).strict();
-
-export const FollowUncheckedUpdateManyWithoutVenueNestedInputSchema: z.ZodType<Prisma.FollowUncheckedUpdateManyWithoutVenueNestedInput> = z.object({
-  create: z.union([ z.lazy(() => FollowCreateWithoutVenueInputSchema),z.lazy(() => FollowCreateWithoutVenueInputSchema).array(),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema),z.lazy(() => FollowCreateOrConnectWithoutVenueInputSchema).array() ]).optional(),
-  upsert: z.union([ z.lazy(() => FollowUpsertWithWhereUniqueWithoutVenueInputSchema),z.lazy(() => FollowUpsertWithWhereUniqueWithoutVenueInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => FollowCreateManyVenueInputEnvelopeSchema).optional(),
-  set: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
-  disconnect: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
-  delete: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
-  connect: z.union([ z.lazy(() => FollowWhereUniqueInputSchema),z.lazy(() => FollowWhereUniqueInputSchema).array() ]).optional(),
-  update: z.union([ z.lazy(() => FollowUpdateWithWhereUniqueWithoutVenueInputSchema),z.lazy(() => FollowUpdateWithWhereUniqueWithoutVenueInputSchema).array() ]).optional(),
-  updateMany: z.union([ z.lazy(() => FollowUpdateManyWithWhereWithoutVenueInputSchema),z.lazy(() => FollowUpdateManyWithWhereWithoutVenueInputSchema).array() ]).optional(),
-  deleteMany: z.union([ z.lazy(() => FollowScalarWhereInputSchema),z.lazy(() => FollowScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const VenueCreateNestedOneWithoutAddressesInputSchema: z.ZodType<Prisma.VenueCreateNestedOneWithoutAddressesInput> = z.object({
@@ -8058,9 +8058,9 @@ export const OrganizationCreateNestedOneWithoutFollowsInputSchema: z.ZodType<Pri
   connect: z.lazy(() => OrganizationWhereUniqueInputSchema).optional()
 }).strict();
 
-export const VenueCreateNestedOneWithoutFollowInputSchema: z.ZodType<Prisma.VenueCreateNestedOneWithoutFollowInput> = z.object({
-  create: z.union([ z.lazy(() => VenueCreateWithoutFollowInputSchema),z.lazy(() => VenueUncheckedCreateWithoutFollowInputSchema) ]).optional(),
-  connectOrCreate: z.lazy(() => VenueCreateOrConnectWithoutFollowInputSchema).optional(),
+export const VenueCreateNestedOneWithoutFollowsInputSchema: z.ZodType<Prisma.VenueCreateNestedOneWithoutFollowsInput> = z.object({
+  create: z.union([ z.lazy(() => VenueCreateWithoutFollowsInputSchema),z.lazy(() => VenueUncheckedCreateWithoutFollowsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => VenueCreateOrConnectWithoutFollowsInputSchema).optional(),
   connect: z.lazy(() => VenueWhereUniqueInputSchema).optional()
 }).strict();
 
@@ -8126,14 +8126,14 @@ export const OrganizationUpdateOneWithoutFollowsNestedInputSchema: z.ZodType<Pri
   update: z.union([ z.lazy(() => OrganizationUpdateToOneWithWhereWithoutFollowsInputSchema),z.lazy(() => OrganizationUpdateWithoutFollowsInputSchema),z.lazy(() => OrganizationUncheckedUpdateWithoutFollowsInputSchema) ]).optional(),
 }).strict();
 
-export const VenueUpdateOneWithoutFollowNestedInputSchema: z.ZodType<Prisma.VenueUpdateOneWithoutFollowNestedInput> = z.object({
-  create: z.union([ z.lazy(() => VenueCreateWithoutFollowInputSchema),z.lazy(() => VenueUncheckedCreateWithoutFollowInputSchema) ]).optional(),
-  connectOrCreate: z.lazy(() => VenueCreateOrConnectWithoutFollowInputSchema).optional(),
-  upsert: z.lazy(() => VenueUpsertWithoutFollowInputSchema).optional(),
+export const VenueUpdateOneWithoutFollowsNestedInputSchema: z.ZodType<Prisma.VenueUpdateOneWithoutFollowsNestedInput> = z.object({
+  create: z.union([ z.lazy(() => VenueCreateWithoutFollowsInputSchema),z.lazy(() => VenueUncheckedCreateWithoutFollowsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => VenueCreateOrConnectWithoutFollowsInputSchema).optional(),
+  upsert: z.lazy(() => VenueUpsertWithoutFollowsInputSchema).optional(),
   disconnect: z.union([ z.boolean(),z.lazy(() => VenueWhereInputSchema) ]).optional(),
   delete: z.union([ z.boolean(),z.lazy(() => VenueWhereInputSchema) ]).optional(),
   connect: z.lazy(() => VenueWhereUniqueInputSchema).optional(),
-  update: z.union([ z.lazy(() => VenueUpdateToOneWithWhereWithoutFollowInputSchema),z.lazy(() => VenueUpdateWithoutFollowInputSchema),z.lazy(() => VenueUncheckedUpdateWithoutFollowInputSchema) ]).optional(),
+  update: z.union([ z.lazy(() => VenueUpdateToOneWithWhereWithoutFollowsInputSchema),z.lazy(() => VenueUpdateWithoutFollowsInputSchema),z.lazy(() => VenueUncheckedUpdateWithoutFollowsInputSchema) ]).optional(),
 }).strict();
 
 export const RaceUpdateOneWithoutFollowsNestedInputSchema: z.ZodType<Prisma.RaceUpdateOneWithoutFollowsNestedInput> = z.object({
@@ -9372,7 +9372,7 @@ export const FollowCreateWithoutSeriesInputSchema: z.ZodType<Prisma.FollowCreate
   Comp: z.lazy(() => CompCreateNestedOneWithoutFollowsInputSchema).optional(),
   Event: z.lazy(() => EventCreateNestedOneWithoutFollowsInputSchema).optional(),
   Organization: z.lazy(() => OrganizationCreateNestedOneWithoutFollowsInputSchema).optional(),
-  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowInputSchema).optional(),
+  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowsInputSchema).optional(),
   Race: z.lazy(() => RaceCreateNestedOneWithoutFollowsInputSchema).optional(),
   User: z.lazy(() => UserCreateNestedOneWithoutFollowInputSchema)
 }).strict();
@@ -9501,10 +9501,10 @@ export const VenueCreateWithoutSeriesInputSchema: z.ZodType<Prisma.VenueCreateWi
   updatedAt: z.coerce.date().optional().nullable(),
   Events: z.lazy(() => EventCreateNestedManyWithoutVenueInputSchema).optional(),
   Likes: z.lazy(() => LikeCreateNestedManyWithoutVenueInputSchema).optional(),
+  Follows: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional(),
   Comments: z.lazy(() => CommentCreateNestedManyWithoutVenueInputSchema).optional(),
   Addresses: z.lazy(() => AddressCreateNestedManyWithoutVenueInputSchema).optional(),
-  Publisher: z.lazy(() => UserCreateNestedOneWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional()
+  Publisher: z.lazy(() => UserCreateNestedOneWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedCreateWithoutSeriesInputSchema: z.ZodType<Prisma.VenueUncheckedCreateWithoutSeriesInput> = z.object({
@@ -9521,9 +9521,9 @@ export const VenueUncheckedCreateWithoutSeriesInputSchema: z.ZodType<Prisma.Venu
   updatedAt: z.coerce.date().optional().nullable(),
   Events: z.lazy(() => EventUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
   Likes: z.lazy(() => LikeUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
+  Follows: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
   Comments: z.lazy(() => CommentUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Addresses: z.lazy(() => AddressUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
+  Addresses: z.lazy(() => AddressUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueCreateOrConnectWithoutSeriesInputSchema: z.ZodType<Prisma.VenueCreateOrConnectWithoutSeriesInput> = z.object({
@@ -9968,10 +9968,10 @@ export const VenueCreateWithoutEventsInputSchema: z.ZodType<Prisma.VenueCreateWi
   updatedAt: z.coerce.date().optional().nullable(),
   Series: z.lazy(() => SeriesCreateNestedManyWithoutVenuesInputSchema).optional(),
   Likes: z.lazy(() => LikeCreateNestedManyWithoutVenueInputSchema).optional(),
+  Follows: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional(),
   Comments: z.lazy(() => CommentCreateNestedManyWithoutVenueInputSchema).optional(),
   Addresses: z.lazy(() => AddressCreateNestedManyWithoutVenueInputSchema).optional(),
-  Publisher: z.lazy(() => UserCreateNestedOneWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional()
+  Publisher: z.lazy(() => UserCreateNestedOneWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedCreateWithoutEventsInputSchema: z.ZodType<Prisma.VenueUncheckedCreateWithoutEventsInput> = z.object({
@@ -9988,9 +9988,9 @@ export const VenueUncheckedCreateWithoutEventsInputSchema: z.ZodType<Prisma.Venu
   updatedAt: z.coerce.date().optional().nullable(),
   Series: z.lazy(() => SeriesUncheckedCreateNestedManyWithoutVenuesInputSchema).optional(),
   Likes: z.lazy(() => LikeUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
+  Follows: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
   Comments: z.lazy(() => CommentUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Addresses: z.lazy(() => AddressUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
+  Addresses: z.lazy(() => AddressUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueCreateOrConnectWithoutEventsInputSchema: z.ZodType<Prisma.VenueCreateOrConnectWithoutEventsInput> = z.object({
@@ -10123,7 +10123,7 @@ export const FollowCreateWithoutEventInputSchema: z.ZodType<Prisma.FollowCreateW
   Comment: z.lazy(() => CommentCreateNestedOneWithoutFollowInputSchema).optional(),
   Comp: z.lazy(() => CompCreateNestedOneWithoutFollowsInputSchema).optional(),
   Organization: z.lazy(() => OrganizationCreateNestedOneWithoutFollowsInputSchema).optional(),
-  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowInputSchema).optional(),
+  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowsInputSchema).optional(),
   Race: z.lazy(() => RaceCreateNestedOneWithoutFollowsInputSchema).optional(),
   Series: z.lazy(() => SeriesCreateNestedOneWithoutFollowsInputSchema).optional(),
   User: z.lazy(() => UserCreateNestedOneWithoutFollowInputSchema)
@@ -10474,10 +10474,10 @@ export const VenueUpdateWithoutEventsInputSchema: z.ZodType<Prisma.VenueUpdateWi
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Series: z.lazy(() => SeriesUpdateManyWithoutVenuesNestedInputSchema).optional(),
   Likes: z.lazy(() => LikeUpdateManyWithoutVenueNestedInputSchema).optional(),
+  Follows: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentUpdateManyWithoutVenueNestedInputSchema).optional(),
   Addresses: z.lazy(() => AddressUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Publisher: z.lazy(() => UserUpdateOneWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional()
+  Publisher: z.lazy(() => UserUpdateOneWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedUpdateWithoutEventsInputSchema: z.ZodType<Prisma.VenueUncheckedUpdateWithoutEventsInput> = z.object({
@@ -10494,9 +10494,9 @@ export const VenueUncheckedUpdateWithoutEventsInputSchema: z.ZodType<Prisma.Venu
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Series: z.lazy(() => SeriesUncheckedUpdateManyWithoutVenuesNestedInputSchema).optional(),
   Likes: z.lazy(() => LikeUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
+  Follows: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Addresses: z.lazy(() => AddressUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
+  Addresses: z.lazy(() => AddressUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const RaceUpsertWithWhereUniqueWithoutEventInputSchema: z.ZodType<Prisma.RaceUpsertWithWhereUniqueWithoutEventInput> = z.object({
@@ -10855,7 +10855,7 @@ export const FollowCreateWithoutRaceInputSchema: z.ZodType<Prisma.FollowCreateWi
   Comp: z.lazy(() => CompCreateNestedOneWithoutFollowsInputSchema).optional(),
   Event: z.lazy(() => EventCreateNestedOneWithoutFollowsInputSchema).optional(),
   Organization: z.lazy(() => OrganizationCreateNestedOneWithoutFollowsInputSchema).optional(),
-  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowInputSchema).optional(),
+  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowsInputSchema).optional(),
   Series: z.lazy(() => SeriesCreateNestedOneWithoutFollowsInputSchema).optional(),
   User: z.lazy(() => UserCreateNestedOneWithoutFollowInputSchema)
 }).strict();
@@ -11421,7 +11421,7 @@ export const FollowCreateWithoutCompInputSchema: z.ZodType<Prisma.FollowCreateWi
   Comment: z.lazy(() => CommentCreateNestedOneWithoutFollowInputSchema).optional(),
   Event: z.lazy(() => EventCreateNestedOneWithoutFollowsInputSchema).optional(),
   Organization: z.lazy(() => OrganizationCreateNestedOneWithoutFollowsInputSchema).optional(),
-  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowInputSchema).optional(),
+  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowsInputSchema).optional(),
   Race: z.lazy(() => RaceCreateNestedOneWithoutFollowsInputSchema).optional(),
   Series: z.lazy(() => SeriesCreateNestedOneWithoutFollowsInputSchema).optional(),
   User: z.lazy(() => UserCreateNestedOneWithoutFollowInputSchema)
@@ -12398,7 +12398,7 @@ export const FollowCreateWithoutOrganizationInputSchema: z.ZodType<Prisma.Follow
   Comment: z.lazy(() => CommentCreateNestedOneWithoutFollowInputSchema).optional(),
   Comp: z.lazy(() => CompCreateNestedOneWithoutFollowsInputSchema).optional(),
   Event: z.lazy(() => EventCreateNestedOneWithoutFollowsInputSchema).optional(),
-  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowInputSchema).optional(),
+  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowsInputSchema).optional(),
   Race: z.lazy(() => RaceCreateNestedOneWithoutFollowsInputSchema).optional(),
   Series: z.lazy(() => SeriesCreateNestedOneWithoutFollowsInputSchema).optional(),
   User: z.lazy(() => UserCreateNestedOneWithoutFollowInputSchema)
@@ -12881,6 +12881,46 @@ export const LikeCreateManyVenueInputEnvelopeSchema: z.ZodType<Prisma.LikeCreate
   skipDuplicates: z.boolean().optional()
 }).strict();
 
+export const FollowCreateWithoutVenueInputSchema: z.ZodType<Prisma.FollowCreateWithoutVenueInput> = z.object({
+  id: z.string().cuid().optional(),
+  type: z.string(),
+  itemId: z.string().optional().nullable(),
+  updatedAt: z.coerce.date().optional(),
+  createdAt: z.coerce.date().optional(),
+  Comment: z.lazy(() => CommentCreateNestedOneWithoutFollowInputSchema).optional(),
+  Comp: z.lazy(() => CompCreateNestedOneWithoutFollowsInputSchema).optional(),
+  Event: z.lazy(() => EventCreateNestedOneWithoutFollowsInputSchema).optional(),
+  Organization: z.lazy(() => OrganizationCreateNestedOneWithoutFollowsInputSchema).optional(),
+  Race: z.lazy(() => RaceCreateNestedOneWithoutFollowsInputSchema).optional(),
+  Series: z.lazy(() => SeriesCreateNestedOneWithoutFollowsInputSchema).optional(),
+  User: z.lazy(() => UserCreateNestedOneWithoutFollowInputSchema)
+}).strict();
+
+export const FollowUncheckedCreateWithoutVenueInputSchema: z.ZodType<Prisma.FollowUncheckedCreateWithoutVenueInput> = z.object({
+  id: z.string().cuid().optional(),
+  type: z.string(),
+  itemId: z.string().optional().nullable(),
+  userId: z.string(),
+  commentId: z.string().optional().nullable(),
+  compId: z.string().optional().nullable(),
+  eventId: z.string().optional().nullable(),
+  organizationId: z.string().optional().nullable(),
+  raceId: z.string().optional().nullable(),
+  seriesId: z.string().optional().nullable(),
+  updatedAt: z.coerce.date().optional(),
+  createdAt: z.coerce.date().optional()
+}).strict();
+
+export const FollowCreateOrConnectWithoutVenueInputSchema: z.ZodType<Prisma.FollowCreateOrConnectWithoutVenueInput> = z.object({
+  where: z.lazy(() => FollowWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => FollowCreateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema) ]),
+}).strict();
+
+export const FollowCreateManyVenueInputEnvelopeSchema: z.ZodType<Prisma.FollowCreateManyVenueInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => FollowCreateManyVenueInputSchema),z.lazy(() => FollowCreateManyVenueInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
 export const CommentCreateWithoutVenueInputSchema: z.ZodType<Prisma.CommentCreateWithoutVenueInput> = z.object({
   id: z.string().cuid().optional(),
   type: z.string().optional().nullable(),
@@ -13016,46 +13056,6 @@ export const UserCreateOrConnectWithoutVenueInputSchema: z.ZodType<Prisma.UserCr
   create: z.union([ z.lazy(() => UserCreateWithoutVenueInputSchema),z.lazy(() => UserUncheckedCreateWithoutVenueInputSchema) ]),
 }).strict();
 
-export const FollowCreateWithoutVenueInputSchema: z.ZodType<Prisma.FollowCreateWithoutVenueInput> = z.object({
-  id: z.string().cuid().optional(),
-  type: z.string(),
-  itemId: z.string().optional().nullable(),
-  updatedAt: z.coerce.date().optional(),
-  createdAt: z.coerce.date().optional(),
-  Comment: z.lazy(() => CommentCreateNestedOneWithoutFollowInputSchema).optional(),
-  Comp: z.lazy(() => CompCreateNestedOneWithoutFollowsInputSchema).optional(),
-  Event: z.lazy(() => EventCreateNestedOneWithoutFollowsInputSchema).optional(),
-  Organization: z.lazy(() => OrganizationCreateNestedOneWithoutFollowsInputSchema).optional(),
-  Race: z.lazy(() => RaceCreateNestedOneWithoutFollowsInputSchema).optional(),
-  Series: z.lazy(() => SeriesCreateNestedOneWithoutFollowsInputSchema).optional(),
-  User: z.lazy(() => UserCreateNestedOneWithoutFollowInputSchema)
-}).strict();
-
-export const FollowUncheckedCreateWithoutVenueInputSchema: z.ZodType<Prisma.FollowUncheckedCreateWithoutVenueInput> = z.object({
-  id: z.string().cuid().optional(),
-  type: z.string(),
-  itemId: z.string().optional().nullable(),
-  userId: z.string(),
-  commentId: z.string().optional().nullable(),
-  compId: z.string().optional().nullable(),
-  eventId: z.string().optional().nullable(),
-  organizationId: z.string().optional().nullable(),
-  raceId: z.string().optional().nullable(),
-  seriesId: z.string().optional().nullable(),
-  updatedAt: z.coerce.date().optional(),
-  createdAt: z.coerce.date().optional()
-}).strict();
-
-export const FollowCreateOrConnectWithoutVenueInputSchema: z.ZodType<Prisma.FollowCreateOrConnectWithoutVenueInput> = z.object({
-  where: z.lazy(() => FollowWhereUniqueInputSchema),
-  create: z.union([ z.lazy(() => FollowCreateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema) ]),
-}).strict();
-
-export const FollowCreateManyVenueInputEnvelopeSchema: z.ZodType<Prisma.FollowCreateManyVenueInputEnvelope> = z.object({
-  data: z.union([ z.lazy(() => FollowCreateManyVenueInputSchema),z.lazy(() => FollowCreateManyVenueInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
-}).strict();
-
 export const EventUpsertWithWhereUniqueWithoutVenueInputSchema: z.ZodType<Prisma.EventUpsertWithWhereUniqueWithoutVenueInput> = z.object({
   where: z.lazy(() => EventWhereUniqueInputSchema),
   update: z.union([ z.lazy(() => EventUpdateWithoutVenueInputSchema),z.lazy(() => EventUncheckedUpdateWithoutVenueInputSchema) ]),
@@ -13102,6 +13102,22 @@ export const LikeUpdateWithWhereUniqueWithoutVenueInputSchema: z.ZodType<Prisma.
 export const LikeUpdateManyWithWhereWithoutVenueInputSchema: z.ZodType<Prisma.LikeUpdateManyWithWhereWithoutVenueInput> = z.object({
   where: z.lazy(() => LikeScalarWhereInputSchema),
   data: z.union([ z.lazy(() => LikeUpdateManyMutationInputSchema),z.lazy(() => LikeUncheckedUpdateManyWithoutVenueInputSchema) ]),
+}).strict();
+
+export const FollowUpsertWithWhereUniqueWithoutVenueInputSchema: z.ZodType<Prisma.FollowUpsertWithWhereUniqueWithoutVenueInput> = z.object({
+  where: z.lazy(() => FollowWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => FollowUpdateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedUpdateWithoutVenueInputSchema) ]),
+  create: z.union([ z.lazy(() => FollowCreateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema) ]),
+}).strict();
+
+export const FollowUpdateWithWhereUniqueWithoutVenueInputSchema: z.ZodType<Prisma.FollowUpdateWithWhereUniqueWithoutVenueInput> = z.object({
+  where: z.lazy(() => FollowWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => FollowUpdateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedUpdateWithoutVenueInputSchema) ]),
+}).strict();
+
+export const FollowUpdateManyWithWhereWithoutVenueInputSchema: z.ZodType<Prisma.FollowUpdateManyWithWhereWithoutVenueInput> = z.object({
+  where: z.lazy(() => FollowScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => FollowUpdateManyMutationInputSchema),z.lazy(() => FollowUncheckedUpdateManyWithoutVenueInputSchema) ]),
 }).strict();
 
 export const CommentUpsertWithWhereUniqueWithoutVenueInputSchema: z.ZodType<Prisma.CommentUpsertWithWhereUniqueWithoutVenueInput> = z.object({
@@ -13197,22 +13213,6 @@ export const UserUncheckedUpdateWithoutVenueInputSchema: z.ZodType<Prisma.UserUn
   Contact: z.lazy(() => ContactUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
-export const FollowUpsertWithWhereUniqueWithoutVenueInputSchema: z.ZodType<Prisma.FollowUpsertWithWhereUniqueWithoutVenueInput> = z.object({
-  where: z.lazy(() => FollowWhereUniqueInputSchema),
-  update: z.union([ z.lazy(() => FollowUpdateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedUpdateWithoutVenueInputSchema) ]),
-  create: z.union([ z.lazy(() => FollowCreateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedCreateWithoutVenueInputSchema) ]),
-}).strict();
-
-export const FollowUpdateWithWhereUniqueWithoutVenueInputSchema: z.ZodType<Prisma.FollowUpdateWithWhereUniqueWithoutVenueInput> = z.object({
-  where: z.lazy(() => FollowWhereUniqueInputSchema),
-  data: z.union([ z.lazy(() => FollowUpdateWithoutVenueInputSchema),z.lazy(() => FollowUncheckedUpdateWithoutVenueInputSchema) ]),
-}).strict();
-
-export const FollowUpdateManyWithWhereWithoutVenueInputSchema: z.ZodType<Prisma.FollowUpdateManyWithWhereWithoutVenueInput> = z.object({
-  where: z.lazy(() => FollowScalarWhereInputSchema),
-  data: z.union([ z.lazy(() => FollowUpdateManyMutationInputSchema),z.lazy(() => FollowUncheckedUpdateManyWithoutVenueInputSchema) ]),
-}).strict();
-
 export const VenueCreateWithoutAddressesInputSchema: z.ZodType<Prisma.VenueCreateWithoutAddressesInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
@@ -13227,9 +13227,9 @@ export const VenueCreateWithoutAddressesInputSchema: z.ZodType<Prisma.VenueCreat
   Events: z.lazy(() => EventCreateNestedManyWithoutVenueInputSchema).optional(),
   Series: z.lazy(() => SeriesCreateNestedManyWithoutVenuesInputSchema).optional(),
   Likes: z.lazy(() => LikeCreateNestedManyWithoutVenueInputSchema).optional(),
+  Follows: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional(),
   Comments: z.lazy(() => CommentCreateNestedManyWithoutVenueInputSchema).optional(),
-  Publisher: z.lazy(() => UserCreateNestedOneWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional()
+  Publisher: z.lazy(() => UserCreateNestedOneWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedCreateWithoutAddressesInputSchema: z.ZodType<Prisma.VenueUncheckedCreateWithoutAddressesInput> = z.object({
@@ -13247,8 +13247,8 @@ export const VenueUncheckedCreateWithoutAddressesInputSchema: z.ZodType<Prisma.V
   Events: z.lazy(() => EventUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
   Series: z.lazy(() => SeriesUncheckedCreateNestedManyWithoutVenuesInputSchema).optional(),
   Likes: z.lazy(() => LikeUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Comments: z.lazy(() => CommentUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
+  Follows: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
+  Comments: z.lazy(() => CommentUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueCreateOrConnectWithoutAddressesInputSchema: z.ZodType<Prisma.VenueCreateOrConnectWithoutAddressesInput> = z.object({
@@ -13411,9 +13411,9 @@ export const VenueUpdateWithoutAddressesInputSchema: z.ZodType<Prisma.VenueUpdat
   Events: z.lazy(() => EventUpdateManyWithoutVenueNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUpdateManyWithoutVenuesNestedInputSchema).optional(),
   Likes: z.lazy(() => LikeUpdateManyWithoutVenueNestedInputSchema).optional(),
+  Follows: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Publisher: z.lazy(() => UserUpdateOneWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional()
+  Publisher: z.lazy(() => UserUpdateOneWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedUpdateWithoutAddressesInputSchema: z.ZodType<Prisma.VenueUncheckedUpdateWithoutAddressesInput> = z.object({
@@ -13431,8 +13431,8 @@ export const VenueUncheckedUpdateWithoutAddressesInputSchema: z.ZodType<Prisma.V
   Events: z.lazy(() => EventUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUncheckedUpdateManyWithoutVenuesNestedInputSchema).optional(),
   Likes: z.lazy(() => LikeUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Comments: z.lazy(() => CommentUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
+  Follows: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
+  Comments: z.lazy(() => CommentUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const OrganizationUpsertWithoutAddressesInputSchema: z.ZodType<Prisma.OrganizationUpsertWithoutAddressesInput> = z.object({
@@ -14063,9 +14063,9 @@ export const VenueCreateWithoutCommentsInputSchema: z.ZodType<Prisma.VenueCreate
   Events: z.lazy(() => EventCreateNestedManyWithoutVenueInputSchema).optional(),
   Series: z.lazy(() => SeriesCreateNestedManyWithoutVenuesInputSchema).optional(),
   Likes: z.lazy(() => LikeCreateNestedManyWithoutVenueInputSchema).optional(),
+  Follows: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional(),
   Addresses: z.lazy(() => AddressCreateNestedManyWithoutVenueInputSchema).optional(),
-  Publisher: z.lazy(() => UserCreateNestedOneWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional()
+  Publisher: z.lazy(() => UserCreateNestedOneWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.VenueUncheckedCreateWithoutCommentsInput> = z.object({
@@ -14083,8 +14083,8 @@ export const VenueUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.Ve
   Events: z.lazy(() => EventUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
   Series: z.lazy(() => SeriesUncheckedCreateNestedManyWithoutVenuesInputSchema).optional(),
   Likes: z.lazy(() => LikeUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Addresses: z.lazy(() => AddressUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
+  Follows: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
+  Addresses: z.lazy(() => AddressUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueCreateOrConnectWithoutCommentsInputSchema: z.ZodType<Prisma.VenueCreateOrConnectWithoutCommentsInput> = z.object({
@@ -14160,7 +14160,7 @@ export const FollowCreateWithoutCommentInputSchema: z.ZodType<Prisma.FollowCreat
   Comp: z.lazy(() => CompCreateNestedOneWithoutFollowsInputSchema).optional(),
   Event: z.lazy(() => EventCreateNestedOneWithoutFollowsInputSchema).optional(),
   Organization: z.lazy(() => OrganizationCreateNestedOneWithoutFollowsInputSchema).optional(),
-  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowInputSchema).optional(),
+  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowsInputSchema).optional(),
   Race: z.lazy(() => RaceCreateNestedOneWithoutFollowsInputSchema).optional(),
   Series: z.lazy(() => SeriesCreateNestedOneWithoutFollowsInputSchema).optional(),
   User: z.lazy(() => UserCreateNestedOneWithoutFollowInputSchema)
@@ -14509,9 +14509,9 @@ export const VenueUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.VenueUpdate
   Events: z.lazy(() => EventUpdateManyWithoutVenueNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUpdateManyWithoutVenuesNestedInputSchema).optional(),
   Likes: z.lazy(() => LikeUpdateManyWithoutVenueNestedInputSchema).optional(),
+  Follows: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional(),
   Addresses: z.lazy(() => AddressUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Publisher: z.lazy(() => UserUpdateOneWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional()
+  Publisher: z.lazy(() => UserUpdateOneWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.VenueUncheckedUpdateWithoutCommentsInput> = z.object({
@@ -14529,8 +14529,8 @@ export const VenueUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.Ve
   Events: z.lazy(() => EventUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUncheckedUpdateManyWithoutVenuesNestedInputSchema).optional(),
   Likes: z.lazy(() => LikeUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Addresses: z.lazy(() => AddressUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
+  Follows: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
+  Addresses: z.lazy(() => AddressUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const CompUpsertWithoutCommmentsInputSchema: z.ZodType<Prisma.CompUpsertWithoutCommmentsInput> = z.object({
@@ -14816,7 +14816,7 @@ export const OrganizationCreateOrConnectWithoutFollowsInputSchema: z.ZodType<Pri
   create: z.union([ z.lazy(() => OrganizationCreateWithoutFollowsInputSchema),z.lazy(() => OrganizationUncheckedCreateWithoutFollowsInputSchema) ]),
 }).strict();
 
-export const VenueCreateWithoutFollowInputSchema: z.ZodType<Prisma.VenueCreateWithoutFollowInput> = z.object({
+export const VenueCreateWithoutFollowsInputSchema: z.ZodType<Prisma.VenueCreateWithoutFollowsInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
@@ -14835,7 +14835,7 @@ export const VenueCreateWithoutFollowInputSchema: z.ZodType<Prisma.VenueCreateWi
   Publisher: z.lazy(() => UserCreateNestedOneWithoutVenueInputSchema).optional()
 }).strict();
 
-export const VenueUncheckedCreateWithoutFollowInputSchema: z.ZodType<Prisma.VenueUncheckedCreateWithoutFollowInput> = z.object({
+export const VenueUncheckedCreateWithoutFollowsInputSchema: z.ZodType<Prisma.VenueUncheckedCreateWithoutFollowsInput> = z.object({
   id: z.string().cuid().optional(),
   name: z.string(),
   description: z.string().optional().nullable(),
@@ -14854,9 +14854,9 @@ export const VenueUncheckedCreateWithoutFollowInputSchema: z.ZodType<Prisma.Venu
   Addresses: z.lazy(() => AddressUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
 }).strict();
 
-export const VenueCreateOrConnectWithoutFollowInputSchema: z.ZodType<Prisma.VenueCreateOrConnectWithoutFollowInput> = z.object({
+export const VenueCreateOrConnectWithoutFollowsInputSchema: z.ZodType<Prisma.VenueCreateOrConnectWithoutFollowsInput> = z.object({
   where: z.lazy(() => VenueWhereUniqueInputSchema),
-  create: z.union([ z.lazy(() => VenueCreateWithoutFollowInputSchema),z.lazy(() => VenueUncheckedCreateWithoutFollowInputSchema) ]),
+  create: z.union([ z.lazy(() => VenueCreateWithoutFollowsInputSchema),z.lazy(() => VenueUncheckedCreateWithoutFollowsInputSchema) ]),
 }).strict();
 
 export const RaceCreateWithoutFollowsInputSchema: z.ZodType<Prisma.RaceCreateWithoutFollowsInput> = z.object({
@@ -15228,18 +15228,18 @@ export const OrganizationUncheckedUpdateWithoutFollowsInputSchema: z.ZodType<Pri
   Addresses: z.lazy(() => AddressUncheckedUpdateManyWithoutOrganizationNestedInputSchema).optional()
 }).strict();
 
-export const VenueUpsertWithoutFollowInputSchema: z.ZodType<Prisma.VenueUpsertWithoutFollowInput> = z.object({
-  update: z.union([ z.lazy(() => VenueUpdateWithoutFollowInputSchema),z.lazy(() => VenueUncheckedUpdateWithoutFollowInputSchema) ]),
-  create: z.union([ z.lazy(() => VenueCreateWithoutFollowInputSchema),z.lazy(() => VenueUncheckedCreateWithoutFollowInputSchema) ]),
+export const VenueUpsertWithoutFollowsInputSchema: z.ZodType<Prisma.VenueUpsertWithoutFollowsInput> = z.object({
+  update: z.union([ z.lazy(() => VenueUpdateWithoutFollowsInputSchema),z.lazy(() => VenueUncheckedUpdateWithoutFollowsInputSchema) ]),
+  create: z.union([ z.lazy(() => VenueCreateWithoutFollowsInputSchema),z.lazy(() => VenueUncheckedCreateWithoutFollowsInputSchema) ]),
   where: z.lazy(() => VenueWhereInputSchema).optional()
 }).strict();
 
-export const VenueUpdateToOneWithWhereWithoutFollowInputSchema: z.ZodType<Prisma.VenueUpdateToOneWithWhereWithoutFollowInput> = z.object({
+export const VenueUpdateToOneWithWhereWithoutFollowsInputSchema: z.ZodType<Prisma.VenueUpdateToOneWithWhereWithoutFollowsInput> = z.object({
   where: z.lazy(() => VenueWhereInputSchema).optional(),
-  data: z.union([ z.lazy(() => VenueUpdateWithoutFollowInputSchema),z.lazy(() => VenueUncheckedUpdateWithoutFollowInputSchema) ]),
+  data: z.union([ z.lazy(() => VenueUpdateWithoutFollowsInputSchema),z.lazy(() => VenueUncheckedUpdateWithoutFollowsInputSchema) ]),
 }).strict();
 
-export const VenueUpdateWithoutFollowInputSchema: z.ZodType<Prisma.VenueUpdateWithoutFollowInput> = z.object({
+export const VenueUpdateWithoutFollowsInputSchema: z.ZodType<Prisma.VenueUpdateWithoutFollowsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -15258,7 +15258,7 @@ export const VenueUpdateWithoutFollowInputSchema: z.ZodType<Prisma.VenueUpdateWi
   Publisher: z.lazy(() => UserUpdateOneWithoutVenueNestedInputSchema).optional()
 }).strict();
 
-export const VenueUncheckedUpdateWithoutFollowInputSchema: z.ZodType<Prisma.VenueUncheckedUpdateWithoutFollowInput> = z.object({
+export const VenueUncheckedUpdateWithoutFollowsInputSchema: z.ZodType<Prisma.VenueUncheckedUpdateWithoutFollowsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -15796,10 +15796,10 @@ export const VenueCreateWithoutLikesInputSchema: z.ZodType<Prisma.VenueCreateWit
   updatedAt: z.coerce.date().optional().nullable(),
   Events: z.lazy(() => EventCreateNestedManyWithoutVenueInputSchema).optional(),
   Series: z.lazy(() => SeriesCreateNestedManyWithoutVenuesInputSchema).optional(),
+  Follows: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional(),
   Comments: z.lazy(() => CommentCreateNestedManyWithoutVenueInputSchema).optional(),
   Addresses: z.lazy(() => AddressCreateNestedManyWithoutVenueInputSchema).optional(),
-  Publisher: z.lazy(() => UserCreateNestedOneWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional()
+  Publisher: z.lazy(() => UserCreateNestedOneWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.VenueUncheckedCreateWithoutLikesInput> = z.object({
@@ -15816,9 +15816,9 @@ export const VenueUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.Venue
   updatedAt: z.coerce.date().optional().nullable(),
   Events: z.lazy(() => EventUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
   Series: z.lazy(() => SeriesUncheckedCreateNestedManyWithoutVenuesInputSchema).optional(),
+  Follows: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
   Comments: z.lazy(() => CommentUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Addresses: z.lazy(() => AddressUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
+  Addresses: z.lazy(() => AddressUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueCreateOrConnectWithoutLikesInputSchema: z.ZodType<Prisma.VenueCreateOrConnectWithoutLikesInput> = z.object({
@@ -16237,10 +16237,10 @@ export const VenueUpdateWithoutLikesInputSchema: z.ZodType<Prisma.VenueUpdateWit
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Events: z.lazy(() => EventUpdateManyWithoutVenueNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUpdateManyWithoutVenuesNestedInputSchema).optional(),
+  Follows: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentUpdateManyWithoutVenueNestedInputSchema).optional(),
   Addresses: z.lazy(() => AddressUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Publisher: z.lazy(() => UserUpdateOneWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional()
+  Publisher: z.lazy(() => UserUpdateOneWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.VenueUncheckedUpdateWithoutLikesInput> = z.object({
@@ -16257,9 +16257,9 @@ export const VenueUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.Venue
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Events: z.lazy(() => EventUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUncheckedUpdateManyWithoutVenuesNestedInputSchema).optional(),
+  Follows: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Addresses: z.lazy(() => AddressUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
+  Addresses: z.lazy(() => AddressUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const SessionCreateWithoutUserInputSchema: z.ZodType<Prisma.SessionCreateWithoutUserInput> = z.object({
@@ -16669,9 +16669,9 @@ export const VenueCreateWithoutPublisherInputSchema: z.ZodType<Prisma.VenueCreat
   Events: z.lazy(() => EventCreateNestedManyWithoutVenueInputSchema).optional(),
   Series: z.lazy(() => SeriesCreateNestedManyWithoutVenuesInputSchema).optional(),
   Likes: z.lazy(() => LikeCreateNestedManyWithoutVenueInputSchema).optional(),
+  Follows: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional(),
   Comments: z.lazy(() => CommentCreateNestedManyWithoutVenueInputSchema).optional(),
-  Addresses: z.lazy(() => AddressCreateNestedManyWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowCreateNestedManyWithoutVenueInputSchema).optional()
+  Addresses: z.lazy(() => AddressCreateNestedManyWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedCreateWithoutPublisherInputSchema: z.ZodType<Prisma.VenueUncheckedCreateWithoutPublisherInput> = z.object({
@@ -16688,9 +16688,9 @@ export const VenueUncheckedCreateWithoutPublisherInputSchema: z.ZodType<Prisma.V
   Events: z.lazy(() => EventUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
   Series: z.lazy(() => SeriesUncheckedCreateNestedManyWithoutVenuesInputSchema).optional(),
   Likes: z.lazy(() => LikeUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
+  Follows: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
   Comments: z.lazy(() => CommentUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Addresses: z.lazy(() => AddressUncheckedCreateNestedManyWithoutVenueInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
+  Addresses: z.lazy(() => AddressUncheckedCreateNestedManyWithoutVenueInputSchema).optional()
 }).strict();
 
 export const VenueCreateOrConnectWithoutPublisherInputSchema: z.ZodType<Prisma.VenueCreateOrConnectWithoutPublisherInput> = z.object({
@@ -16713,7 +16713,7 @@ export const FollowCreateWithoutUserInputSchema: z.ZodType<Prisma.FollowCreateWi
   Comp: z.lazy(() => CompCreateNestedOneWithoutFollowsInputSchema).optional(),
   Event: z.lazy(() => EventCreateNestedOneWithoutFollowsInputSchema).optional(),
   Organization: z.lazy(() => OrganizationCreateNestedOneWithoutFollowsInputSchema).optional(),
-  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowInputSchema).optional(),
+  Venue: z.lazy(() => VenueCreateNestedOneWithoutFollowsInputSchema).optional(),
   Race: z.lazy(() => RaceCreateNestedOneWithoutFollowsInputSchema).optional(),
   Series: z.lazy(() => SeriesCreateNestedOneWithoutFollowsInputSchema).optional()
 }).strict();
@@ -17684,7 +17684,7 @@ export const FollowUpdateWithoutSeriesInputSchema: z.ZodType<Prisma.FollowUpdate
   Comp: z.lazy(() => CompUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Event: z.lazy(() => EventUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Organization: z.lazy(() => OrganizationUpdateOneWithoutFollowsNestedInputSchema).optional(),
-  Venue: z.lazy(() => VenueUpdateOneWithoutFollowNestedInputSchema).optional(),
+  Venue: z.lazy(() => VenueUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Race: z.lazy(() => RaceUpdateOneWithoutFollowsNestedInputSchema).optional(),
   User: z.lazy(() => UserUpdateOneRequiredWithoutFollowNestedInputSchema).optional()
 }).strict();
@@ -17829,10 +17829,10 @@ export const VenueUpdateWithoutSeriesInputSchema: z.ZodType<Prisma.VenueUpdateWi
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Events: z.lazy(() => EventUpdateManyWithoutVenueNestedInputSchema).optional(),
   Likes: z.lazy(() => LikeUpdateManyWithoutVenueNestedInputSchema).optional(),
+  Follows: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentUpdateManyWithoutVenueNestedInputSchema).optional(),
   Addresses: z.lazy(() => AddressUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Publisher: z.lazy(() => UserUpdateOneWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional()
+  Publisher: z.lazy(() => UserUpdateOneWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedUpdateWithoutSeriesInputSchema: z.ZodType<Prisma.VenueUncheckedUpdateWithoutSeriesInput> = z.object({
@@ -17849,9 +17849,9 @@ export const VenueUncheckedUpdateWithoutSeriesInputSchema: z.ZodType<Prisma.Venu
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Events: z.lazy(() => EventUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
   Likes: z.lazy(() => LikeUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
+  Follows: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Addresses: z.lazy(() => AddressUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
+  Addresses: z.lazy(() => AddressUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedUpdateManyWithoutSeriesInputSchema: z.ZodType<Prisma.VenueUncheckedUpdateManyWithoutSeriesInput> = z.object({
@@ -18105,7 +18105,7 @@ export const FollowUpdateWithoutEventInputSchema: z.ZodType<Prisma.FollowUpdateW
   Comment: z.lazy(() => CommentUpdateOneWithoutFollowNestedInputSchema).optional(),
   Comp: z.lazy(() => CompUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Organization: z.lazy(() => OrganizationUpdateOneWithoutFollowsNestedInputSchema).optional(),
-  Venue: z.lazy(() => VenueUpdateOneWithoutFollowNestedInputSchema).optional(),
+  Venue: z.lazy(() => VenueUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Race: z.lazy(() => RaceUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUpdateOneWithoutFollowsNestedInputSchema).optional(),
   User: z.lazy(() => UserUpdateOneRequiredWithoutFollowNestedInputSchema).optional()
@@ -18466,7 +18466,7 @@ export const FollowUpdateWithoutRaceInputSchema: z.ZodType<Prisma.FollowUpdateWi
   Comp: z.lazy(() => CompUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Event: z.lazy(() => EventUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Organization: z.lazy(() => OrganizationUpdateOneWithoutFollowsNestedInputSchema).optional(),
-  Venue: z.lazy(() => VenueUpdateOneWithoutFollowNestedInputSchema).optional(),
+  Venue: z.lazy(() => VenueUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUpdateOneWithoutFollowsNestedInputSchema).optional(),
   User: z.lazy(() => UserUpdateOneRequiredWithoutFollowNestedInputSchema).optional()
 }).strict();
@@ -18904,7 +18904,7 @@ export const FollowUpdateWithoutCompInputSchema: z.ZodType<Prisma.FollowUpdateWi
   Comment: z.lazy(() => CommentUpdateOneWithoutFollowNestedInputSchema).optional(),
   Event: z.lazy(() => EventUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Organization: z.lazy(() => OrganizationUpdateOneWithoutFollowsNestedInputSchema).optional(),
-  Venue: z.lazy(() => VenueUpdateOneWithoutFollowNestedInputSchema).optional(),
+  Venue: z.lazy(() => VenueUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Race: z.lazy(() => RaceUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUpdateOneWithoutFollowsNestedInputSchema).optional(),
   User: z.lazy(() => UserUpdateOneRequiredWithoutFollowNestedInputSchema).optional()
@@ -19322,7 +19322,7 @@ export const FollowUpdateWithoutOrganizationInputSchema: z.ZodType<Prisma.Follow
   Comment: z.lazy(() => CommentUpdateOneWithoutFollowNestedInputSchema).optional(),
   Comp: z.lazy(() => CompUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Event: z.lazy(() => EventUpdateOneWithoutFollowsNestedInputSchema).optional(),
-  Venue: z.lazy(() => VenueUpdateOneWithoutFollowNestedInputSchema).optional(),
+  Venue: z.lazy(() => VenueUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Race: z.lazy(() => RaceUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUpdateOneWithoutFollowsNestedInputSchema).optional(),
   User: z.lazy(() => UserUpdateOneRequiredWithoutFollowNestedInputSchema).optional()
@@ -19531,6 +19531,21 @@ export const LikeCreateManyVenueInputSchema: z.ZodType<Prisma.LikeCreateManyVenu
   commentId: z.string().optional().nullable()
 }).strict();
 
+export const FollowCreateManyVenueInputSchema: z.ZodType<Prisma.FollowCreateManyVenueInput> = z.object({
+  id: z.string().cuid().optional(),
+  type: z.string(),
+  itemId: z.string().optional().nullable(),
+  userId: z.string(),
+  commentId: z.string().optional().nullable(),
+  compId: z.string().optional().nullable(),
+  eventId: z.string().optional().nullable(),
+  organizationId: z.string().optional().nullable(),
+  raceId: z.string().optional().nullable(),
+  seriesId: z.string().optional().nullable(),
+  updatedAt: z.coerce.date().optional(),
+  createdAt: z.coerce.date().optional()
+}).strict();
+
 export const CommentCreateManyVenueInputSchema: z.ZodType<Prisma.CommentCreateManyVenueInput> = z.object({
   id: z.string().cuid().optional(),
   type: z.string().optional().nullable(),
@@ -19556,21 +19571,6 @@ export const AddressCreateManyVenueInputSchema: z.ZodType<Prisma.AddressCreateMa
   code: z.string().optional().nullable(),
   organizationId: z.string().optional().nullable(),
   publisherId: z.string().optional().nullable()
-}).strict();
-
-export const FollowCreateManyVenueInputSchema: z.ZodType<Prisma.FollowCreateManyVenueInput> = z.object({
-  id: z.string().cuid().optional(),
-  type: z.string(),
-  itemId: z.string().optional().nullable(),
-  userId: z.string(),
-  commentId: z.string().optional().nullable(),
-  compId: z.string().optional().nullable(),
-  eventId: z.string().optional().nullable(),
-  organizationId: z.string().optional().nullable(),
-  raceId: z.string().optional().nullable(),
-  seriesId: z.string().optional().nullable(),
-  updatedAt: z.coerce.date().optional(),
-  createdAt: z.coerce.date().optional()
 }).strict();
 
 export const EventUpdateWithoutVenueInputSchema: z.ZodType<Prisma.EventUpdateWithoutVenueInput> = z.object({
@@ -19740,6 +19740,51 @@ export const LikeUncheckedUpdateManyWithoutVenueInputSchema: z.ZodType<Prisma.Li
   commentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
+export const FollowUpdateWithoutVenueInputSchema: z.ZodType<Prisma.FollowUpdateWithoutVenueInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  type: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  itemId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  Comment: z.lazy(() => CommentUpdateOneWithoutFollowNestedInputSchema).optional(),
+  Comp: z.lazy(() => CompUpdateOneWithoutFollowsNestedInputSchema).optional(),
+  Event: z.lazy(() => EventUpdateOneWithoutFollowsNestedInputSchema).optional(),
+  Organization: z.lazy(() => OrganizationUpdateOneWithoutFollowsNestedInputSchema).optional(),
+  Race: z.lazy(() => RaceUpdateOneWithoutFollowsNestedInputSchema).optional(),
+  Series: z.lazy(() => SeriesUpdateOneWithoutFollowsNestedInputSchema).optional(),
+  User: z.lazy(() => UserUpdateOneRequiredWithoutFollowNestedInputSchema).optional()
+}).strict();
+
+export const FollowUncheckedUpdateWithoutVenueInputSchema: z.ZodType<Prisma.FollowUncheckedUpdateWithoutVenueInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  type: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  itemId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  commentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  compId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  eventId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  organizationId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  seriesId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const FollowUncheckedUpdateManyWithoutVenueInputSchema: z.ZodType<Prisma.FollowUncheckedUpdateManyWithoutVenueInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  type: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  itemId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  commentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  compId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  eventId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  organizationId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  seriesId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
 export const CommentUpdateWithoutVenueInputSchema: z.ZodType<Prisma.CommentUpdateWithoutVenueInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   type: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19825,51 +19870,6 @@ export const AddressUncheckedUpdateManyWithoutVenueInputSchema: z.ZodType<Prisma
   code: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   organizationId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   publisherId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-}).strict();
-
-export const FollowUpdateWithoutVenueInputSchema: z.ZodType<Prisma.FollowUpdateWithoutVenueInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  type: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  itemId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  Comment: z.lazy(() => CommentUpdateOneWithoutFollowNestedInputSchema).optional(),
-  Comp: z.lazy(() => CompUpdateOneWithoutFollowsNestedInputSchema).optional(),
-  Event: z.lazy(() => EventUpdateOneWithoutFollowsNestedInputSchema).optional(),
-  Organization: z.lazy(() => OrganizationUpdateOneWithoutFollowsNestedInputSchema).optional(),
-  Race: z.lazy(() => RaceUpdateOneWithoutFollowsNestedInputSchema).optional(),
-  Series: z.lazy(() => SeriesUpdateOneWithoutFollowsNestedInputSchema).optional(),
-  User: z.lazy(() => UserUpdateOneRequiredWithoutFollowNestedInputSchema).optional()
-}).strict();
-
-export const FollowUncheckedUpdateWithoutVenueInputSchema: z.ZodType<Prisma.FollowUncheckedUpdateWithoutVenueInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  type: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  itemId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  commentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  compId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  eventId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  organizationId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  seriesId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-}).strict();
-
-export const FollowUncheckedUpdateManyWithoutVenueInputSchema: z.ZodType<Prisma.FollowUncheckedUpdateManyWithoutVenueInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  type: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  itemId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  commentId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  compId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  eventId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  organizationId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  seriesId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const ContactCreateManyAddressInputSchema: z.ZodType<Prisma.ContactCreateManyAddressInput> = z.object({
@@ -20004,7 +20004,7 @@ export const FollowUpdateWithoutCommentInputSchema: z.ZodType<Prisma.FollowUpdat
   Comp: z.lazy(() => CompUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Event: z.lazy(() => EventUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Organization: z.lazy(() => OrganizationUpdateOneWithoutFollowsNestedInputSchema).optional(),
-  Venue: z.lazy(() => VenueUpdateOneWithoutFollowNestedInputSchema).optional(),
+  Venue: z.lazy(() => VenueUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Race: z.lazy(() => RaceUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUpdateOneWithoutFollowsNestedInputSchema).optional(),
   User: z.lazy(() => UserUpdateOneRequiredWithoutFollowNestedInputSchema).optional()
@@ -20672,9 +20672,9 @@ export const VenueUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.VenueUpdat
   Events: z.lazy(() => EventUpdateManyWithoutVenueNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUpdateManyWithoutVenuesNestedInputSchema).optional(),
   Likes: z.lazy(() => LikeUpdateManyWithoutVenueNestedInputSchema).optional(),
+  Follows: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Addresses: z.lazy(() => AddressUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUpdateManyWithoutVenueNestedInputSchema).optional()
+  Addresses: z.lazy(() => AddressUpdateManyWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.VenueUncheckedUpdateWithoutPublisherInput> = z.object({
@@ -20691,9 +20691,9 @@ export const VenueUncheckedUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.V
   Events: z.lazy(() => EventUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUncheckedUpdateManyWithoutVenuesNestedInputSchema).optional(),
   Likes: z.lazy(() => LikeUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
+  Follows: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Addresses: z.lazy(() => AddressUncheckedUpdateManyWithoutVenueNestedInputSchema).optional(),
-  Follow: z.lazy(() => FollowUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
+  Addresses: z.lazy(() => AddressUncheckedUpdateManyWithoutVenueNestedInputSchema).optional()
 }).strict();
 
 export const VenueUncheckedUpdateManyWithoutPublisherInputSchema: z.ZodType<Prisma.VenueUncheckedUpdateManyWithoutPublisherInput> = z.object({
@@ -20719,7 +20719,7 @@ export const FollowUpdateWithoutUserInputSchema: z.ZodType<Prisma.FollowUpdateWi
   Comp: z.lazy(() => CompUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Event: z.lazy(() => EventUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Organization: z.lazy(() => OrganizationUpdateOneWithoutFollowsNestedInputSchema).optional(),
-  Venue: z.lazy(() => VenueUpdateOneWithoutFollowNestedInputSchema).optional(),
+  Venue: z.lazy(() => VenueUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Race: z.lazy(() => RaceUpdateOneWithoutFollowsNestedInputSchema).optional(),
   Series: z.lazy(() => SeriesUpdateOneWithoutFollowsNestedInputSchema).optional()
 }).strict();

@@ -56,20 +56,15 @@
 			/>
 		</div>
 
-		<!-- Likes and Follows -->
 		<LikeFollow type="venue" item={venue} userId={user?.userId} />
-		<!-- <div class="absolute -right-2 -bottom-4 z-10 flex flex-col gap-1">
-				<div class="bg-base-100 p-1 rounded-full shadow-lg">
-					<Like type="venue" item={venue} userId={data.user?.userId} class="" />
-				</div>
-				<div class="p-1 bg-base-100 shadow-lg rounded-full">
-					<button class="btn btn-xs btn-outline btn-accent rounded-full bg-base-100"
-						>follow
-					</button>
-				</div>
-			</div> -->
-		<!--  -->
 	</div>
+
+	<div class="flex justify-end  text-sm">
+		<span class="pr-2 flex items-center text-xs"> {venue._count.Likes} <Icon icon="mdi:thumbs-up"/> </span>
+		/ 
+		<span class="pr-4 pl-2 flex items-center text-xs"> {venue._count.Follows} <Icon icon="mdi:bell-ring"/> </span>
+	</div>
+	
 	{#if venue.description}
 		<div
 			class="mt-4 p-4 text-lg bg-base-300 border-base-300 border-b-2 border-l-2 rounded-xl shadow-lg"
