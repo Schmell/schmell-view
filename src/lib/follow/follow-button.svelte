@@ -35,7 +35,7 @@
 	}
 
 	function checkForUserFollow(item) {
-		console.log('item: ', item)
+		// console.log('item: ', item)
 		if (!item.Follows) return false
 		if (item.Follows.some((follow) => follow.userId === userId)) {
 			return true
@@ -65,7 +65,7 @@
 		}
 	}
 
-	$: console.log(checkForUserFollow(item))
+	// $: console.log(checkForUserFollow(item))
 </script>
 
 {#if checkForUserFollow(item)}

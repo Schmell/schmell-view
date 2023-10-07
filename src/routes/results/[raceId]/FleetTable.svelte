@@ -13,8 +13,6 @@
 	import DscSort from './dscSort.svelte'
 	import Empty from './empty.svelte'
 	import Icon from '@iconify/svelte'
-	import HeaderButton from './headerButton.svelte'
-	import { columnVisibiltyStore } from './stores'
 	import { enhance } from '$app/forms'
 
 	export let race
@@ -272,6 +270,7 @@
 		return defaultColumns
 	}
 
+
 	const options = writable<TableOptions<Result>>({
 		data: resultRows,
 		columns,
@@ -290,6 +289,7 @@
 	const table = createSvelteTable(options)
 
 	$: setColumnVisibility(getResultColumns())
+	$: console.log( getResultColumns() )
 
 	function setGroupView(column: Column<Result, unknown>, accessor: string[]) {
 		const accessorList = {}
@@ -325,7 +325,7 @@
 		<h2 class="text-4xl font-medium">{fleetName}</h2>
 	</div>
 
-	<table class="table table-md md:table-sm table-zebra w-full mr-10">
+	<table class="table table-md table-zebra md:table-sm w-full mr-10">
 		<thead>
 			{#each $table.getHeaderGroups() as headerGroup}
 				<tr>
@@ -356,16 +356,15 @@
 											{#if header.column.id === 'Overall'}
 												<form
 													method="post"
+													use:enhance
+													class="text-xs font-normal"
 													on:change={({ target }) => {
 														// @ts-ignore
-														// console.log('header: ', header.get)
 														const form = target?.form
 														const formObj = Object.fromEntries(new FormData(form))
 														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
 														handleClick()
 													}}
-													class="text-xs font-normal"
-													use:enhance
 												>
 													<label class="label">
 														<span class="label-text">Rank</span>
@@ -400,9 +399,12 @@
 														/>
 													</label>
 												</form>
+
 											{:else if header.column.id === 'Name'}
 												<form
 													method="post"
+													use:enhance
+													class="text-xs font-normal"
 													on:change={({ target }) => {
 														// @ts-ignore
 														const form = target?.form
@@ -410,8 +412,6 @@
 														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
 														handleClick()
 													}}
-													class="text-xs font-normal"
-													use:enhance
 												>
 													<label class="label">
 														<span class="label-text">Boat</span>
@@ -449,6 +449,8 @@
 											{:else if header.column.id === 'Score'}
 												<form
 													method="post"
+													use:enhance
+													class="text-xs font-normal"
 													on:change={({ target }) => {
 														// @ts-ignore
 														const form = target?.form
@@ -456,8 +458,6 @@
 														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
 														handleClick()
 													}}
-													class="text-xs font-normal"
-													use:enhance
 												>
 													<label class="label">
 														<span class="label-text">Points</span>
@@ -553,12 +553,13 @@
 				</tr>
 			{/each}
 		</thead>
+
 		<tbody>
 			{#each $table.getRowModel().rows as row, i}
+			<!-- {@debug row} -->
 				<tr
 					on:click={(e) => {
 						row.toggleSelected()
-						// console.log(row.getIsSelected())
 					}}
 					class:odd={i % 2 == 0 && !row.getIsSelected()}
 					class:even={!(i % 2 == 0) && !row.getIsSelected()}
@@ -566,6 +567,7 @@
 					class:selectedOdd={row.getIsSelected() && !(i % 2 == 0)}
 				>
 					{#each row.getVisibleCells() as cell}
+				
 						<td>
 							<svelte:component
 								this={notypecheck(flexRender(cell.column.columnDef.cell, cell.getContext()))}

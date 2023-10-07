@@ -54,7 +54,7 @@
 		"@paralleldrive/cuid2": "^2.2.2",
 		"@prisma/client": "^5.2.0",
 		"@prisma/extension-accelerate": "^0.6.2",
-		"@tanstack/svelte-table": "^8.9.5",
+		"@tanstack/svelte-table": "^8.10.4",
 		"bits-ui": "^0.5.7",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.0.0",

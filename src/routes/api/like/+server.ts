@@ -1,9 +1,11 @@
-import { error } from '@sveltejs/kit'
+import { error, fail, redirect } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { prismaError } from '$lib/error-handling'
+import { prisma } from '$lib/server/prisma'
 
 export const GET: RequestHandler = async ({ url, locals }) => {
 	const session = await locals.auth.validate()
+	if(!session) throw redirect(307, `/auth/login?from=/results/${url.pathname}`)
 
 	const likeType = url.searchParams.get('likeType')
 	// console.log('likeType: ', likeType)
@@ -11,7 +13,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 	// console.log('unlike: ', unlike)
 	const itemId = url.searchParams.get('itemId')
 	// console.log('itemId: ', itemId)
-	if (!likeType || !itemId) throw error(500, { message: 'API error' })
+	if (!likeType || !itemId) throw fail(500, { message: 'API error' })
 
 	async function like() {
 		switch (likeType) {
@@ -26,6 +28,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 						}
 					})
 				} catch (error) {
+					prismaError(error)
 					console.log('error: ', error)
 				}
 
@@ -40,6 +43,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 						}
 					})
 				} catch (error) {
+					prismaError(error)
 					console.log('error: ', error)
 				}
 
@@ -55,10 +59,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 						}
 					})
 				} catch (error) {
+					prismaError(error)
 					console.log('error: ', error)
 				}
 			case 'organization':
-				console.log('venue: ')
 				try {
 					return await prisma.like.create({
 						data: {
@@ -69,10 +73,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 						}
 					})
 				} catch (error) {
+					prismaError(error)
 					console.log('error: ', error)
 				}
 			default:
-				console.log(`Bad Error: ...`)
+				console.log(`No likeType matched`, likeType)
 		}
 	}
 

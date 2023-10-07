@@ -1,6 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { prismaError } from '$lib/error-handling'
+import { prisma } from '$lib/server/prisma'
 
 export const GET: RequestHandler = async ({ url, locals }) => {
 	const session = await locals.auth.validate()
@@ -28,6 +29,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 						}
 					})
 				} catch (error) {
+					prismaError(error)
 					throw fail(500, { message: `Event follow error: ${error}` })
 				}
 
@@ -42,6 +44,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 						}
 					})
 				} catch (error) {
+					prismaError(error)
 					throw fail(500, { message: `Comment follow error: ${error}` })
 				}
 
@@ -56,6 +59,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 						}
 					})
 				} catch (error) {
+					prismaError(error)
 					throw fail(500, { message: `Venue follow error: ${error}` })
 				}
 
@@ -70,11 +74,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 						}
 					})
 				} catch (error) {
+					prismaError(error)
 					throw fail(500, { message: `Organization follow error: ${error}` })
 				}
 
 			default:
-				console.log(`No followType provided `)
+				console.log(`No followType matched `, followType)
 		}
 	}
 

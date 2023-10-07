@@ -5,10 +5,10 @@
 	import FleetTable from './FleetTable.svelte'
 
 	export let data: PageData
-	// console.log('data: ', data.results)
+	
 	$: ({ race, results } = data)
-	// $: console.log('results: ', results)
-	// make an arrays filtered by a set from fleet
+	// $: console.log('results: ', race)
+
 
 	// first step is turn the unique fleets if any in this race into an array
 	function getUniqueFleetsArray() {

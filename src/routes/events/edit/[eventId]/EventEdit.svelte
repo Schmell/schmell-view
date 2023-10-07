@@ -46,7 +46,7 @@
 
 	<Input name="titleImage" label="Title Image Url" {formObj} />
 
-	<!-- <fieldset name="resultColumns">
+	<fieldset name="resultColumns">
 		<h3>Result Columns</h3>
 		<div class="divider m-0" />
 		<div class="">
@@ -99,7 +99,7 @@
 				</span>
 			</div>
 		</div>
-	</fieldset> -->
+	</fieldset>
 
 	<Button>Submit</Button>
 </Form>

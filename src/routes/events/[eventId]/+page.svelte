@@ -99,8 +99,12 @@
 					<p class="mt-2 opacity-70">
 						{@html event?.description ? event?.description : 'No description provided'}
 					</p>
-
-					<a href={getHref(event?.eventwebsite)} class="text-secondary">{event?.eventwebsite} </a>
+					<div class="flex justify-between">
+						<a href={getHref(event?.eventwebsite)} class="text-secondary">{event?.eventwebsite} </a>
+						<div>
+							{event.Organization?.name}
+						</div>
+					</div>
 				</div>
 			</div>
 

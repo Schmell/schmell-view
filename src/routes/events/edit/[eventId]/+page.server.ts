@@ -3,13 +3,15 @@ import { fail, redirect } from '@sveltejs/kit'
 import { prisma } from '$lib/server/prisma.js'
 import { eventSchema } from './eventSchema.js'
 
-export const load = async ({ params, locals }) => {
+export const load = async ({ params, locals, url }) => {
 	const session = await locals.auth.validate()
+	if(!session) throw redirect(307, `/auth/login?from=/results/${url.pathname}`)
+	
 	async function getEvent() {
 		try {
 			return await prisma.event.findUnique({
 				where: { id: params.eventId },
-				include: { Venue: true }
+				include: { Venue: {select: {name:true, id:true}} }
 			})
 		} catch (error) {
 			throw fail(404, { message: `edit event error: ${error}` })
@@ -42,46 +44,20 @@ export const load = async ({ params, locals }) => {
 export const actions = {
 	default: async ({ request, params, url }) => {
 		const form = await superValidate(request, eventSchema)
-		// console.log('form: ', form)
+		console.log('form: ', form.data)
 
 		if (!form.valid) {
 			return fail(400, { form })
 		}
 
-		const {
-			rank,
-			points,
-			position,
-			skipper,
-			boat,
-			finish,
-			corrected,
-			elapsed,
-			nett,
-			total,
-			venueId,
-			Venue,
-			...rest
-		} = form.data
+		const {Venue, ...rest} = form.data
 
 		try {
 			await prisma.event.update({
 				where: { id: params.eventId },
 				data: {
 					...rest,
-					resultColumns: {
-						rank: rank ?? false,
-						points: points ?? false,
-						position: position ?? false,
-						skipper: skipper ?? false,
-						boat: boat ?? false,
-						finish: finish ?? false,
-						corrected: corrected ?? false,
-						elapsed: elapsed ?? false,
-						nett: nett ?? false,
-						total: total ?? false
-					},
-					venueId: venueId
+					// venueId: venueId
 				}
 			})
 		} catch (error) {
