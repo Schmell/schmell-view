@@ -14,6 +14,8 @@
 	})
 
 	$: ({ form } = formObj)
+	// $: console.log('data: ', data.venues)
+	// $: console.log('form: ', $form)
 </script>
 
 <Form {formObj}>
@@ -47,57 +49,42 @@
 	<Input name="titleImage" label="Title Image Url" {formObj} />
 
 	<fieldset name="resultColumns">
-		<h3>Result Columns</h3>
-		<div class="divider m-0" />
-		<div class="">
-			<h6>Event Rankings</h6>
-			<div class="flex gap-4">
-				<span>
-					<Check label="Rank" name="resultColumns.rank" {formObj} />
-				</span>
-				<span>
-					<Check label="Nett" name="resultColumns.nett" {formObj} />
-				</span>
-				<span>
-					<Check label="Total" name="resultColumns.total" {formObj} />
-				</span>
-			</div>
+		<legend class="pb-2 w-full">
+			<div class="text-2xl">Result Columns:</div>
+		</legend>
+		<div
+			class="w-full p-2 font-semibold bg-gradient-to-r from-base-100 to-base-300 rounded-br-2xl border-t border-accent shadow-md"
+		>
+			Event Rankings
+		</div>
+		<div class="flex gap-4 px-2 py-1">
+			<Check label="Rank" name="resultColumns.rank" {formObj} />
+			<Check label="Nett" name="resultColumns.nett" {formObj} />
+			<Check label="Total" name="resultColumns.total" {formObj} />
+		</div>
 
-			<div class="divider" />
+		<div
+			class="w-full p-2 font-semibold bg-gradient-to-r from-base-100 to-base-300 rounded-br-2xl border-t border-accent shadow-md"
+		>
+			Display names
+		</div>
+		<div class="flex gap-4 px-2 py-1">
+			<Check label="Boat" name="resultColumns.boat" {formObj} />
+			<Check label="Skipper" name="resultColumns.skipper" {formObj} />
+			<Check label="Sail No." name="resultColumns.sailNo" {formObj} />
+		</div>
 
-			<h6>Display names</h6>
-			<div class="flex gap-4">
-				<span>
-					<Check label="Skipper" name="resultColumns.skipper" {formObj} />
-				</span>
-				<span>
-					<Check label="Boat" name="resultColumns.boat" {formObj} />
-				</span>
-				<span>
-					<Check label="Sail No." name="resultColumns.sailNo" {formObj} />
-				</span>
-			</div>
-
-			<div class="divider" />
-
-			<h6>Race Outcomes</h6>
-			<div class="flex">
-				<span>
-					<Check label="Points" name="resultColumns.points" {formObj} />
-				</span>
-				<span>
-					<Check label="Position" name="resultColumns.position" {formObj} />
-				</span>
-				<span>
-					<Check label="Finish" name="resultColumns.finish" {formObj} />
-				</span>
-				<span>
-					<Check label="Corrected" name="resultColumns.corrected" {formObj} />
-				</span>
-				<span>
-					<Check label="Elapsed" name="resultColumns.elapsed" {formObj} />
-				</span>
-			</div>
+		<div
+			class="w-full p-2 font-semibold bg-gradient-to-r from-base-100 to-base-300 rounded-br-2xl border-t border-accent shadow-md"
+		>
+			Race Outcomes
+		</div>
+		<div class="flex gap-4 px-2 py-1">
+			<Check label="Points" name="resultColumns.points" {formObj} />
+			<Check label="Position" name="resultColumns.position" {formObj} />
+			<Check label="Finish" name="resultColumns.finish" {formObj} />
+			<Check label="Corrected" name="resultColumns.corrected" {formObj} />
+			<Check label="Elapsed" name="elapsed" {formObj} />
 		</div>
 	</fieldset>
 

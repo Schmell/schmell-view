@@ -2,12 +2,10 @@
 	import { page } from '$app/stores'
 	import { Page } from '$components/layout'
 	import Comments from '$lib/comment/comments.svelte'
-	import Like from '$lib/like/like.svelte'
+	import LikeFollow from '$lib/like/like-follow.svelte'
 	import Icon from '@iconify/svelte'
 	import { superForm } from 'sveltekit-superforms/client'
 	import type { PageData } from './$types'
-	import Follow from '$lib/follow/follow.svelte'
-	import LikeFollow from '$lib/like/like-follow.svelte'
 
 	export let data: PageData
 	// export let form
@@ -22,13 +20,8 @@
 		return website && website.startsWith('http://') ? website : `http://${website}`
 	}
 
-	// function checkForUserLike(comment) {
-	// 	if (comment.Likes.some((like) => like.userId === data.user?.userId)) {
-	// 		return true
-	// 	}
-	// 	return false
-	// }
 	function checkForImage(imageString) {
+		if (!imageString) return null
 		if (
 			imageString.startsWith('http://') ||
 			imageString.startsWith('https://') ||
@@ -71,10 +64,16 @@
 
 					<LikeFollow item={event} userId={user?.userId} type="event" />
 				</div>
-				<div class="flex justify-end  text-sm">
-					<span class="pr-1 flex items-center text-xs"> {event._count.Likes} <Icon class="px-1 text-lg" icon="mdi:thumbs-up"/> </span>
-					/ 
-					<span class="pr-2 pl-2 flex items-center text-xs"> {event._count.Follows} <Icon class="px-1 text-lg" icon="mdi:bell-ring"/> </span>
+				<div class="flex justify-end text-sm">
+					<span class="pr-1 flex items-center text-xs">
+						{event._count.Likes}
+						<Icon class="px-1 text-lg" icon="mdi:thumbs-up" />
+					</span>
+					/
+					<span class="pr-2 pl-2 flex items-center text-xs">
+						{event._count.Follows}
+						<Icon class="px-1 text-lg" icon="mdi:bell-ring" />
+					</span>
 				</div>
 				<div class="pt-8 px-8 w-full">
 					<div class="flex justify-between w-full">
@@ -109,7 +108,13 @@
 						<a href="/organization/{event.Organization?.id}" class="underline">
 							{event.Organization?.name}
 						</a>
-						<a href={getHref(event?.eventwebsite)} class="flex items-center gap-1 text-secondary font-semibold uppercase"> <Icon icon="gridicons:popout" /> {event?.eventwebsite} </a>
+						<a
+							href={getHref(event?.eventwebsite)}
+							class="flex items-center gap-1 text-secondary font-semibold uppercase"
+						>
+							<Icon icon="gridicons:popout" />
+							{event?.eventwebsite}
+						</a>
 					</div>
 				</div>
 			</div>

@@ -1,48 +1,57 @@
 <script lang="ts">
-	import { Page, ItemCard } from '$components/layout';
-	import { formatDateTime } from '$lib/utils/formatters';
-	import Icon from '@iconify/svelte';
-	import type { PageData } from './$types';
-	import { page } from '$app/stores';
+	import { Page, ItemCard } from '$components/layout'
+	import { formatDateTime } from '$lib/utils/formatters'
+	import Icon from '@iconify/svelte'
+	import type { PageData } from './$types'
+	import { page } from '$app/stores'
 
-	export let data: PageData;
+	export let data: PageData
 
-	$: ({ orgs } = data);
+	$: ({ orgs, user } = data)
 	// $: console.log('orgs: ', orgs);
 </script>
 
-<Page title="Your Organizations">
+<Page title="All Organizations">
 	<div slot="trailing">
-		<a href="/organization/edit/new?from={$page.url.pathname}">
-			<Icon icon="material-symbols:add-circle" width="24" />
-		</a>
+		{#if user}
+			<a href="/organization/edit/new?from={$page.url.pathname}">
+				<Icon icon="material-symbols:add-circle" width="24" />
+			</a>
+		{/if}
 	</div>
-	{#each orgs as org}
-		<ItemCard title={org.name} href="/organization/view/{org.id}">
-			<div>{org.description ?? 'No description provided'}</div>
-			<div>{org.website}</div>
+	{#if !orgs.length}
+		<div>No Organizations available yet</div>
+	{:else}
+		{#each orgs as org}
+			<ItemCard title={org.name} href="/organization/view/{org.id}">
+				<div>{org.description ?? 'No description provided'}</div>
+				<div>{org.website}</div>
 
-			<div slot="bottom-left">
-				{#if org.createdAt}
-					<div class="text-xs m-2 ml-2">{formatDateTime(org.createdAt)}</div>
-				{/if}
-			</div>
-			<div slot="top-right" class="text-xs">
-				<a href="/">
-					@{org.Owner?.username}
-				</a>
-			</div>
+				<div slot="bottom-left">
+					{#if org.createdAt}
+						<div class="text-xs m-2 ml-2">{formatDateTime(org.createdAt)}</div>
+					{/if}
+				</div>
+				<div slot="top-right" class="text-xs">
+					<a href="/">
+						@{org.Owner?.username}
+					</a>
+				</div>
 
-			<div slot="bottom-right" class="flex justify-end text-primary">
-				<!-- Edit should only show when current user is owner -->
-				{#if data.user?.userId === org?.ownerId}
-					<div class="tooltip tooltip-top" data-tip="Organization Edit">
-						<a href="/organization/edit/{org?.id}?from={$page.url.pathname}" class="btn btn-ghost">
-							<Icon icon="material-symbols:edit-outline" width="24" />
-						</a>
-					</div>
-				{/if}
-			</div>
-		</ItemCard>
-	{/each}
+				<div slot="bottom-right" class="flex justify-end text-primary">
+					<!-- Edit should only show when current user is owner -->
+					{#if data.user?.userId === org?.ownerId}
+						<div class="tooltip tooltip-top" data-tip="Organization Edit">
+							<a
+								href="/organization/edit/{org?.id}?from={$page.url.pathname}"
+								class="btn btn-ghost"
+							>
+								<Icon icon="material-symbols:edit-outline" width="24" />
+							</a>
+						</div>
+					{/if}
+				</div>
+			</ItemCard>
+		{/each}
+	{/if}
 </Page>

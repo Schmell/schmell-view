@@ -74,10 +74,11 @@
 		if (elapsedTime.total({ unit: 'minute' }) < 0) return 'ERROR'
 
 		return Math.round(elapsedTime.total({ unit: 'minute' }) * 100) / 100
-	}
+	} // calculateElapsed
 
 	let resultRows = results.map((result) => {
 		const elapsedTime = calculateElapsed(result.start, result.finish, result.elapsed)
+
 		return {
 			points: Number(result.points), // convert to number
 			position: Number(result.position), // named place on table
@@ -96,7 +97,7 @@
 			boat: result.Comp?.boat,
 			skipper: result.Comp?.skipper ?? ''
 		}
-	})
+	}) // resultRows
 
 	type Result = {
 		points?: string
@@ -270,7 +271,6 @@
 		return defaultColumns
 	}
 
-
 	const options = writable<TableOptions<Result>>({
 		data: resultRows,
 		columns,
@@ -289,7 +289,7 @@
 	const table = createSvelteTable(options)
 
 	$: setColumnVisibility(getResultColumns())
-	$: console.log( getResultColumns() )
+	// $: console.log(getResultColumns())
 
 	function setGroupView(column: Column<Result, unknown>, accessor: string[]) {
 		const accessorList = {}
@@ -399,7 +399,6 @@
 														/>
 													</label>
 												</form>
-
 											{:else if header.column.id === 'Name'}
 												<form
 													method="post"
@@ -556,7 +555,7 @@
 
 		<tbody>
 			{#each $table.getRowModel().rows as row, i}
-			<!-- {@debug row} -->
+				<!-- {@debug row} -->
 				<tr
 					on:click={(e) => {
 						row.toggleSelected()
@@ -567,7 +566,6 @@
 					class:selectedOdd={row.getIsSelected() && !(i % 2 == 0)}
 				>
 					{#each row.getVisibleCells() as cell}
-				
 						<td>
 							<svelte:component
 								this={notypecheck(flexRender(cell.column.columnDef.cell, cell.getContext()))}

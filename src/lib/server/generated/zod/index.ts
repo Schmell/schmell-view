@@ -64,7 +64,7 @@ export const OrganizationScalarFieldEnumSchema = z.enum(['id','name','descriptio
 
 export const VenueScalarFieldEnumSchema = z.enum(['id','name','description','website','email','phone','burgee','titleImage','publisherId','createdAt','updatedAt']);
 
-export const AddressScalarFieldEnumSchema = z.enum(['id','name','street','city','state','country','code','venueId','organizationId','publisherId']);
+export const AddressScalarFieldEnumSchema = z.enum(['id','label','street','city','state','country','code','venueId','organizationId','publisherId']);
 
 export const ContactScalarFieldEnumSchema = z.enum(['id','type','name','email','phone','addressId','userId','createdAt','updatedAt']);
 
@@ -294,7 +294,7 @@ export type Venue = z.infer<typeof VenueSchema>
 
 export const AddressSchema = z.object({
   id: z.string().cuid(),
-  name: z.string(),
+  label: z.string(),
   street: z.string().nullish(),
   city: z.string().nullish(),
   state: z.string().nullish(),
@@ -880,7 +880,7 @@ export const AddressCountOutputTypeSelectSchema: z.ZodType<Prisma.AddressCountOu
 
 export const AddressSelectSchema: z.ZodType<Prisma.AddressSelect> = z.object({
   id: z.boolean().optional(),
-  name: z.boolean().optional(),
+  label: z.boolean().optional(),
   street: z.boolean().optional(),
   city: z.boolean().optional(),
   state: z.boolean().optional(),
@@ -2165,7 +2165,7 @@ export const AddressWhereInputSchema: z.ZodType<Prisma.AddressWhereInput> = z.ob
   OR: z.lazy(() => AddressWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => AddressWhereInputSchema),z.lazy(() => AddressWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  label: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   street: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   city: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   state: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -2182,7 +2182,7 @@ export const AddressWhereInputSchema: z.ZodType<Prisma.AddressWhereInput> = z.ob
 
 export const AddressOrderByWithRelationInputSchema: z.ZodType<Prisma.AddressOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  name: z.lazy(() => SortOrderSchema).optional(),
+  label: z.lazy(() => SortOrderSchema).optional(),
   street: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   city: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   state: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -2205,7 +2205,7 @@ export const AddressWhereUniqueInputSchema: z.ZodType<Prisma.AddressWhereUniqueI
   AND: z.union([ z.lazy(() => AddressWhereInputSchema),z.lazy(() => AddressWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => AddressWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => AddressWhereInputSchema),z.lazy(() => AddressWhereInputSchema).array() ]).optional(),
-  name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  label: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   street: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   city: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   state: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -2222,7 +2222,7 @@ export const AddressWhereUniqueInputSchema: z.ZodType<Prisma.AddressWhereUniqueI
 
 export const AddressOrderByWithAggregationInputSchema: z.ZodType<Prisma.AddressOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  name: z.lazy(() => SortOrderSchema).optional(),
+  label: z.lazy(() => SortOrderSchema).optional(),
   street: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   city: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   state: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -2241,7 +2241,7 @@ export const AddressScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Addre
   OR: z.lazy(() => AddressScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => AddressScalarWhereWithAggregatesInputSchema),z.lazy(() => AddressScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  name: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  label: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   street: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   city: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   state: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
@@ -4064,7 +4064,7 @@ export const VenueUncheckedUpdateManyInputSchema: z.ZodType<Prisma.VenueUnchecke
 
 export const AddressCreateInputSchema: z.ZodType<Prisma.AddressCreateInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -4078,7 +4078,7 @@ export const AddressCreateInputSchema: z.ZodType<Prisma.AddressCreateInput> = z.
 
 export const AddressUncheckedCreateInputSchema: z.ZodType<Prisma.AddressUncheckedCreateInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -4092,7 +4092,7 @@ export const AddressUncheckedCreateInputSchema: z.ZodType<Prisma.AddressUnchecke
 
 export const AddressUpdateInputSchema: z.ZodType<Prisma.AddressUpdateInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -4106,7 +4106,7 @@ export const AddressUpdateInputSchema: z.ZodType<Prisma.AddressUpdateInput> = z.
 
 export const AddressUncheckedUpdateInputSchema: z.ZodType<Prisma.AddressUncheckedUpdateInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -4120,7 +4120,7 @@ export const AddressUncheckedUpdateInputSchema: z.ZodType<Prisma.AddressUnchecke
 
 export const AddressCreateManyInputSchema: z.ZodType<Prisma.AddressCreateManyInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -4133,7 +4133,7 @@ export const AddressCreateManyInputSchema: z.ZodType<Prisma.AddressCreateManyInp
 
 export const AddressUpdateManyMutationInputSchema: z.ZodType<Prisma.AddressUpdateManyMutationInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -4143,7 +4143,7 @@ export const AddressUpdateManyMutationInputSchema: z.ZodType<Prisma.AddressUpdat
 
 export const AddressUncheckedUpdateManyInputSchema: z.ZodType<Prisma.AddressUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -5539,7 +5539,7 @@ export const ContactOrderByRelationAggregateInputSchema: z.ZodType<Prisma.Contac
 
 export const AddressCountOrderByAggregateInputSchema: z.ZodType<Prisma.AddressCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  name: z.lazy(() => SortOrderSchema).optional(),
+  label: z.lazy(() => SortOrderSchema).optional(),
   street: z.lazy(() => SortOrderSchema).optional(),
   city: z.lazy(() => SortOrderSchema).optional(),
   state: z.lazy(() => SortOrderSchema).optional(),
@@ -5552,7 +5552,7 @@ export const AddressCountOrderByAggregateInputSchema: z.ZodType<Prisma.AddressCo
 
 export const AddressMaxOrderByAggregateInputSchema: z.ZodType<Prisma.AddressMaxOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  name: z.lazy(() => SortOrderSchema).optional(),
+  label: z.lazy(() => SortOrderSchema).optional(),
   street: z.lazy(() => SortOrderSchema).optional(),
   city: z.lazy(() => SortOrderSchema).optional(),
   state: z.lazy(() => SortOrderSchema).optional(),
@@ -5565,7 +5565,7 @@ export const AddressMaxOrderByAggregateInputSchema: z.ZodType<Prisma.AddressMaxO
 
 export const AddressMinOrderByAggregateInputSchema: z.ZodType<Prisma.AddressMinOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  name: z.lazy(() => SortOrderSchema).optional(),
+  label: z.lazy(() => SortOrderSchema).optional(),
   street: z.lazy(() => SortOrderSchema).optional(),
   city: z.lazy(() => SortOrderSchema).optional(),
   state: z.lazy(() => SortOrderSchema).optional(),
@@ -12475,7 +12475,7 @@ export const CommentCreateManyOrganizationInputEnvelopeSchema: z.ZodType<Prisma.
 
 export const AddressCreateWithoutOrganizationInputSchema: z.ZodType<Prisma.AddressCreateWithoutOrganizationInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -12488,7 +12488,7 @@ export const AddressCreateWithoutOrganizationInputSchema: z.ZodType<Prisma.Addre
 
 export const AddressUncheckedCreateWithoutOrganizationInputSchema: z.ZodType<Prisma.AddressUncheckedCreateWithoutOrganizationInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -12685,7 +12685,7 @@ export const AddressScalarWhereInputSchema: z.ZodType<Prisma.AddressScalarWhereI
   OR: z.lazy(() => AddressScalarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => AddressScalarWhereInputSchema),z.lazy(() => AddressScalarWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  label: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   street: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   city: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   state: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -12925,7 +12925,7 @@ export const CommentCreateManyVenueInputEnvelopeSchema: z.ZodType<Prisma.Comment
 
 export const AddressCreateWithoutVenueInputSchema: z.ZodType<Prisma.AddressCreateWithoutVenueInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -12938,7 +12938,7 @@ export const AddressCreateWithoutVenueInputSchema: z.ZodType<Prisma.AddressCreat
 
 export const AddressUncheckedCreateWithoutVenueInputSchema: z.ZodType<Prisma.AddressUncheckedCreateWithoutVenueInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -13591,7 +13591,7 @@ export const UserCreateOrConnectWithoutContactInputSchema: z.ZodType<Prisma.User
 
 export const AddressCreateWithoutContactInputSchema: z.ZodType<Prisma.AddressCreateWithoutContactInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -13604,7 +13604,7 @@ export const AddressCreateWithoutContactInputSchema: z.ZodType<Prisma.AddressCre
 
 export const AddressUncheckedCreateWithoutContactInputSchema: z.ZodType<Prisma.AddressUncheckedCreateWithoutContactInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -13694,7 +13694,7 @@ export const AddressUpdateToOneWithWhereWithoutContactInputSchema: z.ZodType<Pri
 
 export const AddressUpdateWithoutContactInputSchema: z.ZodType<Prisma.AddressUpdateWithoutContactInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -13707,7 +13707,7 @@ export const AddressUpdateWithoutContactInputSchema: z.ZodType<Prisma.AddressUpd
 
 export const AddressUncheckedUpdateWithoutContactInputSchema: z.ZodType<Prisma.AddressUncheckedUpdateWithoutContactInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -16775,7 +16775,7 @@ export const CommentCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma.CommentC
 
 export const AddressCreateWithoutPublisherInputSchema: z.ZodType<Prisma.AddressCreateWithoutPublisherInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -16788,7 +16788,7 @@ export const AddressCreateWithoutPublisherInputSchema: z.ZodType<Prisma.AddressC
 
 export const AddressUncheckedCreateWithoutPublisherInputSchema: z.ZodType<Prisma.AddressUncheckedCreateWithoutPublisherInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -19123,7 +19123,7 @@ export const CommentCreateManyOrganizationInputSchema: z.ZodType<Prisma.CommentC
 
 export const AddressCreateManyOrganizationInputSchema: z.ZodType<Prisma.AddressCreateManyOrganizationInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -19395,7 +19395,7 @@ export const CommentUncheckedUpdateManyWithoutOrganizationInputSchema: z.ZodType
 
 export const AddressUpdateWithoutOrganizationInputSchema: z.ZodType<Prisma.AddressUpdateWithoutOrganizationInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19408,7 +19408,7 @@ export const AddressUpdateWithoutOrganizationInputSchema: z.ZodType<Prisma.Addre
 
 export const AddressUncheckedUpdateWithoutOrganizationInputSchema: z.ZodType<Prisma.AddressUncheckedUpdateWithoutOrganizationInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19421,7 +19421,7 @@ export const AddressUncheckedUpdateWithoutOrganizationInputSchema: z.ZodType<Pri
 
 export const AddressUncheckedUpdateManyWithoutOrganizationInputSchema: z.ZodType<Prisma.AddressUncheckedUpdateManyWithoutOrganizationInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19501,7 +19501,7 @@ export const CommentCreateManyVenueInputSchema: z.ZodType<Prisma.CommentCreateMa
 
 export const AddressCreateManyVenueInputSchema: z.ZodType<Prisma.AddressCreateManyVenueInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -19774,7 +19774,7 @@ export const CommentUncheckedUpdateManyWithoutVenueInputSchema: z.ZodType<Prisma
 
 export const AddressUpdateWithoutVenueInputSchema: z.ZodType<Prisma.AddressUpdateWithoutVenueInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19787,7 +19787,7 @@ export const AddressUpdateWithoutVenueInputSchema: z.ZodType<Prisma.AddressUpdat
 
 export const AddressUncheckedUpdateWithoutVenueInputSchema: z.ZodType<Prisma.AddressUncheckedUpdateWithoutVenueInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19800,7 +19800,7 @@ export const AddressUncheckedUpdateWithoutVenueInputSchema: z.ZodType<Prisma.Add
 
 export const AddressUncheckedUpdateManyWithoutVenueInputSchema: z.ZodType<Prisma.AddressUncheckedUpdateManyWithoutVenueInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -20158,7 +20158,7 @@ export const CommentCreateManyUserInputSchema: z.ZodType<Prisma.CommentCreateMan
 
 export const AddressCreateManyPublisherInputSchema: z.ZodType<Prisma.AddressCreateManyPublisherInput> = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().optional(),
+  label: z.string().optional(),
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
@@ -20787,7 +20787,7 @@ export const CommentUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.
 
 export const AddressUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.AddressUpdateWithoutPublisherInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -20800,7 +20800,7 @@ export const AddressUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.AddressU
 
 export const AddressUncheckedUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.AddressUncheckedUpdateWithoutPublisherInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -20813,7 +20813,7 @@ export const AddressUncheckedUpdateWithoutPublisherInputSchema: z.ZodType<Prisma
 
 export const AddressUncheckedUpdateManyWithoutPublisherInputSchema: z.ZodType<Prisma.AddressUncheckedUpdateManyWithoutPublisherInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  label: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   street: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   city: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   state: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),

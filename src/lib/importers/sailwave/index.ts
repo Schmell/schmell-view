@@ -24,10 +24,24 @@ export async function Populate({ blw, userId, orgId }) {
 	const { uniqueIdString } = event
 
 	function eventCreate() {
+		const resultColumns = {
+			rank: true,
+			points: true,
+			position: false,
+			skipper: false,
+			boat: true,
+			sailno: false,
+			finish: false,
+			corrected: true,
+			elapsed: false,
+			nett: true,
+			total: false
+		}
 		//
 		const { venueemail, venuewebsite, venueburgee, ...rest } = event
 		const eventObj = {
 			...rest,
+			resultColumns,
 
 			Publisher: {
 				connect: { id: userId }

@@ -5,21 +5,17 @@
 	import type { AnyZodObject } from 'zod'
 	import { cn } from '$lib/utils'
 	import { afterUpdate } from 'svelte'
-	import type { Writable } from 'svelte/store'
 
 	export let formObj: SuperForm<AnyZodObject, any>
 	export let name: string
 	export let group: string | undefined = undefined
 	export let label: string | undefined = undefined
-	// export let checked: boolean | undefined = undefined
 	let className: string | undefined = undefined
 	export { className as class }
 	let isRequired
 
-	// const { form, errors, constraints } = formObj
 	const { value, errors, constraints } = formFieldProxy(formObj, name)
-	$: console.log('form: ', $value)
-	$: boolValue = value as Writable<boolean>
+
 	afterUpdate(async () => {
 		//
 		const itemConstraint = await $constraints?.[name]
@@ -30,18 +26,20 @@
 	})
 </script>
 
-<div class="flex flex-col my-1 w-full">
-	<Label class="text-xs" {label} {name} {formObj} />
-	<div class="form-control">
-		<input
-			type="checkbox"
-			size="2"
-			class={cn('checkbox', className)}
-			class:input-error={$errors?.[name]}
-			bind:group
-			bind:checked={$boolValue}
-			{...$$restProps}
-		/>
+<span>
+	<div class="flex flex-col justify-center items-center my-1 w-full">
+		<Label class="text-sm pb-1" {label} {name} {formObj} />
+		<div class="form-control">
+			<input
+				type="checkbox"
+				size="2"
+				class={cn('checkbox checkbox-sm checkbox-primary', className)}
+				class:input-error={$errors?.[name]}
+				bind:group
+				bind:checked={$value}
+				{...$$restProps}
+			/>
+		</div>
+		<ErrorLabel {name} {formObj} />
 	</div>
-	<ErrorLabel {name} {formObj} />
-</div>
+</span>

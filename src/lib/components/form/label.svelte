@@ -1,32 +1,32 @@
 <script lang="ts">
-	import { capitalizeFirstLetter } from '$lib/utils';
-	import { afterUpdate } from 'svelte';
+	import { capitalizeFirstLetter } from '$lib/utils'
+	import { afterUpdate } from 'svelte'
 
-	export let name: string;
-	export let formObj;
-	export let label: string | undefined = undefined;
+	export let name: string
+	export let formObj
+	export let label: string | undefined = undefined
 
-	import { cn } from '$lib/utils';
-	let className: string | undefined = undefined;
-	export { className as class };
+	import { cn } from '$lib/utils'
+	let className: string | undefined = undefined
+	export { className as class }
 
-	let isRequired;
+	let isRequired
 
-	const { form, errors, constraints } = formObj;
+	const { form, errors, constraints } = formObj
 
 	afterUpdate(async () => {
 		//
-		const itemConstraint = await $constraints[name];
+		const itemConstraint = await $constraints[name]
 
 		if (itemConstraint?.required) {
-			isRequired = itemConstraint.required;
+			isRequired = itemConstraint.required
 		}
-	});
+	})
 </script>
 
-<label for={name} class={cn(' p-0', className)}>
+<label for={name} class={cn('p-0', className)}>
 	<span>{label ? label : capitalizeFirstLetter(name)}</span>
-	<span class="text-accent p-1">
+	<span class="text-accent">
 		{isRequired ? '*' : ''}
 	</span>
 </label>

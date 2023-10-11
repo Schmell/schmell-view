@@ -22,7 +22,8 @@
 		return website && website.startsWith('http://') ? website : `http://${website}`
 	}
 
-	function checkForImage(imageString) {
+	function checkForImage(imageString: string | null) {
+		if (!imageString) return null
 		if (
 			imageString.startsWith('http://') ||
 			imageString.startsWith('https://') ||
@@ -59,19 +60,27 @@
 		<LikeFollow type="venue" item={venue} userId={user?.userId} />
 	</div>
 
-	<div class="flex justify-end  text-sm">
-		<span class="pr-2 flex items-center text-xs"> {venue._count.Likes} <Icon icon="mdi:thumbs-up"/> </span>
-		/ 
-		<span class="pr-4 pl-2 flex items-center text-xs"> {venue._count.Follows} <Icon icon="mdi:bell-ring"/> </span>
+	<div class="flex justify-end text-sm">
+		<span class="pr-2 flex items-center text-xs">
+			{venue._count.Likes}
+			<Icon icon="mdi:thumbs-up" />
+		</span>
+		/
+		<span class="pr-4 pl-2 flex items-center text-xs">
+			{venue._count.Follows}
+			<Icon icon="mdi:bell-ring" />
+		</span>
 	</div>
 
 	{#if venue.description}
 		<div
 			class="mt-4 p-4 relative text-lg bg-base-300 border-base-300 border-b-2 border-l-2 rounded-xl shadow-lg"
 		>
-		<div class="absolute uppercase drop-shadow-md -top-4 -left-0 tracking-wide text-xl text-accent font-semibold">
-			{@html venue.name}
-		</div>
+			<div
+				class="absolute uppercase drop-shadow-md -top-4 -left-0 tracking-wide text-xl text-accent font-semibold"
+			>
+				{@html venue.name}
+			</div>
 			{@html venue.description}
 		</div>
 	{/if}

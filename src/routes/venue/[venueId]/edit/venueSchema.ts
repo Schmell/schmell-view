@@ -6,12 +6,15 @@ export const venueSchema = z.object({
 	description: z.string().nullable(),
 	email: z.string().nullable(),
 	phone: z.string().nullable(),
-	burgee: z.string().nullable(),
-	addressName: z.string().nullable(),
-	street: z.string().nullable(),
-	city: z.string().nullable(),
-	state: z.string().nullable(),
-	country: z.string().nullable(),
-	code: z.string().nullable(),
-	titleImage: z.string().nullable()
+	burgee: z.string().url().nullable(),
+	titleImage: z.string().url().nullable()
+})
+
+export const addressSchema = z.object({
+	name: z.string().nullable().optional(),
+	street: z.string().nullable().optional(),
+	city: z.string().nullable().optional(),
+	state: z.string().nullable().optional().optional(),
+	country: z.string().nullable().optional(),
+	code: z.string().nullable().optional()
 })

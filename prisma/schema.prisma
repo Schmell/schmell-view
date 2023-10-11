@@ -210,7 +210,7 @@ model Venue {
 
 model Address {
   id             String        @id @unique @default(cuid())
-  name           String        @default("Mailing Address")
+  label          String        @default("Mailing Address")
   street         String?
   city           String?
   state          String?

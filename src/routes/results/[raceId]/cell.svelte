@@ -24,7 +24,7 @@
 
 	function infoValue() {
 		if (useCode) {
-			// console.log('info: ', info.row.original);
+			// Not sure why i can't use ?? here
 			return info.getValue() ? info.getValue() : info.row.original.code
 		}
 		return info.getValue() ?? ''
