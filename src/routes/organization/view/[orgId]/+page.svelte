@@ -58,7 +58,7 @@
 			<!-- Tools -->
 			<div class="px-4 pb-4 flex justify-end">
 				<div class="tooltip tooltip-top" data-tip="View Events">
-					<a href="/events/org/{org.id}" class="btn btn-ghost p-1">
+					<a href="/events?whereType=organizationId&whereId={org.id}" class="btn btn-ghost p-1">
 						<Icon class="text-3xl text-primary" icon="material-symbols:preview" />
 					</a>
 				</div>

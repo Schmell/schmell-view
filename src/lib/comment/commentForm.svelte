@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, Form, Input } from '$components/form'
+	import { Form, Input } from '$components/form'
 
 	export let formObj
 	export let itemId
@@ -10,9 +10,17 @@
 </script>
 
 <Form {action} {formObj}>
-	<Input {formObj} name="comment" label=" " placeholder="add a comment" />
+	<div class="join w-full">
+		<Input
+			class="join-item rounded-xl"
+			{formObj}
+			name="comment"
+			label=" "
+			placeholder="add a comment"
+		/>
+		<button type="submit" class="join-item btn btn-primary w-24 mt-1">post</button>
+	</div>
 	<input type="hidden" name="itemId" value={itemId} />
 	<input type="hidden" name="type" value={type} />
 	<input type="hidden" name="userId" value={user?.userId} />
-	<!-- <Button type="submit">Submit</Button> -->
 </Form>

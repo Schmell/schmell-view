@@ -55,7 +55,7 @@ export const actions = {
 			console.log('error: ', error)
 			return { form }
 		}
-
+		console.log('url', url.searchParams.get('from'))
 		throw redirect(307, url.searchParams.get('from') ?? '/')
 	},
 

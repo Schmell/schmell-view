@@ -1,35 +1,35 @@
-import { prisma } from '$lib/server/prisma';
-import { error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import { prisma } from '$lib/server/prisma'
+import { error } from '@sveltejs/kit'
+import type { PageServerLoad } from './$types'
 
 export const load = (async ({ params }) => {
-	const { eventId } = params;
+	// const { eventId } = params
 
 	const getEvent = async () => {
 		try {
 			return prisma.event.findUniqueOrThrow({
-				where: { id: eventId }
-			});
+				where: { id: params.eventId },
+				include: { Races: true }
+			})
 		} catch (err) {
-			console.error('error: ', err);
-			throw error(418, 'error');
+			console.error('error: ', err)
+			throw error(418, 'error')
 		}
-	};
+	}
 
-	const getRaces = async () => {
+	const getRace = async () => {
 		try {
-			return prisma.race.findMany({
-				where: { eventId: eventId },
-				orderBy: { name: 'asc' }
-			});
+			return prisma.race.findUniqueOrThrow({
+				where: { id: params.eventId }
+			})
 		} catch (err) {
-			console.error('error: ', err);
-			throw error(418, 'error');
+			console.error('error: ', err)
+			throw error(418, 'error')
 		}
-	};
+	}
 
 	return {
-		event: getEvent(),
-		races: getRaces()
-	};
-}) satisfies PageServerLoad;
+		event: getEvent()
+		// race: getRace()
+	}
+}) satisfies PageServerLoad

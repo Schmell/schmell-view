@@ -366,38 +366,40 @@
 														handleClick()
 													}}
 												>
-													<label class="label">
-														<span class="label-text">Rank</span>
-														<input
-															checked={isVisible('rank')}
-															class=" checkbox checkbox-xs"
-															type="checkbox"
-															name="rank"
-															aria-label="Overall Event Ranking"
-														/>
-													</label>
+													<div class="join">
+														<label class="label">
+															<span class="label-text">Rank</span>
+															<input
+																checked={isVisible('rank')}
+																class="join-item checkbox checkbox-xs"
+																type="checkbox"
+																name="rank"
+																aria-label="Overall Event Ranking"
+															/>
+														</label>
 
-													<label class="label">
-														<span class="label-text">Nett</span>
-														<input
-															checked={isVisible('nett')}
-															class=" checkbox checkbox-xs"
-															type="checkbox"
-															name="nett"
-															aria-label="Nett Overall Score"
-														/>
-													</label>
+														<label class="label">
+															<span class="label-text">Nett</span>
+															<input
+																checked={isVisible('nett')}
+																class="join-item checkbox checkbox-xs"
+																type="checkbox"
+																name="nett"
+																aria-label="Nett Overall Score"
+															/>
+														</label>
 
-													<label class="label">
-														<span class="label-text">Total</span>
-														<input
-															checked={isVisible('total')}
-															class=" checkbox checkbox-xs"
-															type="checkbox"
-															name="total"
-															aria-label="Overall total before drops"
-														/>
-													</label>
+														<label class="label">
+															<span class="label-text">Total</span>
+															<input
+																checked={isVisible('total')}
+																class="join-item checkbox checkbox-xs"
+																type="checkbox"
+																name="total"
+																aria-label="Overall total before drops"
+															/>
+														</label>
+													</div>
 												</form>
 											{:else if header.column.id === 'Name'}
 												<form

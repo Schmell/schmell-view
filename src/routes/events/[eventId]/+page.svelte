@@ -89,14 +89,16 @@
 							>
 								{event.Venue.name ? event.Venue.name : 'No venue provided'}
 							</a>
-							<div>-</div>
-							<a
-								href={getHref(event.Venue.website)}
-								class="mt-1 flex gap-1 items-center text-xs leading-tight text-base-content hover:underline"
-							>
-								<Icon icon="gridicons:popout" />
-								{event.Venue.website}
-							</a>
+							{#if event.Venue.website}
+								<div>-</div>
+								<a
+									href={getHref(event.Venue.website)}
+									class="mt-1 flex gap-1 items-center text-xs leading-tight text-base-content hover:underline"
+								>
+									<Icon icon="gridicons:popout" />
+									{event.Venue.website}
+								</a>
+							{/if}
 						</div>
 					{/if}
 
@@ -108,13 +110,15 @@
 						<a href="/organization/{event.Organization?.id}" class="underline">
 							{event.Organization?.name}
 						</a>
-						<a
-							href={getHref(event?.eventwebsite)}
-							class="flex items-center gap-1 text-secondary font-semibold uppercase"
-						>
-							<Icon icon="gridicons:popout" />
-							{event?.eventwebsite}
-						</a>
+						{#if event?.eventwebsite}
+							<a
+								href={getHref(event?.eventwebsite)}
+								class="flex items-center gap-1 text-secondary font-semibold uppercase"
+							>
+								<Icon icon="gridicons:popout" />
+								{event?.eventwebsite}
+							</a>
+						{/if}
 					</div>
 				</div>
 			</div>

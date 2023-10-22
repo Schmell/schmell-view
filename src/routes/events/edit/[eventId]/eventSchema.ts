@@ -24,19 +24,3 @@ export const eventSchema = z.object({
 		total: z.boolean().nullable().optional()
 	})
 })
-
-console.log(
-	JSON.stringify({
-		rank: true,
-		points: true,
-		position: true,
-		skipper: true,
-		boat: true,
-		sailno: true,
-		finish: true,
-		corrected: true,
-		elapsed: true,
-		nett: true,
-		total: true
-	})
-)
