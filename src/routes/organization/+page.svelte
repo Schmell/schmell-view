@@ -14,7 +14,7 @@
 <Page title="All Organizations">
 	<div slot="trailing">
 		{#if user}
-			<a href="/organization/edit/new?from={$page.url.pathname}">
+			<a href="/organization/new/edit?from={$page.url.pathname}">
 				<Icon icon="material-symbols:add-circle" width="24" />
 			</a>
 		{/if}
@@ -23,7 +23,7 @@
 		<div>No Organizations available yet</div>
 	{:else}
 		{#each orgs as org}
-			<ItemCard title={org.name} href="/organization/view/{org.id}">
+			<ItemCard title={org.name} href="/organization/{org.id}">
 				<div>{org.description ?? 'No description provided'}</div>
 				<div>{org.website}</div>
 
@@ -43,7 +43,8 @@
 					{#if data.user?.userId === org?.ownerId}
 						<div class="tooltip tooltip-top" data-tip="Organization Edit">
 							<a
-								href="/organization/edit/{org?.id}?from={$page.url.pathname}"
+								data-sveltekit-replacestate
+								href="/organization/{org?.id}/edit?from={$page.url.pathname}"
 								class="btn btn-ghost"
 							>
 								<Icon icon="material-symbols:edit-outline" width="24" />

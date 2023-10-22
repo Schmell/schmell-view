@@ -149,7 +149,7 @@
 					{#if data.user?.userId === event?.publisherId}
 						<div class="tooltip tooltip-top" data-tip="Edit Event">
 							<a
-								href="/events/edit/{event?.id}?from={$page.url.pathname}"
+								href="/events/{event?.id}/edit?from={$page.url.pathname}"
 								class="btn btn-ghost p-1"
 							>
 								<Icon class="text-3xl text-primary" icon="material-symbols:edit-outline" />

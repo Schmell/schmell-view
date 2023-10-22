@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { Page } from '$components/layout'
+	import LikeFollow from '$lib/like/like-follow.svelte'
 	import Icon from '@iconify/svelte'
 	import type { Organization } from '@prisma/client'
 	import type { PageData } from './$types'
-	import Like from '$lib/like/like.svelte'
-	import LikeFollow from '$lib/like/like-follow.svelte'
 
 	export let data: PageData
-	// console.log('data: ', data);
+
 	$: ({ org, user } = data)
 
 	const getHref = (org: Organization | undefined) => {
@@ -58,7 +57,10 @@
 			<!-- Tools -->
 			<div class="px-4 pb-4 flex justify-end">
 				<div class="tooltip tooltip-top" data-tip="View Events">
-					<a href="/events?whereType=organizationId&whereId={org.id}" class="btn btn-ghost p-1">
+					<a
+						href="/events?whereType=organizationId&whereId={org.id}&title={org.name} Events"
+						class="btn btn-ghost p-1"
+					>
 						<Icon class="text-3xl text-primary" icon="material-symbols:preview" />
 					</a>
 				</div>
@@ -66,7 +68,8 @@
 				{#if user?.userId === org.ownerId}
 					<div class="tooltip tooltip-top" data-tip="Edit Organization">
 						<a
-							href="/organization/edit/{org.id}?from=/organization/view/{org.id}"
+							data-sveltekit-replacestate
+							href="/organization/{org.id}/edit?from=/organization/{org.id}"
 							class="btn btn-ghost p-1"
 						>
 							<Icon class="text-3xl  text-primary" icon="material-symbols:edit-outline" />

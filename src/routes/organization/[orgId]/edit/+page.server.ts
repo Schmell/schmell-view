@@ -3,11 +3,12 @@ import { fail, redirect } from '@sveltejs/kit'
 import { superValidate } from 'sveltekit-superforms/server'
 import { Prisma } from '@prisma/client'
 
-import type { Actions, PageServerLoad } from './$types'
+// import type { Actions, PageServerLoad } from '../../edit/[orgId]/$types'
 import { OrganizationSchema } from '$lib/server/generated/zod'
 import { capitalizeFirstLetter } from '$lib/utils'
+import type { PageServerLoad } from '../$types'
 
-export const load = (async ({ params, url }) => {
+export const load = async ({ params, url }) => {
 	if (params.orgId === 'new') {
 		const org = { name: 'New Organization' }
 
@@ -23,9 +24,9 @@ export const load = (async ({ params, url }) => {
 	const form = await superValidate(org, OrganizationSchema)
 
 	return { form }
-}) satisfies PageServerLoad
+}
 
-export const actions: Actions = {
+export const actions = {
 	default: async ({ request, locals, url }) => {
 		const session = await locals.auth.validate()
 		if (!session) throw fail(400, { message: 'Not authorised to edit organization' })

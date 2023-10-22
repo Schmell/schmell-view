@@ -7,16 +7,13 @@
 	let _class: string | undefined = undefined
 	export { _class as class }
 
+	export let type: string
+	export let item
 	export let userId: string | undefined
 
 	if (!userId) {
 		throw error(400, 'Invalid userId in like component')
 	}
-
-	export let item
-	// $: console.log('item: ', item)
-
-	export let type: string
 
 	let followAction: Response | undefined
 

@@ -89,10 +89,10 @@
 		</button>
 	{/if}
 
-	<div
+	<!-- <div
 		class="border-l-2 border-base-200 pl-2 cursor-default"
 		class:text-base-100={checkForUserLike(item)}
 	>
 		{item._count ? item._count.Likes : 0}
-	</div>
+	</div> -->
 </div>

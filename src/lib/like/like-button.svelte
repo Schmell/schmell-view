@@ -5,8 +5,8 @@
 	import Icon from '@iconify/svelte'
 	import { error, fail } from '@sveltejs/kit'
 
-	let className: string | undefined = undefined
-	export { className as class }
+	let _class: string | undefined = undefined
+	export { _class as class }
 
 	export let userId: string | undefined
 
@@ -71,7 +71,7 @@
 			like(type, item, getUserLikedId(item))
 		}}
 	>
-		<Icon class={cn('text-base-100', className)} icon="mdi:thumb-up" />
+		<Icon class={cn('text-base-100', _class)} icon="mdi:thumb-up" />
 	</button>
 {:else}
 	<!-- can't like your own comment -->
@@ -81,6 +81,6 @@
 			like(type, item, false)
 		}}
 	>
-		<Icon class={cn('text-base-100', className)} icon="mdi:thumb-up-outline" />
+		<Icon class={cn('text-base-100', _class)} icon="mdi:thumb-up-outline" />
 	</button>
 {/if}

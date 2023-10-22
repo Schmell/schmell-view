@@ -64,7 +64,7 @@
 
 		{#if open}
 			<!-- this does not error in original -->
-			<!--  -->
+
 			<section
 				use:clickOutside
 				on:click_outside={handleClickOutside}
@@ -75,7 +75,7 @@
 					<a href="/events" on:click={toggleOpen}>
 						<Icon icon="material-symbols:calendar-month" /> Events
 					</a>
-					<a href="/organization/all" on:click={toggleOpen}>
+					<a href="/organization" on:click={toggleOpen}>
 						<Icon icon="ic:outline-people-alt" /> Organizations
 					</a>
 					<a href="/community" on:click={toggleOpen}>

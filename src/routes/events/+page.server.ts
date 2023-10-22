@@ -13,6 +13,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const take = url.searchParams.get('take')
 	const whereType = url.searchParams.get('whereType')
 	const whereId = url.searchParams.get('whereId')
+	const title = url.searchParams.get('title')
 
 	function getWhere() {
 		if (whereType && whereId) {
@@ -26,26 +27,50 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 	async function getEvents() {
 		try {
-			return await prisma.event.findMany({
-				where: getWhere(),
-				orderBy: sort(),
-				select: {
-					id: true,
-					name: true,
-					venueName: true,
-					description: true,
-					createdAt: true,
-					Publisher: true,
-					Organization: true,
-					Follows: true,
-					Likes: { select: { id: true, eventId: true, userId: true } },
-					_count: { select: { Likes: true, Follows: true } }
-				},
-				skip: Number(skip ?? 0),
-				take: Number(take ?? 10)
-			})
-		} catch (error) {
-			throw fail(500, { message: 'Get event Fail', error })
+			return await prisma.$transaction([
+				prisma.event.findMany({
+					where: getWhere(),
+					orderBy: sort(),
+					select: {
+						id: true,
+						publisherId: true,
+						name: true,
+						venueName: true,
+						description: true,
+						createdAt: true,
+						Publisher: true,
+						Organization: true,
+						Follows: true,
+						Likes: { select: { id: true, eventId: true, userId: true } },
+						_count: { select: { Likes: true, Follows: true } }
+					},
+					skip: Number(skip ?? 0),
+					take: Number(take ?? 10)
+				}),
+
+				prisma.event.count()
+			])
+			// return await prisma.event.findMany({
+			// 	where: getWhere(),
+			// 	orderBy: sort(),
+			// 	select: {
+			// 		id: true,
+			// 		publisherId: true,
+			// 		name: true,
+			// 		venueName: true,
+			// 		description: true,
+			// 		createdAt: true,
+			// 		Publisher: true,
+			// 		Organization: true,
+			// 		Follows: true,
+			// 		Likes: { select: { id: true, eventId: true, userId: true } },
+			// 		_count: { select: { Likes: true, Follows: true } }
+			// 	},
+			// 	skip: Number(skip ?? 0),
+			// 	take: Number(take ?? 10),
+			// })
+		} catch (error: any) {
+			throw fail(500, { message: 'Get event Fail', error: error.message })
 		}
 	}
 
@@ -56,9 +81,12 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		sort[sortBy] = sortOrder
 		return sort
 	}
-
+	const [events, count] = await getEvents()
+	console.log('count: ', count)
 	return {
-		events: getEvents()
+		title,
+		events,
+		count
 	}
 }
 

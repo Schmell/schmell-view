@@ -1,13 +1,38 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import Page from '$lib/components/layout/Page.svelte'
+	import FollowButton from '$lib/follow/follow-button.svelte'
+	import { LikeButton } from '$lib/like/index.js'
+	import LikeFollow from '$lib/like/like-follow.svelte'
+	import Like from '$lib/like/like.svelte'
 	import Icon from '@iconify/svelte'
+	import { fail } from '@sveltejs/kit'
 	import { Accordion } from 'bits-ui'
 
 	export let data
 	$: ({ user, events, series, following, organizations, likes } = data)
 
+	let likeAction
 	// $: console.log('events: ', events)
+	async function unlike(likeId) {
+		try {
+			await fetch(
+				`/api/like?unlike=${likeId}'
+				}`,
+
+				{
+					method: 'GET',
+					headers: {
+						'content-type': 'application/json'
+					}
+				}
+			)
+		} catch (error) {
+			console.log('error: ', error)
+
+			throw fail(400, { message: 'add like error' })
+		}
+	}
 </script>
 
 <Page title="Home">
@@ -225,99 +250,116 @@
 										href="/events/{follow.Event?.id}"
 										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-accent w-full rounded-lg shadow-xl"
 									>
-										<div
-											class="capitalize w-full pl-2 font-bold rounded-r-xl bg-info bg-opacity-10"
-										>
-											{follow.type}
-										</div>
-										<div class="flex justify-between w-full pl-4">
-											<div>
-												{@html follow.Event?.name}
-												<div class="text-xs opacity-40">
-													{follow.createdAt.toLocaleDateString()}
-												</div>
+										<a href="/events/{follow.Event?.id}">
+											<div
+												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-info bg-opacity-10"
+											>
+												{follow.type}
 											</div>
-											<button class="pr-4">
-												<Icon icon="mdi:bell" />
-											</button>
+										</a>
+										<div class="flex justify-between w-full pl-4">
+											<a href="/events/{follow.Event?.id}">
+												<div>
+													{@html follow.Event?.name}
+													<div class="text-xs opacity-40">
+														{follow.createdAt.toLocaleDateString()}
+													</div>
+												</div>
+											</a>
+											<div class="pr-4">
+												<FollowButton type="event" item={follow.Event} userId={user.userId} />
+											</div>
 										</div>
 									</a>
 								{/if}
 
 								{#if follow.type === 'venue'}
-									<a
-										href="/venue/{follow.Venue?.id}"
+									<div
 										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-secondary w-full rounded-lg shadow-xl"
 									>
-										<div
-											class="capitalize w-full pl-2 font-bold rounded-r-xl bg-secondary bg-opacity-10"
-										>
-											{follow.type}
-										</div>
-										<div class="flex justify-between w-full pl-4">
-											<div>
-												{@html follow.Venue?.name}
-												<div class="text-xs opacity-40">
-													{follow.createdAt.toLocaleDateString()}
-												</div>
+										<a href="/venue/{follow.Venue?.id}">
+											<div
+												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-secondary bg-opacity-10"
+											>
+												{follow.type}
 											</div>
-											<button class="pr-4">
-												<Icon icon="mdi:dislike-outline" />
-											</button>
+										</a>
+										<div class="flex justify-between w-full pl-4">
+											<a href="/venue/{follow.Venue?.id}">
+												<div>
+													{@html follow.Venue?.name}
+													<div class="text-xs opacity-40">
+														{follow.createdAt.toLocaleDateString()}
+													</div>
+												</div>
+											</a>
+											<div class="pr-4">
+												<FollowButton item={follow.Venue} type="venue" userId={user.userId} />
+											</div>
 										</div>
-									</a>
+									</div>
 								{/if}
 
 								{#if follow.type === 'organization'}
-									<a
-										href="/organization/{follow.Organization?.id}"
+									<div
 										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-warning w-full rounded-lg shadow-xl"
 									>
-										<div
-											class="capitalize w-full pl-2 font-bold rounded-r-xl bg-warning bg-opacity-10"
-										>
-											{follow.type}
-										</div>
+										<a href="/organization/{follow.Organization?.id}">
+											<div
+												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-warning bg-opacity-10"
+											>
+												{follow.type}
+											</div>
+										</a>
 
 										<div class="flex justify-between w-full pl-4">
-											<div>
-												{@html follow.Organization?.name}
-												<div class="text-xs opacity-40">
-													{follow.createdAt.toLocaleDateString()}
+											<a href="/organization/{follow.Organization?.id}">
+												<div>
+													{@html follow.Organization?.name}
+													<div class="text-xs opacity-40">
+														{follow.createdAt.toLocaleDateString()}
+													</div>
 												</div>
-											</div>
+											</a>
 
-											<button class="pr-4">
-												<Icon icon="mdi:bell-outline" />
-											</button>
+											<div class="pr-4">
+												<FollowButton
+													item={follow.Organization}
+													type="organization"
+													userId={user.userId}
+												/>
+											</div>
 										</div>
-									</a>
+									</div>
 								{/if}
 
 								{#if follow.type === 'comp'}
-									<a
-										href="/comp/{follow.Comp?.id}"
+									<div
 										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-success w-full rounded-lg shadow-xl"
 									>
-										<div
-											class="capitalize w-full pl-2 font-bold rounded-r-xl bg-success bg-opacity-10"
-										>
-											{follow.type}
-										</div>
+										<a href="/comp/{follow.Comp?.id}">
+											<div
+												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-success bg-opacity-10"
+											>
+												{follow.type}
+											</div>
+										</a>
 
 										<div class="flex justify-between w-full pl-4">
-											<div>
-												{@html follow.Comp?.boat ?? follow.Comp?.skipper ?? 'No Competitor name'}
-												<div class="text-xs opacity-40">
-													{follow.createdAt.toLocaleDateString()}
+											<a href="/comp/{follow.Comp?.id}">
+												<div>
+													{@html follow.Comp?.boat ?? follow.Comp?.skipper ?? 'No Competitor name'}
+													<div class="text-xs opacity-40">
+														{follow.createdAt.toLocaleDateString()}
+													</div>
 												</div>
-											</div>
+											</a>
 
-											<button class="pr-4">
-												<Icon icon="mdi:dislike-outline" />
-											</button>
+											<div class="pr-4">
+												<FollowButton item={follow.Comp} type="comp" userId={user.userId} />
+											</div>
 										</div>
-									</a>
+									</div>
 								{/if}
 							{/each}
 						{/if}
@@ -338,35 +380,41 @@
 						{:else}
 							{#each likes as like}
 								{#if like.type === 'event'}
-									<a
-										href="/events/{like.Event?.id}"
-										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-accent w-full rounded-lg shadow-xl"
+									<div
+										class="relative p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-accent w-full rounded-lg shadow-xl"
 									>
-										<div
-											class="capitalize w-full pl-2 font-bold rounded-r-xl bg-info bg-opacity-10"
-										>
-											{like.type}
-										</div>
-										<div class="flex justify-between w-full pl-4">
-											<div>
-												{@html like.Event?.name}
-												<div class="text-xs opacity-40">
-													{like.createdAt.toLocaleDateString()}
-												</div>
+										<a href="/events/{like.Event?.id}">
+											<div
+												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-info bg-opacity-10"
+											>
+												{like.type}
 											</div>
-											<button class="pr-4">
-												<Icon icon="mdi:dislike-outline" />
-											</button>
+										</a>
+										<div class="flex justify-between w-full pl-4">
+											<a href="/events/{like.Event?.id}">
+												<div>
+													{@html like.Event?.name}
+													<div class="text-xs opacity-40">
+														{like.createdAt.toLocaleDateString()}
+													</div>
+												</div>
+											</a>
+											<LikeButton
+												class="text-base-content mr-3 "
+												type="event"
+												item={like.Event}
+												userId={user.userId}
+											/>
 										</div>
-									</a>
+									</div>
 								{/if}
 
 								{#if like.type === 'comment'}
 									<div
-										class="p-0 pb-2 flex flex-col gap-4 mb-4 border-l-4 border-accent w-full rounded-lg shadow-xl"
+										class="p-0 pb-2 flex flex-col gap-4 mb-4 border-l-4 border-success w-full rounded-lg shadow-xl"
 									>
 										<div
-											class="flex justify-between w-full pl-2 py-2 pr-4 rounded-r-xl bg-info bg-opacity-10"
+											class="flex justify-between w-full pl-2 py-2 pr-4 rounded-r-xl bg-success bg-opacity-10"
 										>
 											<div class="capitalize tracking-wide font-bold">
 												{like.Comment?.type}
@@ -402,59 +450,80 @@
 												</div>
 											</div>
 
-											<button class="pr-4">
-												<Icon icon="mdi:dislike-outline" />
-											</button>
+											<div class="pr-4 flex gap-2">
+												<LikeButton
+													item={like.Comment}
+													type="comment"
+													userId={user.userId}
+													class="text-base-content"
+												/>
+											</div>
 										</div>
 									</div>
 								{/if}
 
 								{#if like.type === 'venue'}
-									<a
-										href="/venue/{like.Venue?.id}"
+									<div
 										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-secondary w-full rounded-lg shadow-xl"
 									>
-										<div
-											class="capitalize w-full pl-2 font-bold rounded-r-xl bg-secondary bg-opacity-10"
-										>
-											{like.type}
-										</div>
-										<div class="flex justify-between w-full pl-4">
-											<div>
-												{like.Venue?.name}
-												<div class="text-xs opacity-40">
-													{like.createdAt.toLocaleDateString()}
-												</div>
+										<a href="/venue/{like.Venue?.id}">
+											<div
+												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-secondary bg-opacity-10"
+											>
+												{like.type}
 											</div>
-											<button class="pr-4">
-												<Icon icon="mdi:dislike-outline" />
-											</button>
+										</a>
+										<div class="flex justify-between w-full pl-4">
+											<a href="/venue/{like.Venue?.id}">
+												<div>
+													{like.Venue?.name}
+													<div class="text-xs opacity-40">
+														{like.createdAt.toLocaleDateString()}
+													</div>
+												</div>
+											</a>
+											<div class="pr-4">
+												<LikeButton
+													item={like.Venue}
+													type="venue"
+													userId={user.userId}
+													class="text-base-content"
+												/>
+											</div>
 										</div>
-									</a>
+									</div>
 								{/if}
 
 								{#if like.type === 'organization'}
-									<a
-										href="/venue/{like.Organization?.id}"
+									<div
 										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-warning w-full rounded-lg shadow-xl"
 									>
-										<div
-											class="capitalize w-full pl-2 font-bold rounded-r-xl bg-warning bg-opacity-10"
-										>
-											{like.type}
-										</div>
-										<div class="flex justify-between w-full pl-4">
-											<div>
-												{like.Organization?.name}
-												<div class="text-xs opacity-40">
-													{like.createdAt.toLocaleDateString()}
-												</div>
+										<a href="/venue/{like.Organization?.id}">
+											<div
+												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-warning bg-opacity-10"
+											>
+												{like.type}
 											</div>
-											<button class="pr-4">
-												<Icon icon="mdi:dislike-outline" />
-											</button>
+										</a>
+										<div class="flex justify-between w-full pl-4">
+											<a href="/venue/{like.Organization?.id}">
+												<div>
+													{like.Organization?.name}
+													<div class="text-xs opacity-40">
+														{like.createdAt.toLocaleDateString()}
+													</div>
+												</div>
+											</a>
+											<div class="pr-4">
+												<LikeButton
+													type="organization"
+													item={like.Organization}
+													userId={user.userId}
+													class="text-base-content"
+												/>
+											</div>
 										</div>
-									</a>
+									</div>
 								{/if}
 							{/each}
 						{/if}
