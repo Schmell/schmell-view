@@ -222,8 +222,6 @@ model Address {
   organizationId String?
   Publisher      User?         @relation(fields: [publisherId], references: [id], onDelete: SetNull)
   publisherId    String?
-  // User           User?         @relation(fields: [userId], references: [id])
-  // userId         String?
   Contact        Contact[]
 }
 

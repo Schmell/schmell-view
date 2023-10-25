@@ -33,7 +33,7 @@ export const load = (async ({ params, url }) => {
 						}
 					},
 					Likes: true,
-					Follows:true,
+					Follows: true,
 					Publisher: true,
 					Addresses: true
 				}
@@ -52,7 +52,7 @@ export const load = (async ({ params, url }) => {
 		id: z.string().optional()
 	})
 
-	let eventComment = {}
+	let itemComment = {}
 	const editCommentId = url.searchParams.get('editComment')
 
 	if (editCommentId) {
@@ -60,7 +60,7 @@ export const load = (async ({ params, url }) => {
 		// Make the comment component use the populated comment to pre-fill the form
 		// then just post to ?/comment formAction
 		try {
-			eventComment = await prisma.comment.findFirstOrThrow({
+			itemComment = await prisma.comment.findFirstOrThrow({
 				where: { id: editCommentId }
 			})
 		} catch (error) {
@@ -72,7 +72,7 @@ export const load = (async ({ params, url }) => {
 		}
 	}
 
-	const commentForm = await superValidate(eventComment, commentSchema, { id: 'commentForm' })
+	const commentForm = await superValidate(itemComment, commentSchema, { id: 'commentForm' })
 
 	return {
 		commentForm,

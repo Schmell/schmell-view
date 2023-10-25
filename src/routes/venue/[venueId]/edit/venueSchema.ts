@@ -11,7 +11,7 @@ export const venueSchema = z.object({
 })
 
 export const addressSchema = z.object({
-	name: z.string().nullable().optional(),
+	label: z.string(),
 	street: z.string().nullable().optional(),
 	city: z.string().nullable().optional(),
 	state: z.string().nullable().optional().optional(),

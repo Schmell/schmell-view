@@ -34,6 +34,8 @@
 	}
 
 	const commentFormObj = superForm(data.commentForm)
+
+	$: console.log('$page.url.searchParams: ', $page.url.searchParams)
 </script>
 
 <Page title={venue.name}>
@@ -48,7 +50,7 @@
 		{/if}
 		<div class="w-full rounded-tr-xl rounded-tl-xl rounded-bl-xl rounded-br-full">
 			<img
-				class="pl-2 rounded-xl rounded-br-full"
+				class="pl-2 rounded-xl w-full"
 				class:blur-sm={!venue.titleImage}
 				src={venue.titleImage
 					? venue.titleImage
@@ -60,24 +62,12 @@
 		<LikeFollow type="venue" item={venue} userId={user?.userId} />
 	</div>
 
-	<div class="flex justify-end text-sm">
-		<span class="pr-2 flex items-center text-xs">
-			{venue._count.Likes}
-			<Icon icon="mdi:thumbs-up" />
-		</span>
-		/
-		<span class="pr-4 pl-2 flex items-center text-xs">
-			{venue._count.Follows}
-			<Icon icon="mdi:bell-ring" />
-		</span>
-	</div>
-
 	{#if venue.description}
 		<div
-			class="mt-4 p-4 relative text-lg bg-base-300 border-base-300 border-b-2 border-l-2 rounded-xl shadow-lg"
+			class="mt-8 p-4 relative text-lg bg-base-300 border-base-300 border-b-2 border-l-2 rounded-xl shadow-lg"
 		>
 			<div
-				class="absolute uppercase drop-shadow-md -top-4 -left-0 tracking-wide text-xl text-accent font-semibold"
+				class="absolute uppercase drop-shadow-md line-clamp-1 -top-4 -left-0 tracking-wide text-xl text-accent font-semibold"
 			>
 				{@html venue.name}
 			</div>
@@ -95,27 +85,28 @@
 		<!-- Publisher -->
 		<div class="flex gap-2 items-center">
 			<div class="avatar">
-				<div class="w-8 rounded-full">
+				<div class="w-8 rounded-full bg-base-content shadow-lg">
 					<img alt={venue.Publisher?.username} src={venue.Publisher?.avatar} />
 				</div>
 			</div>
 			<!-- <div>{venue.Publisher?.name}</div> -->
 		</div>
 	</div>
+
 	<div class="divider" />
 
-	<div class="flex gap-2 w-full max-w-md justify-between pt-4 relative">
+	<div class="flex gap-2 w-full max-w-md justify-between relative">
 		<div class="w-full">
 			<div class="text-sm w-full flex gap-2 justify-between">
 				<!--  -->
 				<div>
 					<Accordion.Root>
-						{#each venue.Addresses as address, i}
-							<Accordion.Item value={address.name}>
+						{#each venue.Addresses as address}
+							<Accordion.Item value={address.label}>
 								<Accordion.Header>
 									<Accordion.Trigger class="flex gap-2 w-full justify-between items-center">
 										<div class="text-lg">
-											{address.name}
+											{address.label}
 										</div>
 										<Icon icon="mdi:chevron-down" />
 									</Accordion.Trigger>
@@ -134,9 +125,12 @@
 				</div>
 
 				<div>
-					<h2 class="text-lg">Contact:</h2>
+					<div class="text-lg">Contact:</div>
 					{#if venue.email}
-						<p>{venue.email}</p>
+						<div class="flex gap-1 items-center">
+							<Icon icon="material-symbols:content-copy" />
+							<a href="mailto:{venue.email}">{venue.email}</a>
+						</div>
 					{/if}
 					{#if venue.phone}
 						<p>{venue.phone}</p>
@@ -145,171 +139,20 @@
 			</div>
 		</div>
 	</div>
-	<Comments item={venue} type="venue" user={data.user} formObj={commentFormObj} />
-	<div class="flex w-full max-w-md justify-end">
-		{#if !showEvents}
-			<div class="tooltip tooltip-top" data-tip="Show Events">
-				<button
-					on:click={() => {
-						showEvents = true
-					}}
-					class="btn btn-ghost p-1"
-				>
-					<Icon class="text-3xl text-primary" icon="material-symbols:preview-outline" />
-				</button>
-			</div>
-		{:else if showEvents}
-			<div class="tooltip tooltip-top" data-tip="Hide Events">
-				<button
-					on:click={() => {
-						showEvents = false
-					}}
-					class="btn btn-ghost p-1"
-				>
-					<Icon class="text-3xl text-primary" icon="material-symbols:preview-off" />
-				</button>
-			</div>
-		{/if}
 
+	<!-- Tools  -->
+	<div class="flex justify-end">
 		{#if data.user?.userId === venue?.publisherId}
-			<div class="tooltip tooltip-top" data-tip="Edit Venue">
-				<a href="/venue/{venue.id}/edit/?from={$page.url.pathname}" class="btn btn-ghost p-1">
+			<div class="tooltip tooltip-top" data-tip="Edit Event">
+				<a
+					data-sveltekit-replacestate={true}
+					href="/venue/{venue?.id}/edit?from={$page.url.pathname}&{$page.url.searchParams}"
+					class="btn btn-ghost p-1"
+				>
 					<Icon class="text-3xl text-primary" icon="material-symbols:edit-outline" />
 				</a>
 			</div>
 		{/if}
 	</div>
-
-	{#if showEvents}
-		<div class="divider" />
-
-		<h1 class="text-3xl font-semibold pb-4">Events:</h1>
-
-		<div class="flex gap-4 flex-col">
-			{#each venue.Events as event}
-				<div
-					class="mt-18 mb-8 max-w-md mx-auto bg-base-100 rounded-xl shadow-md overflow-hidden md:max-w-2xl"
-				>
-					<div class="md:flex">
-						<div class="md:shrink-0">
-							<!-- {console.log('event?.Organization?.titleImage: ', event?.Organization?.titleImage)} -->
-							<img
-								class="h-48 w-full object-cover md:h-full md:w-48 rounded-br-full"
-								src={event?.titleImage
-									? event?.titleImage
-									: event.Organization?.titleImage
-									? event.Organization.titleImage
-									: 'https://picsum.photos/id/384/400/300/'}
-								alt="Title for {event?.name}"
-							/>
-						</div>
-
-						<div class="pt-8 px-8 w-full">
-							<div class="flex justify-between w-full">
-								<div class="uppercase tracking-wide text-xl text-accent font-semibold">
-									{@html event?.name}
-								</div>
-
-								<div class="max-h-2">
-									<Like userId={data.user?.userId} type="event" item={event} />
-								</div>
-							</div>
-
-							{#if venue}
-								<div class="flex items-center gap-4">
-									<a
-										href={`/venue/${event?.venueId}`}
-										class="mt-1 text-lg leading-tight text-base-content hover:underline"
-									>
-										{venue.name ? venue.name : 'No venue provided'}
-									</a>
-
-									<div>-</div>
-
-									<a
-										href={getHref(venue.website)}
-										class="mt-1 text-xs leading-tight text-base-content hover:underline"
-									>
-										{venue.website}
-									</a>
-								</div>
-							{/if}
-
-							<p class="mt-2 opacity-70">
-								{event?.description ? event?.description : 'No description provided'}
-							</p>
-
-							<a href={getHref(event?.eventwebsite)} class="text-secondary"
-								>{event?.eventwebsite}
-							</a>
-						</div>
-					</div>
-
-					<!-- Tools  -->
-					<div class="px-4 pb-4 flex justify-between items-center">
-						<button
-							class="btn btn-ghost btn-xs"
-							on:click={() => {
-								showRaces = !showRaces
-							}}
-						>
-							{showRaces ? '^ Hide Races' : '⌄ Show Races'}
-						</button>
-
-						<div>
-							<div class="tooltip tooltip-top" data-tip="View Competitors">
-								<a href="/comps/{event?.id}" class="btn btn-ghost p-1">
-									<Icon
-										class="text-3xl text-primary"
-										icon="material-symbols:groups-outline-rounded"
-									/>
-								</a>
-							</div>
-
-							<div class="tooltip tooltip-top" data-tip="Edit Races">
-								<a href="/races/{event?.id}" class="btn btn-ghost p-1">
-									<Icon class="text-3xl text-primary" icon="material-symbols:box-edit-outline" />
-								</a>
-							</div>
-
-							{#if data.user?.userId === event?.publisherId}
-								<div class="tooltip tooltip-top" data-tip="Edit Event">
-									<a
-										href="/events/edit/{event?.id}?from={$page.url.pathname}"
-										class="btn btn-ghost p-1"
-									>
-										<Icon class="text-3xl text-primary" icon="material-symbols:edit-outline" />
-									</a>
-								</div>
-							{/if}
-						</div>
-					</div>
-
-					{#if showRaces}
-						{#each event.Races as race}
-							<a href="/results/{race.id}">
-								<div class=" p-0 m-2 mx-4 border-t text-base-content">
-									<div class="w-full pt-1">
-										<h1 class="text-xl font-semibold">{race.name}</h1>
-									</div>
-									<div class="flex justify-between">
-										<div class="text-xs">
-											{race.date ? race.date : ''}
-											{race.time ? `- ${race.time}` : ''}
-										</div>
-
-										<div class="badge badge-accent" class:badge-error={!Number(race.sailed)}>
-											{Number(race.sailed) ? 'Sailed' : 'Unsailed'}
-										</div>
-									</div>
-								</div>
-							</a>
-						{/each}
-					{/if}
-					<!-- </div> -->
-					<!-- <Comments item={event} type="event" user={data.user} formObj={commentFormObj} /> -->
-				</div>
-			{/each}
-		</div>
-	{/if}
+	<Comments item={venue} type="venue" user={data.user} formObj={commentFormObj} />
 </Page>

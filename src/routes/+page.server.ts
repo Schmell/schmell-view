@@ -82,7 +82,7 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 		try {
 			return await prisma.follow.findMany({
 				where: { userId: session?.user.userId },
-				orderBy: { createdAt: 'asc' },
+				orderBy: { createdAt: 'desc' },
 				include: {
 					Series: { include: { Follows: true } },
 					Event: { include: { Follows: true } },
@@ -102,7 +102,7 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 		try {
 			return await prisma.like.findMany({
 				where: { userId: session?.user.userId },
-				orderBy: { createdAt: 'asc' },
+				orderBy: { createdAt: 'desc' },
 				include: {
 					Event: { include: { Likes: true } },
 					Organization: { include: { Likes: true } },

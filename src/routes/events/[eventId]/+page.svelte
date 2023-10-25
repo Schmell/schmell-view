@@ -33,7 +33,7 @@
 
 	const commentFormObj = superForm(data.commentForm)
 	const deleteCommentFormObj = superForm(data.deleteCommentForm)
-	// deleteForm
+	// $: console.log('$page.url.searchParams: ', $page.url.searchParams)
 </script>
 
 {#if data}
@@ -93,7 +93,7 @@
 								<div>-</div>
 								<a
 									href={getHref(event.Venue.website)}
-									class="mt-1 flex gap-1 items-center text-xs leading-tight text-base-content hover:underline"
+									class="mt-1 line-clamp-1 flex gap-1 items-center text-xs leading-tight text-base-content hover:underline"
 								>
 									<Icon icon="gridicons:popout" />
 									{event.Venue.website}
@@ -113,10 +113,13 @@
 						{#if event?.eventwebsite}
 							<a
 								href={getHref(event?.eventwebsite)}
+								target="_blank"
 								class="flex items-center gap-1 text-secondary font-semibold uppercase"
 							>
 								<Icon icon="gridicons:popout" />
-								{event?.eventwebsite}
+								<div class="inline line-clamp-1">
+									{event?.eventwebsite}
+								</div>
 							</a>
 						{/if}
 					</div>

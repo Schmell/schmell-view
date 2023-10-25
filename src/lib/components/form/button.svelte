@@ -1,8 +1,8 @@
 <script lang="ts">
-	export let type: 'submit' | 'button' | 'reset' = 'submit'
-	export let position: string | undefined = undefined
 	import { cn } from '$lib/utils'
 
+	export let type: 'submit' | 'button' | 'reset' = 'submit'
+	export let position: string | undefined = undefined
 	let className: string | undefined = undefined
 	export { className as class }
 

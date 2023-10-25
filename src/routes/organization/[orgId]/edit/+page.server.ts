@@ -86,15 +86,9 @@ export const actions = {
 
 			return { form }
 		}
-
 		const from = url.searchParams.get('from')
-		// console.log('from: ', from)
-		if (from) {
-			// so ican use $page.url.pathname
-			if (from.slice(0, 1) === '/') {
-				throw redirect(303, `${from}`)
-			}
-			throw redirect(303, `/${from}${url.search}`)
-		}
+		url.searchParams.delete('from')
+
+		throw redirect(303, `${from}?${url.searchParams.toString()}`)
 	}
 }

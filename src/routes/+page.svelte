@@ -3,36 +3,11 @@
 	import Page from '$lib/components/layout/Page.svelte'
 	import FollowButton from '$lib/follow/follow-button.svelte'
 	import { LikeButton } from '$lib/like/index.js'
-	import LikeFollow from '$lib/like/like-follow.svelte'
-	import Like from '$lib/like/like.svelte'
 	import Icon from '@iconify/svelte'
-	import { fail } from '@sveltejs/kit'
 	import { Accordion } from 'bits-ui'
 
 	export let data
 	$: ({ user, events, series, following, organizations, likes } = data)
-
-	let likeAction
-	// $: console.log('events: ', events)
-	async function unlike(likeId) {
-		try {
-			await fetch(
-				`/api/like?unlike=${likeId}'
-				}`,
-
-				{
-					method: 'GET',
-					headers: {
-						'content-type': 'application/json'
-					}
-				}
-			)
-		} catch (error) {
-			console.log('error: ', error)
-
-			throw fail(400, { message: 'add like error' })
-		}
-	}
 </script>
 
 <Page title="Home">
@@ -76,7 +51,7 @@
 				</div>
 			</dialog>
 		{:else}
-			<Accordion.Root class="pt-4" multiple>
+			<Accordion.Root value={['events', 'orgs']} class="pt-4" multiple>
 				<Accordion.Item value="events" class="py-2 text-base-content">
 					<Accordion.Header class="p-2 border-b border-base-100 w-full flex items-start">
 						<Accordion.Trigger class="flex w-full justify-between">

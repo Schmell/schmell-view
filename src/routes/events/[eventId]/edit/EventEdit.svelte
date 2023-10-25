@@ -19,11 +19,25 @@
 </script>
 
 <Form {formObj}>
-	<div class="form-control">
-		<label class="label cursor-pointer">
-			<span class="label-text">Public</span>
-			<input type="checkbox" name="public" class="toggle toggle-success" checked={$form.public} />
-		</label>
+	<div class="flex items-center gap-6">
+		<div class="form-control">
+			<label class="label cursor-pointer">
+				<span class="label-text pr-4">Public</span>
+				<input type="checkbox" name="public" class="toggle toggle-success" checked={$form.public} />
+			</label>
+		</div>
+
+		<div class="form-control">
+			<label class="label cursor-pointer">
+				<span class="label-text pr-4">Complete</span>
+				<input
+					type="checkbox"
+					name="complete"
+					class="toggle toggle-success"
+					checked={$form.public}
+				/>
+			</label>
+		</div>
 	</div>
 
 	<Input name="name" {formObj} />
@@ -38,6 +52,7 @@
 			class="select select-bordered w-full max-w-md"
 			bind:value={$form.venueId}
 		>
+			<option value={null} selected={$form.venueId}> None </option>
 			{#each data.venues as venue}
 				<option value={venue.id} selected={$form.venueId}>
 					{venue.name}

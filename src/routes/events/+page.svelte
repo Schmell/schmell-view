@@ -1,34 +1,47 @@
 <script lang="ts">
+	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
 	import { Page } from '$components/layout'
 	import ItemCard from '$components/layout/ItemCard.svelte'
 	import Like from '$lib/like/like.svelte'
 	import Icon from '@iconify/svelte'
-	import { onMount } from 'svelte'
+	import { createPagination } from '@melt-ui/svelte'
 	import type { PageData } from './$types'
 
 	export let data: PageData
 
-	$: ({ events, count, user } = data)
+	$: ({ events, user } = data)
 
-	const take = Number($page.url.searchParams.get('take') || 10)
-	const skip = Number($page.url.searchParams.get('skip') || 0)
+	let pageSize = 10
 
-	let pages = 1
-	let currentPage = 1
-
-	onMount(() => {
-		function getPages() {
-			return count / take
-		}
-
-		pages = Math.round(getPages())
-
-		function getCurrentPage() {
-			return skip / take
-		}
-		currentPage = getCurrentPage()
+	// melt-ui pagination component
+	const {
+		elements: { root, pageTrigger, prevButton, nextButton },
+		states: { pages, range, page: currentPage }
+	} = createPagination({
+		count: data.count,
+		perPage: pageSize,
+		defaultPage: 1,
+		siblingCount: 1
 	})
+
+	function excludePaginationSearchParams() {
+		$page.url.searchParams.delete('skip')
+		$page.url.searchParams.delete('take')
+		return $page.url.searchParams.toString()
+	}
+
+	function excludeSortSearchParams() {
+		$page.url.searchParams.delete('sortBy')
+		$page.url.searchParams.delete('sortOrder')
+		return $page.url.searchParams.toString()
+	}
+
+	function excludeWhereSearchParams() {
+		$page.url.searchParams.delete('whereType')
+		$page.url.searchParams.delete('whereId')
+		return $page.url.searchParams.toString()
+	}
 </script>
 
 <Page title={data.title ?? 'All Events'}>
@@ -37,15 +50,31 @@
 			<Icon icon="material-symbols:add-circle" width="34" />
 		</a>
 	</div>
+
 	<div class="navbar flex gap-2 bg-base-100 mb-2 rounded-xl">
-		<button class="btn btn-primary btn-xs"> Group by Org </button>
-		<a
-			href="/events?whereType=publisherId&whereId={user?.userId}&title=Your Events"
-			class="btn btn-primary btn-xs"
-		>
-			Your events
-		</a>
+		{#if $page.url.searchParams.get('sortBy') !== 'org'}
+			<a href="/events?sortBy=org&{excludeSortSearchParams()}" class="btn btn-primary btn-xs">
+				Sort by Org
+			</a>
+		{/if}
+		{#if $page.url.searchParams.get('sortBy') !== 'venue'}
+			<a href="/events?sortBy=venue&{excludeSortSearchParams()}" class="btn btn-primary btn-xs">
+				Sort by Venue
+			</a>
+		{/if}
+
+		{#if $page.url.searchParams.get('whereType') !== 'publisherId'}
+			<a
+				href="/events?whereType=publisherId&whereId={user?.userId}&title=Your Events"
+				class="btn btn-primary btn-xs"
+			>
+				Your events
+			</a>
+		{:else}
+			<a href="/events" class="btn btn-primary btn-xs"> All events </a>
+		{/if}
 	</div>
+
 	{#await events}
 		{#if !events.length}
 			<h1 class="text-xl font-semibold">You do not have any events yet.</h1>
@@ -55,25 +84,31 @@
 		{#each events as event}
 			<!--  -->
 			<ItemCard title={event.name} href="/events/{event.id}">
-				<div slot="top-right" class="text-xs">
+				<div slot="top-right" class="text-xs flex gap-2">
 					<Like userId={user?.userId} item={event} type="event" />
 				</div>
+
 				<div>
 					{@html event.description ?? ''}
 				</div>
-				<div class="w-full" />
+
 				<div slot="bottom-left" class="p-2">
 					<a href="/organization/{event.Organization?.id}" class="flex items-center gap-2">
 						<Icon icon="gridicons:popout" />
 						{@html event.Organization?.name}
+					</a>
+					<a href="/venue/{event.Venue?.id}" class="flex items-center gap-2">
+						<Icon icon="gridicons:popout" />
+						{@html event.Venue?.name}
 					</a>
 				</div>
 				<div slot="bottom-right">
 					{#if data.user?.userId === event?.publisherId}
 						<div class="tooltip tooltip-top" data-tip="Edit Event">
 							<a
-								data-sveltekit-replacestate
-								href="/events/{event?.id}/edit?from={$page.url.pathname}"
+								data-sveltekit-replacestate={true}
+								href="/events/{event?.id}/edit?from={$page.url.pathname}
+									&{$page.url.searchParams.toString()}"
 								class="btn btn-ghost p-1"
 							>
 								<Icon class="text-3xl text-primary" icon="material-symbols:edit-outline" />
@@ -83,22 +118,57 @@
 				</div>
 			</ItemCard>
 		{/each}
-		<div class="flex gap-4 justify-center items-center">
-			<div class="join shadow-lg">
-				<!-- only show if pages are more than 1 -->
-				{#each Array(pages) as _, idx}
-					<button class="join-item btn" class:btn-active={currentPage == idx}>{idx + 1}</button>
-				{/each}
-			</div>
-			<div class="p-2 border border-base-300 rounded-lg shadow-inner">1 / {pages}</div>
-			<div class="join">
-				<a href="/events?skip={take - currentPage}" class="join-item btn">
-					<Icon icon="mdi:chevron-left" />
-				</a>
-				<a href="/events?skip={take + currentPage}" class="join-item btn">
-					<Icon icon="mdi:chevron-right" />
-				</a>
-			</div>
-		</div>
+
+		<!-- Pagination -->
+		{#if data.count > pageSize}
+			<div class="divider" />
+			<nav {...$root} use:root class="">
+				<p class="flex justify-center text-sm">Showing items {$range.start} - {$range.end}</p>
+				<div class=" join flex justify-center">
+					<button
+						on:click={() => {
+							goto(
+								`/events?take=${pageSize}&skip=${pageSize - $range.start}
+								&${excludePaginationSearchParams()}`
+							)
+						}}
+						{...$prevButton}
+						use:prevButton
+						class="join-item btn btn-xs"
+					>
+						<Icon icon="mdi:chevron-left" />
+					</button>
+					{#each $pages as page, idx}
+						{#if page.type === 'ellipsis'}
+							<span>...</span>
+						{:else}
+							<a
+								href="/events?take={pageSize}&skip={pageSize * idx}
+									&{excludePaginationSearchParams()}"
+								{...$pageTrigger(page)}
+								use:pageTrigger
+								class="join-item btn btn-xs"
+								class:btn-active={$currentPage === idx + 1}
+							>
+								{page.value}
+							</a>
+						{/if}
+					{/each}
+					<button
+						on:click={() => {
+							goto(
+								`/events?take=${pageSize}&skip=${pageSize + $range.start}
+								&${excludePaginationSearchParams()}`
+							)
+						}}
+						{...$nextButton}
+						use:nextButton
+						class="join-item btn btn-xs"
+					>
+						<Icon icon="mdi:chevron-right" />
+					</button>
+				</div>
+			</nav>
+		{/if}
 	{/await}
 </Page>

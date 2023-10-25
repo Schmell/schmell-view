@@ -6,6 +6,15 @@
 	export let user
 	export let formObj
 	export let type
+
+	function uniqueAvatars() {
+		const array = item.Comments.map((comment) => {
+			return comment.User.avatar
+		})
+		return new Set(array)
+	}
+
+	// $: console.log(uniqueAvatars())
 </script>
 
 <div class="mt-4">
@@ -14,10 +23,11 @@
 
 		<div class="avatar-group -space-x-4">
 			{#if item?.Comments}
-				{#each item?.Comments as comment}
+				<!-- {@const uniqueAvatars = new Set(item.Comments.name)} -->
+				{#each uniqueAvatars() as avatar}
 					<div class="avatar">
 						<div class="w-6 bg-base-300">
-							<img alt={`@${comment?.User.username}`} src={comment?.User.avatar} />
+							<img alt="" src={avatar} />
 						</div>
 					</div>
 				{/each}
@@ -25,7 +35,9 @@
 
 			<div class="avatar placeholder">
 				<div class="w-6 bg-neutral-focus text-neutral-content">
-					<span>+{item?._count.Comments}</span>
+					<span class:text-xs={item?._count.Comments >= 10}>
+						+{item?._count.Comments}
+					</span>
 				</div>
 			</div>
 		</div>
@@ -34,7 +46,6 @@
 	<hr />
 	<CommentForm action="/api/comment/?/comment" {formObj} {type} {user} itemId={item.id ?? ''} />
 	{#each item.Comments as i}
-		<!-- {@debug i} -->
 		<Comment {formObj} {user} item={i} />
 	{/each}
 </div>

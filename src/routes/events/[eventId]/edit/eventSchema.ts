@@ -8,6 +8,7 @@ export const eventSchema = z.object({
 	description: z.string().nullable(),
 	titleImage: z.string().url().nullable(),
 	public: z.boolean(),
+	complete: z.boolean(),
 	Venue: z.any().nullable(),
 	venueId: z.string().nullable(),
 	resultColumns: z.object({

@@ -4,6 +4,9 @@
 	import Icon from '@iconify/svelte'
 	import type { Organization } from '@prisma/client'
 	import type { PageData } from './$types'
+	import Comments from '$lib/comment/comments.svelte'
+	import { superForm } from 'sveltekit-superforms/client'
+	import { page } from '$app/stores'
 
 	export let data: PageData
 
@@ -15,6 +18,8 @@
 			? org.website
 			: `http://${org?.website}`
 	}
+
+	const commentFormObj = superForm(data.commentForm)
 </script>
 
 <Page title={org?.name}>
@@ -68,8 +73,8 @@
 				{#if user?.userId === org.ownerId}
 					<div class="tooltip tooltip-top" data-tip="Edit Organization">
 						<a
-							data-sveltekit-replacestate
-							href="/organization/{org.id}/edit?from=/organization/{org.id}"
+							data-sveltekit-replacestate={true}
+							href="/organization/{org.id}/edit?from=/organization/{org.id}&{$page.url.searchParams.toString()}"
 							class="btn btn-ghost p-1"
 						>
 							<Icon class="text-3xl  text-primary" icon="material-symbols:edit-outline" />
@@ -79,4 +84,5 @@
 			</div>
 		</div>
 	{/if}
+	<Comments item={org} type="organization" {user} formObj={commentFormObj} />
 </Page>

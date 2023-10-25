@@ -7,10 +7,7 @@
 
 	export let formObj
 	export let item
-	$: console.log('page: ', $page)
-	// export let type
 	export let user
-	// $: console.log('user: ', user)
 </script>
 
 <div class="flex items-start gap-2">
@@ -39,7 +36,9 @@
 					tabindex="-1"
 					class="dropdown-content z-10 menu p-2 shadow bg-base-100 rounded-box w-52"
 				>
-					<li><a href="/events/{item?.id}?editComment={item.id}"> Edit </a></li>
+					<!-- <li><a href="/events/{item?.id}?editComment={item.id}"> Edit </a></li> -->
+					<li><a href="{$page.url.pathname}?editComment={item.id}"> Edit </a></li>
+
 					<Form action="/api/comment/?/delete" {formObj}>
 						<li>
 							<input type="hidden" name="id" value={item.id} />
@@ -49,6 +48,7 @@
 				</ul>
 			</div>
 		{/if}
+
 		<div class="flex flex-col gap-4 justify-between relative">
 			<Like userId={user?.userId} type="comment" {item} />
 		</div>

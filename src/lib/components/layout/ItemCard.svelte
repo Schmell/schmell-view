@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
 	import { afterUpdate } from 'svelte'
+	import { cn } from '$lib/utils'
 
 	export let title: string | null
 	export let href: string | null
+
+	let _class: string | undefined = undefined
+	export { _class as class }
 
 	let more = false
 
@@ -18,7 +22,7 @@
 	})
 </script>
 
-<div class="item-card mb-4 snap-center">
+<div class={cn('item-card mb-4 snap-center', _class)}>
 	<header class="min-h-12 flex items-center bg-base-200 rounded-tl-xl shadow-md">
 		<button
 			class="pl-4"

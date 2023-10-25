@@ -59,9 +59,9 @@ export const actions = {
 			})
 		} catch (error) {
 			console.log('error: ', error)
-			return fail(400, { message: 'Error updating the event' })
+			return { form }
 		}
 
-		throw redirect(302, `${url.searchParams.get('from')}`)
+		throw redirect(302, `${url.searchParams.get('from')}?${url.searchParams.toString()}`)
 	}
 }
