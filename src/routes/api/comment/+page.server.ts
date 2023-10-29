@@ -1,13 +1,15 @@
 import { fail } from '@sveltejs/kit'
 import { prismaError } from '$lib/error-handling'
 import { prisma } from '$lib/server/prisma'
+// import { invalidateAll } from '$app/navigation'
 
 export const actions = {
-	comment: async (req) => {
-		const { locals, request } = req
+	comment: async ({ locals, request, getClientAddress }) => {
+		// console.log('request: ', request)
+		// console.log('getClientAddress: ', getClientAddress())
 		const session = await locals.auth.validate()
-		if (!session) throw fail(400, { message: 'Not authorised to comment' })
-		
+		if (!session) throw fail(401, { message: 'Not authorised to comment' })
+
 		const formObj = Object.fromEntries(await request.formData()) as Record<string, string>
 		const { id, type, itemId, comment } = formObj
 

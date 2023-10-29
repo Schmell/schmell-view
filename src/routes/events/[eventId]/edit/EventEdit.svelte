@@ -4,6 +4,8 @@
 	import { Button, Check, Form, Input, Textarea, Label } from '$components/form'
 	import { eventSchema } from './eventSchema'
 	import { dev } from '$app/environment'
+	import Icon from '@iconify/svelte'
+	import { page } from '$app/stores'
 
 	export let data
 
@@ -45,13 +47,9 @@
 	<Input name="eventwebsite" label="Website" {formObj} />
 	<Input name="email" {formObj} />
 
-	<div class="pb-4">
-		<Label name="Venue" {formObj} />
-		<select
-			name="venueId"
-			class="select select-bordered w-full max-w-md"
-			bind:value={$form.venueId}
-		>
+	<Label name="Venue" {formObj} />
+	<div class="pb-4 flex gap-2 justify-between items-center">
+		<select name="venueId" class="select select-bordered w-full" bind:value={$form.venueId}>
 			<option value={null} selected={$form.venueId}> None </option>
 			{#each data.venues as venue}
 				<option value={venue.id} selected={$form.venueId}>
@@ -59,6 +57,9 @@
 				</option>
 			{/each}
 		</select>
+		<a href="/venue/new/edit?{$page.url.searchParams.toString()}" class="text-primary shadow-lg">
+			<Icon icon="material-symbols:add-circle" width="44" />
+		</a>
 	</div>
 
 	<Input name="titleImage" label="Title Image Url" {formObj} />
@@ -105,8 +106,3 @@
 
 	<Button>Submit</Button>
 </Form>
-{#if dev}
-	<div class="mt-8">
-		<SuperDebug data={$form} />
-	</div>
-{/if}

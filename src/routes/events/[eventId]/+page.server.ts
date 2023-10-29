@@ -38,6 +38,7 @@ export const load = (async ({ params, url }) => {
 					eventwebsite: true,
 					_count: { select: { Comments: true, Likes: true, Follows: true } },
 					Comments: {
+						orderBy: { createdAt: 'desc' },
 						select: {
 							comment: true,
 							id: true,

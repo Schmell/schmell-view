@@ -7,6 +7,7 @@
 	import Icon from '@iconify/svelte'
 	import { createPagination } from '@melt-ui/svelte'
 	import type { PageData } from './$types'
+	import LikeCount from '$lib/like/like-count.svelte'
 
 	export let data: PageData
 
@@ -85,7 +86,7 @@
 			<!--  -->
 			<ItemCard title={event.name} href="/events/{event.id}">
 				<div slot="top-right" class="text-xs flex gap-2">
-					<Like userId={user?.userId} item={event} type="event" />
+					<LikeCount userId={user?.userId} item={event} type="event" />
 				</div>
 
 				<div>
@@ -93,12 +94,15 @@
 				</div>
 
 				<div slot="bottom-left" class="p-2">
-					<a href="/organization/{event.Organization?.id}" class="flex items-center gap-2">
-						<Icon icon="gridicons:popout" />
+					<a
+						href="/organization/{event.Organization?.id}"
+						class="flex items-center gap-2 line-clamp-1"
+					>
+						<Icon icon="clarity:organization-solid" />
 						{@html event.Organization?.name}
 					</a>
-					<a href="/venue/{event.Venue?.id}" class="flex items-center gap-2">
-						<Icon icon="gridicons:popout" />
+					<a href="/venue/{event.Venue?.id}" class="flex items-center gap-2 line-clamp-1">
+						<Icon icon="mdi:map-marker" />
 						{@html event.Venue?.name}
 					</a>
 				</div>

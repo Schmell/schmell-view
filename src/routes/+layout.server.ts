@@ -1,10 +1,11 @@
-import { loadFlash } from 'sveltekit-flash-message/server';
-import type { LayoutServerLoad } from './$types';
+import { loadFlash } from 'sveltekit-flash-message/server'
+import type { LayoutServerLoad } from './$types'
 
 export const load: LayoutServerLoad = loadFlash(async ({ locals, cookies }) => {
-	const session = await locals.auth.validate();
+	const session = await locals.auth.validate()
 
-	const theme = cookies.get('colorTheme');
+	const theme = cookies.get('colorTheme')
+	// const { email, ...rest } = session!.user
 
-	return { user: session?.user };
-});
+	return { user: session?.user }
+})

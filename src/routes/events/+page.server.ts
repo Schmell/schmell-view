@@ -10,7 +10,6 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	}
 
 	const skip = url.searchParams.get('skip')
-	console.log('skip: ', skip)
 	const take = url.searchParams.get('take')
 	const whereType = url.searchParams.get('whereType')
 	const whereId = url.searchParams.get('whereId')
@@ -70,7 +69,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			return sort
 		}
 	}
-	console.log('sort(): ', sort())
+
 	const [events, count] = await getEvents()
 	// console.log('count: ', count)
 	return {

@@ -48,10 +48,10 @@
 						{@html org.name}
 					</div>
 					<a
-						href={getHref(org)}
+						href="mailto:{org.email}"
 						class="block mt-1 text-lg leading-tight font-medium text-base-content hover:underline"
 					>
-						{org?.email}
+						{org.email}
 					</a>
 					<p class="mt-2 text-base-content">
 						{@html org.description ? org.description : 'No description provided'}

@@ -11,6 +11,7 @@ export const load = (async ({ params, url }) => {
 			return await prisma.venue.findUniqueOrThrow({
 				where: { id: params.venueId },
 				include: {
+					_count: { select: { Comments: true, Likes: true, Follows: true } },
 					Events: {
 						include: {
 							Races: true,
@@ -20,7 +21,6 @@ export const load = (async ({ params, url }) => {
 							Follows: true
 						}
 					},
-					_count: { select: { Comments: true, Likes: true, Follows: true } },
 					Comments: {
 						select: {
 							comment: true,
@@ -35,7 +35,8 @@ export const load = (async ({ params, url }) => {
 					Likes: true,
 					Follows: true,
 					Publisher: true,
-					Addresses: true
+					Addresses: true,
+					Contacts: true
 				}
 			})
 		} catch (error) {

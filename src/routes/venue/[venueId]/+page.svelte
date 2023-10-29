@@ -1,21 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/stores'
-	import Page from '$lib/components/layout/Page.svelte'
-	import Like from '$lib/like/like.svelte'
-	import Icon from '@iconify/svelte'
-	import type { PageData } from './$types'
-	import { Accordion, Collapsible } from 'bits-ui'
 	import Comments from '$lib/comment/comments.svelte'
-	import { superForm } from 'sveltekit-superforms/client'
+	import Page from '$lib/components/layout/Page.svelte'
 	import LikeFollow from '$lib/like/like-follow.svelte'
+	import Icon from '@iconify/svelte'
+	import { superForm } from 'sveltekit-superforms/client'
+	import type { PageData } from './$types'
 
 	export let data: PageData
 	$: ({ venue, user } = data)
-	// $: console.log('venue: ', venue)
-
-	let showRaces = false
-
-	let showEvents = false
 
 	function getHref(website: string | null) {
 		if (!website) return null
@@ -34,8 +27,6 @@
 	}
 
 	const commentFormObj = superForm(data.commentForm)
-
-	$: console.log('$page.url.searchParams: ', $page.url.searchParams)
 </script>
 
 <Page title={venue.name}>
@@ -89,7 +80,6 @@
 					<img alt={venue.Publisher?.username} src={venue.Publisher?.avatar} />
 				</div>
 			</div>
-			<!-- <div>{venue.Publisher?.name}</div> -->
 		</div>
 	</div>
 
@@ -97,44 +87,46 @@
 
 	<div class="flex gap-2 w-full max-w-md justify-between relative">
 		<div class="w-full">
-			<div class="text-sm w-full flex gap-2 justify-between">
-				<!--  -->
+			<div class="text-sm grid grid-cols-2 gap-2">
 				<div>
-					<Accordion.Root>
-						{#each venue.Addresses as address}
-							<Accordion.Item value={address.label}>
-								<Accordion.Header>
-									<Accordion.Trigger class="flex gap-2 w-full justify-between items-center">
-										<div class="text-lg">
-											{address.label}
-										</div>
-										<Icon icon="mdi:chevron-down" />
-									</Accordion.Trigger>
-								</Accordion.Header>
-								<Accordion.Content class="pb-2 pt-1">
-									<div class="text-xs">
-										<p>{address.street ?? ''},</p>
-										<span>{address.city}, </span>
-										<span>{address.state}, </span>
-										<p>{address.code}</p>
-									</div>
-								</Accordion.Content>
-							</Accordion.Item>
-						{/each}
-					</Accordion.Root>
+					{#each venue.Addresses as address}
+						<div class="text-lg font-semibold">{address.label}</div>
+						<div class="pl-2 pr-4 pb-4">
+							{#if address.po}
+								<div>PO Box: {address.po}</div>
+							{/if}
+							<div>{address.street},</div>
+							<span>{address.city},</span>
+							<span>{address.state},</span>
+							<span>{address.country},</span>
+							<span>{address.code}</span>
+						</div>
+					{/each}
 				</div>
 
 				<div>
-					<div class="text-lg">Contact:</div>
-					{#if venue.email}
-						<div class="flex gap-1 items-center">
-							<Icon icon="material-symbols:content-copy" />
-							<a href="mailto:{venue.email}">{venue.email}</a>
-						</div>
-					{/if}
-					{#if venue.phone}
-						<p>{venue.phone}</p>
-					{/if}
+					<!-- Need to link the email from sailwave -->
+					{#each venue.Contacts as contact}
+						<div class="text-lg font-semibold">{contact.label}</div>
+						<ul class="pl-2">
+							{#if contact.email}
+								<li>
+									<a href="mailto:{contact.email}" class="flex gap-2 items-center">
+										<Icon icon="mdi:email" />
+										{contact.email}
+									</a>
+								</li>
+							{/if}
+							{#if contact.phone}
+								<li>
+									<a href="tel:{contact.phone}" class="flex gap-2 items-center">
+										<Icon icon="mdi:phone" />
+										{contact.phone}
+									</a>
+								</li>
+							{/if}
+						</ul>
+					{/each}
 				</div>
 			</div>
 		</div>

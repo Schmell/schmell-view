@@ -43,7 +43,7 @@
 						<form method="dialog">
 							<!-- if there is a button in form, it will close the modal -->
 							<a
-								href="/organization/edit/new?from={$page.url.pathname}{$page.url.search}"
+								href="/organization/new/edit?from={$page.url.pathname}{$page.url.search}"
 								class="btn btn-primary w-full">Create Organization</a
 							>
 						</form>
@@ -73,8 +73,8 @@
 									>
 										<div class="capitalize w-full p-2 font-bold rounded-r-xl bg-info bg-opacity-10">
 											<div class="flex justify-between">
-												<div>{event.name}</div>
-												<div class="flex gap-1 items-center text-xs pr-2">
+												<div class="line-clamp-1">{event.name}</div>
+												<div class="flex gap-1 items-center min-w-fit text-xs pr-2">
 													<Icon icon="mdi:thumb-up" />
 													{event._count.Likes} /
 													<Icon icon="mdi:bell-ring" />
@@ -105,7 +105,7 @@
 														{event?.Organization?.name}
 													</div>
 													<div class="flex items-center gap-1">
-														<div class="flex items-center gap-1">
+														<div class="flex items-center gap-1 min-w-fit">
 															<Icon icon="mdi:thumb-up" />
 															{event._count.Likes}
 														</div>

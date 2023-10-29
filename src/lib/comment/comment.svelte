@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import { Form } from '$components/form'
+	import LikeCount from '$lib/like/like-count.svelte'
 	import Like from '$lib/like/like.svelte'
 	import { formatDateTime } from '$lib/utils/formatters'
 	import Icon from '@iconify/svelte'
@@ -11,7 +12,7 @@
 </script>
 
 <div class="flex items-start gap-2">
-	<div class="avatar">
+	<div class="avatar pt-1">
 		<div class="w-8 h-8 rounded-full">
 			<img alt={item.User.username} src={item.User.avatar} />
 		</div>
@@ -19,7 +20,7 @@
 
 	<div class="flex gap-2 py-2 items-end w-full justify-between pr-4">
 		<div class="w-full">
-			<div class="font-semibold">
+			<div class="font-bold pb-2">
 				<a href="/user/{item.User.id}">{`@${item.User.username}`}</a>
 			</div>
 			<div>{@html item.comment}</div>
@@ -50,7 +51,7 @@
 		{/if}
 
 		<div class="flex flex-col gap-4 justify-between relative">
-			<Like userId={user?.userId} type="comment" {item} />
+			<LikeCount userId={user?.userId} type="comment" {item} />
 		</div>
 	</div>
 </div>

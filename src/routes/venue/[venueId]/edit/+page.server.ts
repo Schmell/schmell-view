@@ -1,9 +1,13 @@
-import { fail, type Actions, redirect } from '@sveltejs/kit'
+import { fail, redirect } from '@sveltejs/kit'
 import { superValidate } from 'sveltekit-superforms/server'
 import type { PageServerLoad } from './$types'
-import { venueSchema, addressSchema } from './venueSchema'
+import { venueSchema, addressSchema, contactSchema } from './schemas'
 
-export const load = (async ({ params }) => {
+export const load = (async ({ locals, params, url }) => {
+	//
+	const session = locals.auth.validate()
+	if (!session) throw redirect(301, `${url.searchParams.get('from')}`)
+
 	async function getVenue() {
 		try {
 			return await prisma.venue.findUniqueOrThrow({
@@ -15,28 +19,90 @@ export const load = (async ({ params }) => {
 		}
 	}
 
-	function getAddresses() {
+	async function getAddresses() {
 		try {
-			return prisma.address.findMany({
-				where: { venueId: params.venueId }
+			return await prisma.address.findMany({
+				where: { venueId: params.venueId },
+				orderBy: { label: 'asc' }
 			})
 		} catch (error) {
 			console.log('error: ', error)
 		}
 	}
 
-	// if (params.venueId === 'new') {
-	// 	return { form: await superValidate({ name: 'new' }, venueSchema) }
-	// }
+	async function getAddress(id: string | null) {
+		if (!id) return null
+		try {
+			return await prisma.address.findUnique({
+				where: { id }
+			})
+		} catch (error) {
+			console.log('error: ', error)
+		}
+	}
 
-	const venueForm = await superValidate(await getVenue(), venueSchema)
+	async function getContacts() {
+		try {
+			return await prisma.contact.findMany({
+				where: { venueId: params.venueId },
+				orderBy: { label: 'asc' }
+			})
+		} catch (error) {
+			console.log('error: ', error)
+		}
+	}
 
-	const addressForm = await superValidate(addressSchema)
+	async function getContact(id: string | null) {
+		if (!id) return null
+		try {
+			return await prisma.contact.findUnique({
+				where: { id }
+			})
+		} catch (error) {
+			console.log('error: ', error)
+		}
+	}
 
-	return { venueForm, addressForm, addresses: await getAddresses() }
+	async function getAddressForm() {
+		if (url.searchParams.get('editAddress')) {
+			return await superValidate(
+				await getAddress(url.searchParams.get('editAddress')),
+				addressSchema
+			)
+		} else {
+			return await superValidate(addressSchema)
+		}
+	}
+
+	async function getConactForm() {
+		if (url.searchParams.get('editContact')) {
+			return await superValidate(
+				await getContact(url.searchParams.get('editContact')),
+				contactSchema
+			)
+		} else {
+			return await superValidate(contactSchema)
+		}
+	}
+
+	async function getVenueForm() {
+		if (params.venueId === 'new') {
+			return superValidate({ name: 'new venue' }, venueSchema)
+		} else {
+			return superValidate(await getVenue(), venueSchema)
+		}
+	}
+
+	return {
+		venueForm: getVenueForm(),
+		addressForm: getAddressForm(),
+		contactForm: getConactForm(),
+		addresses: await getAddresses(),
+		contacts: await getContacts()
+	}
 }) satisfies PageServerLoad
 
-////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 export const actions = {
 	details: async ({ locals, request, params, url }) => {
 		const session = await locals.auth.validate()
@@ -44,18 +110,19 @@ export const actions = {
 
 		const form = await superValidate(request, venueSchema)
 
+		if (!form.valid) return { form }
+
 		try {
-			await prisma.venue.update({
+			await prisma.venue.upsert({
 				where: { id: params.venueId },
-				data: {
-					...form.data
-				}
+				create: { ...form.data, Publisher: { connect: { id: session.user.userId } } },
+				update: { ...form.data }
 			})
 		} catch (error) {
 			console.log('error: ', error)
 			return { form }
 		}
-		console.log('url', url.searchParams.get('from'))
+
 		throw redirect(307, url.searchParams.get('from') ?? '/')
 	},
 
@@ -65,24 +132,59 @@ export const actions = {
 
 		const form = await superValidate(request, addressSchema)
 		// console.log('form: ', form)
+		if (!form.valid) return { form }
+
+		const { id, ...rest } = form.data
+
 		try {
 			await prisma.address.upsert({
-				where: { id: params.venueId },
-				update: { ...form.data },
-				create: { ...form.data, Venue: { connect: { id: params.venueId } } }
+				where: { id: form.data.id || '' },
+				update: { ...rest },
+				create: { ...rest, Venue: { connect: { id: params.venueId } } }
 			})
 		} catch (error) {
 			console.log('error: ', error)
 			return { form }
 		}
-
-		// throw redirect(307, url.searchParams.get('from') ?? '/')
 	},
 
 	deleteAddress: async ({ locals, request }) => {
 		const formObj = Object.fromEntries(await request.formData()) as Record<string, string>
 		try {
 			await prisma.address.delete({
+				where: { id: formObj.addressId }
+			})
+		} catch (error) {
+			console.log('error: ', error)
+			return fail(500, { messgae: 'Failed to delete address' })
+		}
+	},
+
+	contact: async ({ locals, request, params, url }) => {
+		const session = await locals.auth.validate()
+		if (!session) throw redirect(307, url.searchParams.get('from') ?? '/')
+
+		const form = await superValidate(request, contactSchema)
+		// console.log('form: ', form.data)
+		if (!form.valid) return { form }
+
+		const { id, ...rest } = form.data
+
+		try {
+			await prisma.contact.upsert({
+				where: { id: form.data.id || '' },
+				update: { ...rest },
+				create: { ...rest, Venue: { connect: { id: params.venueId } } }
+			})
+		} catch (error) {
+			return { form }
+		}
+	},
+
+	deleteContact: async ({ locals, request }) => {
+		const formObj = Object.fromEntries(await request.formData()) as Record<string, string>
+		try {
+			await prisma.contact.delete({
 				where: { id: formObj.addressId }
 			})
 		} catch (error) {

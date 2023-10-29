@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation'
 	import { Form, Input } from '$components/form'
 	import type { User } from 'lucia'
 
