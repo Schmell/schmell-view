@@ -39,7 +39,7 @@ model Series {
 
 model Event {
   id             String        @id @default(cuid())
-  eventeid       String
+  eventeid       String?
   uniqueIdString String        @unique
   name           String
   eventwebsite   String?
@@ -86,14 +86,14 @@ model Race {
   time             String?
   notes            String?
   sailed           String?
-  rating           String? // im not sure what this is
+  rating           String?
   resultColumns    Json?
   /// [raceRest]
   rest             Json?
-  eventId          String?
   Event            Event?    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  publisherId      String?
+  eventId          String?
   Publisher        User?     @relation(fields: [publisherId], references: [id], onDelete: SetNull)
+  publisherId      String?
   Results          Result[]
   Follows          Follow[]
   Likes            Like[]
@@ -107,6 +107,7 @@ model Comp {
   id          String    @id @default(cuid())
   compId      String    @unique // right now this will only be unique on the same event
   // uniqueCompId String?   @unique
+  description String?
   raceId      String?
   club        String?
   boat        String?

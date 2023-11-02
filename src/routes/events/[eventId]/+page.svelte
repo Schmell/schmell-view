@@ -32,7 +32,7 @@
 	}
 
 	const commentFormObj = superForm(data.commentForm)
-	const deleteCommentFormObj = superForm(data.deleteCommentForm)
+	// const deleteCommentFormObj = superForm(data.deleteCommentForm)
 	// $: console.log('$page.url.searchParams: ', $page.url.searchParams)
 </script>
 
@@ -44,6 +44,7 @@
 			<div class="md:flex">
 				<div class="md:shrink-0 flex relative">
 					<!-- {console.log('event?.Organization?.titleImage: ', event?.Organization?.titleImage)} -->
+					<div class="badge badge-warning absolute right-2 top-2">Private</div>
 					{#if checkForImage(event.Venue?.burgee)}
 						<img
 							class="absolute z-10 left-2 top-2 rounded-full shadow-xl"
@@ -80,6 +81,11 @@
 						<div class="uppercase tracking-wide text-xl text-accent font-semibold">
 							{@html event?.name}
 						</div>
+						{#if event.complete}
+							<div class="badge badge-success">complete</div>
+						{:else}
+							<div class="badge badge-warning">In progress</div>
+						{/if}
 					</div>
 					{#if event?.Venue}
 						<div class="flex items-center gap-4">
@@ -177,7 +183,10 @@
 									{race.time ? `- ${race.time}` : ''}
 								</div>
 
-								<div class="badge badge-accent" class:badge-error={!Number(race.sailed)}>
+								<div
+									class="badge badge-success text-success-content"
+									class:badge-error={!Number(race.sailed)}
+								>
 									{Number(race.sailed) ? 'Sailed' : 'Unsailed'}
 								</div>
 							</div>

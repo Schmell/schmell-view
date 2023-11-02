@@ -1,5 +1,6 @@
 import { prisma } from '$lib/server/prisma'
-import type { PageServerLoad } from './$types'
+import { fail } from '@sveltejs/kit'
+import type { Actions, PageServerLoad } from './$types'
 
 export const load = (async ({ params }) => {
 	const getComp = async () => {
@@ -15,3 +16,37 @@ export const load = (async ({ params }) => {
 		comp: getComp()
 	}
 }) satisfies PageServerLoad
+
+export const actions = {
+	getEvents: async ({ locals, params, url }) => {
+		async function getEvents() {
+			try {
+				return await prisma.comp.findUnique({
+					where: { id: params.compId },
+					select: {
+						Events: {
+							include: {
+								Races: {
+									orderBy: { name: 'asc' },
+									include: {
+										Results: { where: { compId: params.compId } }
+									}
+								}
+							}
+						}
+					}
+				})
+			} catch (error) {
+				console.log('error: ', error)
+				// return fail(404, { message: 'getEvents failed' })
+				return {
+					Events: [null]
+				}
+			}
+		}
+
+		return {
+			compEvents: await getEvents()
+		}
+	}
+} satisfies Actions

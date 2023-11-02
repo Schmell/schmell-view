@@ -1,11 +1,9 @@
 <script>
-	import { superForm } from 'sveltekit-superforms/client'
-	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte'
-	import { Button, Check, Form, Input, Textarea, Label } from '$components/form'
-	import { eventSchema } from './eventSchema'
-	import { dev } from '$app/environment'
-	import Icon from '@iconify/svelte'
 	import { page } from '$app/stores'
+	import { Button, Check, Form, Input, Label, Textarea } from '$components/form'
+	import Icon from '@iconify/svelte'
+	import { superForm } from 'sveltekit-superforms/client'
+	import { eventSchema } from './eventSchema'
 
 	export let data
 
@@ -18,14 +16,40 @@
 	$: ({ form } = formObj)
 	// $: console.log('data: ', data.venues)
 	// $: console.log('form: ', $form)
+	// const uniqueIdString =
+	function getUniqueIdString() {
+		return (
+			$form.name.toLowerCase().trim().split(' ').join('_') +
+			'-' +
+			$form.eventeid +
+			'-' +
+			$form.Venue.name.toLowerCase().trim().split(' ').join('_')
+		)
+	}
 </script>
 
 <Form {formObj}>
 	<div class="flex items-center gap-6">
+		{#if $form.eventeid}
+			<input name="eventeid" type="hidden" bind:value={$form.eventeid} />
+		{:else}
+			<Input name="eventeid" {formObj} />
+		{/if}
+		<!-- //////////////////////////////////////////////////////////////////// -->
+		<!-- this is probably mpot going to work -->
+		{#if !$form.uniqueIdString}
+			<input name="uniqueIdString" type="hidden" value={getUniqueIdString} />
+		{/if}
+		<!-- ///////////////////////////////////////////////////////////// -->
 		<div class="form-control">
 			<label class="label cursor-pointer">
 				<span class="label-text pr-4">Public</span>
-				<input type="checkbox" name="public" class="toggle toggle-success" checked={$form.public} />
+				<input
+					type="checkbox"
+					name="public"
+					class="toggle toggle-success"
+					bind:checked={$form.public}
+				/>
 			</label>
 		</div>
 
@@ -36,7 +60,7 @@
 					type="checkbox"
 					name="complete"
 					class="toggle toggle-success"
-					checked={$form.public}
+					bind:checked={$form.complete}
 				/>
 			</label>
 		</div>

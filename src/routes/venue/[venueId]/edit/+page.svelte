@@ -1,18 +1,23 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
+	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
-	import { Button, Form, Input, Textarea } from '$components/form'
+	import { Button, Form, Input, Label, Textarea } from '$components/form'
 	import { Page } from '$components/layout'
 	import Icon from '@iconify/svelte'
 	import { superForm } from 'sveltekit-superforms/client'
 	import type { PageData } from './$types'
 	import { addressSchema, contactSchema, venueSchema } from './schemas'
-	import { goto } from '$app/navigation'
 
 	export let data: PageData
 	// console.log('page: ', $page.url.searchParams.get('editAddress'))
 	let showAddressForm = false
 	let showContactForm = false
+	let showNameField = false
+
+	if ($page.params.venueId === 'new') {
+		showNameField = true
+	}
 
 	const formObj = superForm(data.venueForm, {
 		id: data.venueForm?.id,
@@ -21,6 +26,8 @@
 	})
 
 	const { form, capture, restore } = formObj
+
+	// console.log($form.name)
 
 	export const snapshot = { capture, restore }
 
@@ -42,9 +49,31 @@
 </script>
 
 <Page title="Edit Venue">
-	<Form action="?/details" {formObj}>
-		<Input name="name" {formObj} />
-		<Textarea name="description" {formObj} />
+	<Form action="?/details&{$page.url.searchParams.toString()}" {formObj}>
+		{#if showNameField}
+			<div class="relative join rounded-lg w-full items-center">
+				<Input name="name" {formObj} class="join-item" />
+				<button class="btn btn-primary join-item rounded-r-lg absolute right-0 top-7">
+					cancel
+				</button>
+				<label for="name" class="text-sm text-warning absolute top-16 pt-3">Must be Unique</label>
+			</div>
+			<!-- <Label name="name" {formObj} label="Must be unique" class="m-0" /> -->
+		{:else}
+			<div class="flex justify-between items-center py-2">
+				<input type="hidden" name="name" value={$form.name} />
+				<div class="text-lg font-semibold">{$form.name}</div>
+				<button
+					on:click={() => {
+						showNameField = true
+					}}
+					class="btn btn-xs btn-outline"
+				>
+					change
+				</button>
+			</div>
+		{/if}
+		<Textarea name="description" rows={3} {formObj} />
 		<Input name="website" {formObj} />
 		<Input name="email" {formObj} />
 		<Input name="burgee" {formObj} />

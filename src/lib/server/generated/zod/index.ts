@@ -56,7 +56,7 @@ export const EventScalarFieldEnumSchema = z.enum(['id','eventeid','uniqueIdStrin
 
 export const RaceScalarFieldEnumSchema = z.enum(['id','raceId','uniqueRaceString','name','starts','rank','date','time','notes','sailed','rating','resultColumns','rest','eventId','publisherId','createdAt','updatedAt']);
 
-export const CompScalarFieldEnumSchema = z.enum(['id','compId','raceId','club','boat','skipper','sailno','fleet','division','rating','rank','nett','total','rest','image','publisherId','createdAt','updatedAt']);
+export const CompScalarFieldEnumSchema = z.enum(['id','compId','description','raceId','club','boat','skipper','sailno','fleet','division','rating','rank','nett','total','rest','image','publisherId','createdAt','updatedAt']);
 
 export const ResultScalarFieldEnumSchema = z.enum(['id','resultId','points','position','discard','resultType','code','start','finish','corrected','elasped','elapsedWin','ratingWin','raceRating','supposedRating','rrset','publisherId','eventId','compId','raceId','createdAt','updatedAt']);
 
@@ -123,7 +123,7 @@ export type Series = z.infer<typeof SeriesSchema>
 
 export const EventSchema = z.object({
   id: z.string().cuid(),
-  eventeid: z.string(),
+  eventeid: z.string().nullish(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().nullish(),
@@ -191,6 +191,7 @@ export type Race = z.infer<typeof RaceSchema>
 export const CompSchema = z.object({
   id: z.string().cuid(),
   compId: z.string(),
+  description: z.string().nullish(),
   raceId: z.string().nullish(),
   club: z.string().nullish(),
   boat: z.string().nullish(),
@@ -679,6 +680,7 @@ export const CompCountOutputTypeSelectSchema: z.ZodType<Prisma.CompCountOutputTy
 export const CompSelectSchema: z.ZodType<Prisma.CompSelect> = z.object({
   id: z.boolean().optional(),
   compId: z.boolean().optional(),
+  description: z.boolean().optional(),
   raceId: z.boolean().optional(),
   club: z.boolean().optional(),
   boat: z.boolean().optional(),
@@ -1326,7 +1328,7 @@ export const EventWhereInputSchema: z.ZodType<Prisma.EventWhereInput> = z.object
   OR: z.lazy(() => EventWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => EventWhereInputSchema),z.lazy(() => EventWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  eventeid: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  eventeid: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   uniqueIdString: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   eventwebsite: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -1359,7 +1361,7 @@ export const EventWhereInputSchema: z.ZodType<Prisma.EventWhereInput> = z.object
 
 export const EventOrderByWithRelationInputSchema: z.ZodType<Prisma.EventOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  eventeid: z.lazy(() => SortOrderSchema).optional(),
+  eventeid: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   uniqueIdString: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   eventwebsite: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -1408,7 +1410,7 @@ export const EventWhereUniqueInputSchema: z.ZodType<Prisma.EventWhereUniqueInput
   AND: z.union([ z.lazy(() => EventWhereInputSchema),z.lazy(() => EventWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => EventWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => EventWhereInputSchema),z.lazy(() => EventWhereInputSchema).array() ]).optional(),
-  eventeid: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  eventeid: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   eventwebsite: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   venueName: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -1440,7 +1442,7 @@ export const EventWhereUniqueInputSchema: z.ZodType<Prisma.EventWhereUniqueInput
 
 export const EventOrderByWithAggregationInputSchema: z.ZodType<Prisma.EventOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  eventeid: z.lazy(() => SortOrderSchema).optional(),
+  eventeid: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   uniqueIdString: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   eventwebsite: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -1469,7 +1471,7 @@ export const EventScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.EventSc
   OR: z.lazy(() => EventScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => EventScalarWhereWithAggregatesInputSchema),z.lazy(() => EventScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  eventeid: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  eventeid: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   uniqueIdString: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   eventwebsite: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
@@ -1641,6 +1643,7 @@ export const CompWhereInputSchema: z.ZodType<Prisma.CompWhereInput> = z.object({
   NOT: z.union([ z.lazy(() => CompWhereInputSchema),z.lazy(() => CompWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   compId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   raceId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   club: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   boat: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -1669,6 +1672,7 @@ export const CompWhereInputSchema: z.ZodType<Prisma.CompWhereInput> = z.object({
 export const CompOrderByWithRelationInputSchema: z.ZodType<Prisma.CompOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   compId: z.lazy(() => SortOrderSchema).optional(),
+  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   raceId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   club: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   boat: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -1712,6 +1716,7 @@ export const CompWhereUniqueInputSchema: z.ZodType<Prisma.CompWhereUniqueInput> 
   AND: z.union([ z.lazy(() => CompWhereInputSchema),z.lazy(() => CompWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => CompWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => CompWhereInputSchema),z.lazy(() => CompWhereInputSchema).array() ]).optional(),
+  description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   raceId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   club: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   boat: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -1740,6 +1745,7 @@ export const CompWhereUniqueInputSchema: z.ZodType<Prisma.CompWhereUniqueInput> 
 export const CompOrderByWithAggregationInputSchema: z.ZodType<Prisma.CompOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   compId: z.lazy(() => SortOrderSchema).optional(),
+  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   raceId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   club: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   boat: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
@@ -1767,6 +1773,7 @@ export const CompScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.CompScal
   NOT: z.union([ z.lazy(() => CompScalarWhereWithAggregatesInputSchema),z.lazy(() => CompScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   compId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  description: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   raceId: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   club: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   boat: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
@@ -3185,7 +3192,7 @@ export const SeriesUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SeriesUnchec
 
 export const EventCreateInputSchema: z.ZodType<Prisma.EventCreateInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -3214,7 +3221,7 @@ export const EventCreateInputSchema: z.ZodType<Prisma.EventCreateInput> = z.obje
 
 export const EventUncheckedCreateInputSchema: z.ZodType<Prisma.EventUncheckedCreateInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -3243,7 +3250,7 @@ export const EventUncheckedCreateInputSchema: z.ZodType<Prisma.EventUncheckedCre
 
 export const EventUpdateInputSchema: z.ZodType<Prisma.EventUpdateInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3272,7 +3279,7 @@ export const EventUpdateInputSchema: z.ZodType<Prisma.EventUpdateInput> = z.obje
 
 export const EventUncheckedUpdateInputSchema: z.ZodType<Prisma.EventUncheckedUpdateInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3301,7 +3308,7 @@ export const EventUncheckedUpdateInputSchema: z.ZodType<Prisma.EventUncheckedUpd
 
 export const EventCreateManyInputSchema: z.ZodType<Prisma.EventCreateManyInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -3324,7 +3331,7 @@ export const EventCreateManyInputSchema: z.ZodType<Prisma.EventCreateManyInput> 
 
 export const EventUpdateManyMutationInputSchema: z.ZodType<Prisma.EventUpdateManyMutationInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3343,7 +3350,7 @@ export const EventUpdateManyMutationInputSchema: z.ZodType<Prisma.EventUpdateMan
 
 export const EventUncheckedUpdateManyInputSchema: z.ZodType<Prisma.EventUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3525,6 +3532,7 @@ export const RaceUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RaceUncheckedU
 export const CompCreateInputSchema: z.ZodType<Prisma.CompCreateInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -3552,6 +3560,7 @@ export const CompCreateInputSchema: z.ZodType<Prisma.CompCreateInput> = z.object
 export const CompUncheckedCreateInputSchema: z.ZodType<Prisma.CompUncheckedCreateInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -3579,6 +3588,7 @@ export const CompUncheckedCreateInputSchema: z.ZodType<Prisma.CompUncheckedCreat
 export const CompUpdateInputSchema: z.ZodType<Prisma.CompUpdateInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3606,6 +3616,7 @@ export const CompUpdateInputSchema: z.ZodType<Prisma.CompUpdateInput> = z.object
 export const CompUncheckedUpdateInputSchema: z.ZodType<Prisma.CompUncheckedUpdateInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3633,6 +3644,7 @@ export const CompUncheckedUpdateInputSchema: z.ZodType<Prisma.CompUncheckedUpdat
 export const CompCreateManyInputSchema: z.ZodType<Prisma.CompCreateManyInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -3654,6 +3666,7 @@ export const CompCreateManyInputSchema: z.ZodType<Prisma.CompCreateManyInput> = 
 export const CompUpdateManyMutationInputSchema: z.ZodType<Prisma.CompUpdateManyMutationInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -3674,6 +3687,7 @@ export const CompUpdateManyMutationInputSchema: z.ZodType<Prisma.CompUpdateManyM
 export const CompUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CompUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -5350,6 +5364,7 @@ export const RaceMinOrderByAggregateInputSchema: z.ZodType<Prisma.RaceMinOrderBy
 export const CompCountOrderByAggregateInputSchema: z.ZodType<Prisma.CompCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   compId: z.lazy(() => SortOrderSchema).optional(),
+  description: z.lazy(() => SortOrderSchema).optional(),
   raceId: z.lazy(() => SortOrderSchema).optional(),
   club: z.lazy(() => SortOrderSchema).optional(),
   boat: z.lazy(() => SortOrderSchema).optional(),
@@ -5371,6 +5386,7 @@ export const CompCountOrderByAggregateInputSchema: z.ZodType<Prisma.CompCountOrd
 export const CompMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CompMaxOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   compId: z.lazy(() => SortOrderSchema).optional(),
+  description: z.lazy(() => SortOrderSchema).optional(),
   raceId: z.lazy(() => SortOrderSchema).optional(),
   club: z.lazy(() => SortOrderSchema).optional(),
   boat: z.lazy(() => SortOrderSchema).optional(),
@@ -5391,6 +5407,7 @@ export const CompMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CompMaxOrderBy
 export const CompMinOrderByAggregateInputSchema: z.ZodType<Prisma.CompMinOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   compId: z.lazy(() => SortOrderSchema).optional(),
+  description: z.lazy(() => SortOrderSchema).optional(),
   raceId: z.lazy(() => SortOrderSchema).optional(),
   club: z.lazy(() => SortOrderSchema).optional(),
   boat: z.lazy(() => SortOrderSchema).optional(),
@@ -9362,7 +9379,7 @@ export const NestedFloatFilterSchema: z.ZodType<Prisma.NestedFloatFilter> = z.ob
 
 export const EventCreateWithoutSeriesInputSchema: z.ZodType<Prisma.EventCreateWithoutSeriesInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -9390,7 +9407,7 @@ export const EventCreateWithoutSeriesInputSchema: z.ZodType<Prisma.EventCreateWi
 
 export const EventUncheckedCreateWithoutSeriesInputSchema: z.ZodType<Prisma.EventUncheckedCreateWithoutSeriesInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -9718,7 +9735,7 @@ export const EventScalarWhereInputSchema: z.ZodType<Prisma.EventScalarWhereInput
   OR: z.lazy(() => EventScalarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => EventScalarWhereInputSchema),z.lazy(() => EventScalarWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  eventeid: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  eventeid: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   uniqueIdString: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   eventwebsite: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -10371,6 +10388,7 @@ export const LikeCreateManyEventInputEnvelopeSchema: z.ZodType<Prisma.LikeCreate
 export const CompCreateWithoutEventsInputSchema: z.ZodType<Prisma.CompCreateWithoutEventsInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -10397,6 +10415,7 @@ export const CompCreateWithoutEventsInputSchema: z.ZodType<Prisma.CompCreateWith
 export const CompUncheckedCreateWithoutEventsInputSchema: z.ZodType<Prisma.CompUncheckedCreateWithoutEventsInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -10810,6 +10829,7 @@ export const CompScalarWhereInputSchema: z.ZodType<Prisma.CompScalarWhereInput> 
   NOT: z.union([ z.lazy(() => CompScalarWhereInputSchema),z.lazy(() => CompScalarWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   compId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   raceId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   club: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   boat: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -10846,7 +10866,7 @@ export const CommentUpdateManyWithWhereWithoutEventInputSchema: z.ZodType<Prisma
 
 export const EventCreateWithoutRacesInputSchema: z.ZodType<Prisma.EventCreateWithoutRacesInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -10874,7 +10894,7 @@ export const EventCreateWithoutRacesInputSchema: z.ZodType<Prisma.EventCreateWit
 
 export const EventUncheckedCreateWithoutRacesInputSchema: z.ZodType<Prisma.EventUncheckedCreateWithoutRacesInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -11103,6 +11123,7 @@ export const LikeCreateManyRaceInputEnvelopeSchema: z.ZodType<Prisma.LikeCreateM
 export const CompCreateWithoutRacesInputSchema: z.ZodType<Prisma.CompCreateWithoutRacesInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -11129,6 +11150,7 @@ export const CompCreateWithoutRacesInputSchema: z.ZodType<Prisma.CompCreateWitho
 export const CompUncheckedCreateWithoutRacesInputSchema: z.ZodType<Prisma.CompUncheckedCreateWithoutRacesInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -11214,7 +11236,7 @@ export const EventUpdateToOneWithWhereWithoutRacesInputSchema: z.ZodType<Prisma.
 
 export const EventUpdateWithoutRacesInputSchema: z.ZodType<Prisma.EventUpdateWithoutRacesInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -11242,7 +11264,7 @@ export const EventUpdateWithoutRacesInputSchema: z.ZodType<Prisma.EventUpdateWit
 
 export const EventUncheckedUpdateWithoutRacesInputSchema: z.ZodType<Prisma.EventUncheckedUpdateWithoutRacesInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -11466,7 +11488,7 @@ export const UserCreateOrConnectWithoutCompInputSchema: z.ZodType<Prisma.UserCre
 
 export const EventCreateWithoutCompsInputSchema: z.ZodType<Prisma.EventCreateWithoutCompsInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -11494,7 +11516,7 @@ export const EventCreateWithoutCompsInputSchema: z.ZodType<Prisma.EventCreateWit
 
 export const EventUncheckedCreateWithoutCompsInputSchema: z.ZodType<Prisma.EventUncheckedCreateWithoutCompsInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -11922,6 +11944,7 @@ export const RaceUpdateManyWithWhereWithoutCompsInputSchema: z.ZodType<Prisma.Ra
 export const CompCreateWithoutResultsInputSchema: z.ZodType<Prisma.CompCreateWithoutResultsInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -11948,6 +11971,7 @@ export const CompCreateWithoutResultsInputSchema: z.ZodType<Prisma.CompCreateWit
 export const CompUncheckedCreateWithoutResultsInputSchema: z.ZodType<Prisma.CompUncheckedCreateWithoutResultsInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -11978,7 +12002,7 @@ export const CompCreateOrConnectWithoutResultsInputSchema: z.ZodType<Prisma.Comp
 
 export const EventCreateWithoutResultsInputSchema: z.ZodType<Prisma.EventCreateWithoutResultsInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -12006,7 +12030,7 @@ export const EventCreateWithoutResultsInputSchema: z.ZodType<Prisma.EventCreateW
 
 export const EventUncheckedCreateWithoutResultsInputSchema: z.ZodType<Prisma.EventUncheckedCreateWithoutResultsInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -12159,6 +12183,7 @@ export const CompUpdateToOneWithWhereWithoutResultsInputSchema: z.ZodType<Prisma
 export const CompUpdateWithoutResultsInputSchema: z.ZodType<Prisma.CompUpdateWithoutResultsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -12185,6 +12210,7 @@ export const CompUpdateWithoutResultsInputSchema: z.ZodType<Prisma.CompUpdateWit
 export const CompUncheckedUpdateWithoutResultsInputSchema: z.ZodType<Prisma.CompUncheckedUpdateWithoutResultsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -12221,7 +12247,7 @@ export const EventUpdateToOneWithWhereWithoutResultsInputSchema: z.ZodType<Prism
 
 export const EventUpdateWithoutResultsInputSchema: z.ZodType<Prisma.EventUpdateWithoutResultsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -12249,7 +12275,7 @@ export const EventUpdateWithoutResultsInputSchema: z.ZodType<Prisma.EventUpdateW
 
 export const EventUncheckedUpdateWithoutResultsInputSchema: z.ZodType<Prisma.EventUncheckedUpdateWithoutResultsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -12452,7 +12478,7 @@ export const UserCreateOrConnectWithoutOrganizationInputSchema: z.ZodType<Prisma
 
 export const EventCreateWithoutOrganizationInputSchema: z.ZodType<Prisma.EventCreateWithoutOrganizationInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -12480,7 +12506,7 @@ export const EventCreateWithoutOrganizationInputSchema: z.ZodType<Prisma.EventCr
 
 export const EventUncheckedCreateWithoutOrganizationInputSchema: z.ZodType<Prisma.EventUncheckedCreateWithoutOrganizationInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -12979,7 +13005,7 @@ export const ContactScalarWhereInputSchema: z.ZodType<Prisma.ContactScalarWhereI
 
 export const EventCreateWithoutVenueInputSchema: z.ZodType<Prisma.EventCreateWithoutVenueInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -13007,7 +13033,7 @@ export const EventCreateWithoutVenueInputSchema: z.ZodType<Prisma.EventCreateWit
 
 export const EventUncheckedCreateWithoutVenueInputSchema: z.ZodType<Prisma.EventUncheckedCreateWithoutVenueInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -14248,7 +14274,7 @@ export const OrganizationUncheckedUpdateWithoutContactInputSchema: z.ZodType<Pri
 
 export const EventCreateWithoutCommentsInputSchema: z.ZodType<Prisma.EventCreateWithoutCommentsInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -14276,7 +14302,7 @@ export const EventCreateWithoutCommentsInputSchema: z.ZodType<Prisma.EventCreate
 
 export const EventUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma.EventUncheckedCreateWithoutCommentsInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -14585,6 +14611,7 @@ export const VenueCreateOrConnectWithoutCommentsInputSchema: z.ZodType<Prisma.Ve
 export const CompCreateWithoutCommmentsInputSchema: z.ZodType<Prisma.CompCreateWithoutCommmentsInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -14611,6 +14638,7 @@ export const CompCreateWithoutCommmentsInputSchema: z.ZodType<Prisma.CompCreateW
 export const CompUncheckedCreateWithoutCommmentsInputSchema: z.ZodType<Prisma.CompUncheckedCreateWithoutCommmentsInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -14692,7 +14720,7 @@ export const EventUpdateToOneWithWhereWithoutCommentsInputSchema: z.ZodType<Pris
 
 export const EventUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.EventUpdateWithoutCommentsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -14720,7 +14748,7 @@ export const EventUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.EventUpdate
 
 export const EventUncheckedUpdateWithoutCommentsInputSchema: z.ZodType<Prisma.EventUncheckedUpdateWithoutCommentsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -15039,6 +15067,7 @@ export const CompUpdateToOneWithWhereWithoutCommmentsInputSchema: z.ZodType<Pris
 export const CompUpdateWithoutCommmentsInputSchema: z.ZodType<Prisma.CompUpdateWithoutCommmentsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -15065,6 +15094,7 @@ export const CompUpdateWithoutCommmentsInputSchema: z.ZodType<Prisma.CompUpdateW
 export const CompUncheckedUpdateWithoutCommmentsInputSchema: z.ZodType<Prisma.CompUncheckedUpdateWithoutCommmentsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -15146,6 +15176,7 @@ export const CommentCreateOrConnectWithoutFollowInputSchema: z.ZodType<Prisma.Co
 export const CompCreateWithoutFollowsInputSchema: z.ZodType<Prisma.CompCreateWithoutFollowsInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -15172,6 +15203,7 @@ export const CompCreateWithoutFollowsInputSchema: z.ZodType<Prisma.CompCreateWit
 export const CompUncheckedCreateWithoutFollowsInputSchema: z.ZodType<Prisma.CompUncheckedCreateWithoutFollowsInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -15202,7 +15234,7 @@ export const CompCreateOrConnectWithoutFollowsInputSchema: z.ZodType<Prisma.Comp
 
 export const EventCreateWithoutFollowsInputSchema: z.ZodType<Prisma.EventCreateWithoutFollowsInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -15230,7 +15262,7 @@ export const EventCreateWithoutFollowsInputSchema: z.ZodType<Prisma.EventCreateW
 
 export const EventUncheckedCreateWithoutFollowsInputSchema: z.ZodType<Prisma.EventUncheckedCreateWithoutFollowsInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -15553,6 +15585,7 @@ export const CompUpdateToOneWithWhereWithoutFollowsInputSchema: z.ZodType<Prisma
 export const CompUpdateWithoutFollowsInputSchema: z.ZodType<Prisma.CompUpdateWithoutFollowsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -15579,6 +15612,7 @@ export const CompUpdateWithoutFollowsInputSchema: z.ZodType<Prisma.CompUpdateWit
 export const CompUncheckedUpdateWithoutFollowsInputSchema: z.ZodType<Prisma.CompUncheckedUpdateWithoutFollowsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -15615,7 +15649,7 @@ export const EventUpdateToOneWithWhereWithoutFollowsInputSchema: z.ZodType<Prism
 
 export const EventUpdateWithoutFollowsInputSchema: z.ZodType<Prisma.EventUpdateWithoutFollowsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -15643,7 +15677,7 @@ export const EventUpdateWithoutFollowsInputSchema: z.ZodType<Prisma.EventUpdateW
 
 export const EventUncheckedUpdateWithoutFollowsInputSchema: z.ZodType<Prisma.EventUncheckedUpdateWithoutFollowsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -15935,6 +15969,7 @@ export const UserUncheckedUpdateWithoutFollowInputSchema: z.ZodType<Prisma.UserU
 export const CompCreateWithoutLikesInputSchema: z.ZodType<Prisma.CompCreateWithoutLikesInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -15961,6 +15996,7 @@ export const CompCreateWithoutLikesInputSchema: z.ZodType<Prisma.CompCreateWitho
 export const CompUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.CompUncheckedCreateWithoutLikesInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -15991,7 +16027,7 @@ export const CompCreateOrConnectWithoutLikesInputSchema: z.ZodType<Prisma.CompCr
 
 export const EventCreateWithoutLikesInputSchema: z.ZodType<Prisma.EventCreateWithoutLikesInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -16019,7 +16055,7 @@ export const EventCreateWithoutLikesInputSchema: z.ZodType<Prisma.EventCreateWit
 
 export const EventUncheckedCreateWithoutLikesInputSchema: z.ZodType<Prisma.EventUncheckedCreateWithoutLikesInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -16336,6 +16372,7 @@ export const CompUpdateToOneWithWhereWithoutLikesInputSchema: z.ZodType<Prisma.C
 export const CompUpdateWithoutLikesInputSchema: z.ZodType<Prisma.CompUpdateWithoutLikesInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -16362,6 +16399,7 @@ export const CompUpdateWithoutLikesInputSchema: z.ZodType<Prisma.CompUpdateWitho
 export const CompUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.CompUncheckedUpdateWithoutLikesInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -16398,7 +16436,7 @@ export const EventUpdateToOneWithWhereWithoutLikesInputSchema: z.ZodType<Prisma.
 
 export const EventUpdateWithoutLikesInputSchema: z.ZodType<Prisma.EventUpdateWithoutLikesInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -16426,7 +16464,7 @@ export const EventUpdateWithoutLikesInputSchema: z.ZodType<Prisma.EventUpdateWit
 
 export const EventUncheckedUpdateWithoutLikesInputSchema: z.ZodType<Prisma.EventUncheckedUpdateWithoutLikesInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -16861,7 +16899,7 @@ export const SeriesCreateManyPublisherInputEnvelopeSchema: z.ZodType<Prisma.Seri
 
 export const EventCreateWithoutPublisherInputSchema: z.ZodType<Prisma.EventCreateWithoutPublisherInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -16889,7 +16927,7 @@ export const EventCreateWithoutPublisherInputSchema: z.ZodType<Prisma.EventCreat
 
 export const EventUncheckedCreateWithoutPublisherInputSchema: z.ZodType<Prisma.EventUncheckedCreateWithoutPublisherInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -16986,6 +17024,7 @@ export const RaceCreateManyPublisherInputEnvelopeSchema: z.ZodType<Prisma.RaceCr
 export const CompCreateWithoutPublisherInputSchema: z.ZodType<Prisma.CompCreateWithoutPublisherInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -17012,6 +17051,7 @@ export const CompCreateWithoutPublisherInputSchema: z.ZodType<Prisma.CompCreateW
 export const CompUncheckedCreateWithoutPublisherInputSchema: z.ZodType<Prisma.CompUncheckedCreateWithoutPublisherInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -18036,7 +18076,7 @@ export const UserUncheckedUpdateWithoutAuth_keyInputSchema: z.ZodType<Prisma.Use
 
 export const EventCreateManySeriesInputSchema: z.ZodType<Prisma.EventCreateManySeriesInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -18104,7 +18144,7 @@ export const CommentCreateManySeriesInputSchema: z.ZodType<Prisma.CommentCreateM
 
 export const EventUpdateWithoutSeriesInputSchema: z.ZodType<Prisma.EventUpdateWithoutSeriesInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -18132,7 +18172,7 @@ export const EventUpdateWithoutSeriesInputSchema: z.ZodType<Prisma.EventUpdateWi
 
 export const EventUncheckedUpdateWithoutSeriesInputSchema: z.ZodType<Prisma.EventUncheckedUpdateWithoutSeriesInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -18160,7 +18200,7 @@ export const EventUncheckedUpdateWithoutSeriesInputSchema: z.ZodType<Prisma.Even
 
 export const EventUncheckedUpdateManyWithoutSeriesInputSchema: z.ZodType<Prisma.EventUncheckedUpdateManyWithoutSeriesInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -18700,6 +18740,7 @@ export const LikeUncheckedUpdateManyWithoutEventInputSchema: z.ZodType<Prisma.Li
 export const CompUpdateWithoutEventsInputSchema: z.ZodType<Prisma.CompUpdateWithoutEventsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -18726,6 +18767,7 @@ export const CompUpdateWithoutEventsInputSchema: z.ZodType<Prisma.CompUpdateWith
 export const CompUncheckedUpdateWithoutEventsInputSchema: z.ZodType<Prisma.CompUncheckedUpdateWithoutEventsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -18752,6 +18794,7 @@ export const CompUncheckedUpdateWithoutEventsInputSchema: z.ZodType<Prisma.CompU
 export const CompUncheckedUpdateManyWithoutEventsInputSchema: z.ZodType<Prisma.CompUncheckedUpdateManyWithoutEventsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19057,6 +19100,7 @@ export const LikeUncheckedUpdateManyWithoutRaceInputSchema: z.ZodType<Prisma.Lik
 export const CompUpdateWithoutRacesInputSchema: z.ZodType<Prisma.CompUpdateWithoutRacesInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19083,6 +19127,7 @@ export const CompUpdateWithoutRacesInputSchema: z.ZodType<Prisma.CompUpdateWitho
 export const CompUncheckedUpdateWithoutRacesInputSchema: z.ZodType<Prisma.CompUncheckedUpdateWithoutRacesInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19109,6 +19154,7 @@ export const CompUncheckedUpdateWithoutRacesInputSchema: z.ZodType<Prisma.CompUn
 export const CompUncheckedUpdateManyWithoutRacesInputSchema: z.ZodType<Prisma.CompUncheckedUpdateManyWithoutRacesInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19248,7 +19294,7 @@ export const CommentCreateManyCompInputSchema: z.ZodType<Prisma.CommentCreateMan
 
 export const EventUpdateWithoutCompsInputSchema: z.ZodType<Prisma.EventUpdateWithoutCompsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19276,7 +19322,7 @@ export const EventUpdateWithoutCompsInputSchema: z.ZodType<Prisma.EventUpdateWit
 
 export const EventUncheckedUpdateWithoutCompsInputSchema: z.ZodType<Prisma.EventUncheckedUpdateWithoutCompsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19304,7 +19350,7 @@ export const EventUncheckedUpdateWithoutCompsInputSchema: z.ZodType<Prisma.Event
 
 export const EventUncheckedUpdateManyWithoutCompsInputSchema: z.ZodType<Prisma.EventUncheckedUpdateManyWithoutCompsInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19609,7 +19655,7 @@ export const RaceUncheckedUpdateManyWithoutCompsInputSchema: z.ZodType<Prisma.Ra
 
 export const EventCreateManyOrganizationInputSchema: z.ZodType<Prisma.EventCreateManyOrganizationInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -19713,7 +19759,7 @@ export const ContactCreateManyOrganizationInputSchema: z.ZodType<Prisma.ContactC
 
 export const EventUpdateWithoutOrganizationInputSchema: z.ZodType<Prisma.EventUpdateWithoutOrganizationInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19741,7 +19787,7 @@ export const EventUpdateWithoutOrganizationInputSchema: z.ZodType<Prisma.EventUp
 
 export const EventUncheckedUpdateWithoutOrganizationInputSchema: z.ZodType<Prisma.EventUncheckedUpdateWithoutOrganizationInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -19769,7 +19815,7 @@ export const EventUncheckedUpdateWithoutOrganizationInputSchema: z.ZodType<Prism
 
 export const EventUncheckedUpdateManyWithoutOrganizationInputSchema: z.ZodType<Prisma.EventUncheckedUpdateManyWithoutOrganizationInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -20053,7 +20099,7 @@ export const ContactUncheckedUpdateManyWithoutOrganizationInputSchema: z.ZodType
 
 export const EventCreateManyVenueInputSchema: z.ZodType<Prisma.EventCreateManyVenueInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -20147,7 +20193,7 @@ export const ContactCreateManyVenueInputSchema: z.ZodType<Prisma.ContactCreateMa
 
 export const EventUpdateWithoutVenueInputSchema: z.ZodType<Prisma.EventUpdateWithoutVenueInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -20175,7 +20221,7 @@ export const EventUpdateWithoutVenueInputSchema: z.ZodType<Prisma.EventUpdateWit
 
 export const EventUncheckedUpdateWithoutVenueInputSchema: z.ZodType<Prisma.EventUncheckedUpdateWithoutVenueInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -20203,7 +20249,7 @@ export const EventUncheckedUpdateWithoutVenueInputSchema: z.ZodType<Prisma.Event
 
 export const EventUncheckedUpdateManyWithoutVenueInputSchema: z.ZodType<Prisma.EventUncheckedUpdateManyWithoutVenueInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -20685,7 +20731,7 @@ export const SeriesCreateManyPublisherInputSchema: z.ZodType<Prisma.SeriesCreate
 
 export const EventCreateManyPublisherInputSchema: z.ZodType<Prisma.EventCreateManyPublisherInput> = z.object({
   id: z.string().cuid().optional(),
-  eventeid: z.string(),
+  eventeid: z.string().optional().nullable(),
   uniqueIdString: z.string(),
   name: z.string(),
   eventwebsite: z.string().optional().nullable(),
@@ -20727,6 +20773,7 @@ export const RaceCreateManyPublisherInputSchema: z.ZodType<Prisma.RaceCreateMany
 export const CompCreateManyPublisherInputSchema: z.ZodType<Prisma.CompCreateManyPublisherInput> = z.object({
   id: z.string().cuid().optional(),
   compId: z.string(),
+  description: z.string().optional().nullable(),
   raceId: z.string().optional().nullable(),
   club: z.string().optional().nullable(),
   boat: z.string().optional().nullable(),
@@ -20941,7 +20988,7 @@ export const SeriesUncheckedUpdateManyWithoutPublisherInputSchema: z.ZodType<Pri
 
 export const EventUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.EventUpdateWithoutPublisherInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -20969,7 +21016,7 @@ export const EventUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.EventUpdat
 
 export const EventUncheckedUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.EventUncheckedUpdateWithoutPublisherInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -20997,7 +21044,7 @@ export const EventUncheckedUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.E
 
 export const EventUncheckedUpdateManyWithoutPublisherInputSchema: z.ZodType<Prisma.EventUncheckedUpdateManyWithoutPublisherInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  eventeid: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  eventeid: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   uniqueIdString: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   eventwebsite: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -21087,6 +21134,7 @@ export const RaceUncheckedUpdateManyWithoutPublisherInputSchema: z.ZodType<Prism
 export const CompUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.CompUpdateWithoutPublisherInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -21113,6 +21161,7 @@ export const CompUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.CompUpdateW
 export const CompUncheckedUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.CompUncheckedUpdateWithoutPublisherInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -21139,6 +21188,7 @@ export const CompUncheckedUpdateWithoutPublisherInputSchema: z.ZodType<Prisma.Co
 export const CompUncheckedUpdateManyWithoutPublisherInputSchema: z.ZodType<Prisma.CompUncheckedUpdateManyWithoutPublisherInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   compId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   raceId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   club: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   boat: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),

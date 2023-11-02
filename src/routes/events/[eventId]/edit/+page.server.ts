@@ -50,12 +50,13 @@ export const actions = {
 
 		const { Venue, ...rest } = form.data
 
+		console.log('form: ', form)
+
 		try {
-			await prisma.event.update({
+			await prisma.event.upsert({
 				where: { id: params.eventId },
-				data: {
-					...rest
-				}
+				update: { ...rest },
+				create: { ...rest }
 			})
 		} catch (error) {
 			console.log('error: ', error)

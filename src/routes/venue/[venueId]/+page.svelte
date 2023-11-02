@@ -68,9 +68,17 @@
 
 	<!-- Links -->
 	<div class="py-2 flex justify-between items-center">
-		<div class="flex gap-2 items-center pt-4 text-md font-bold uppercase">
-			<Icon icon="gridicons:popout" />
-			<a href={getHref(venue.website)}>{venue.website ? venue.website : 'no website provided'}</a>
+		<div>
+			<div class="flex gap-2 items-center pt-4 text-md font-bold uppercase">
+				<Icon icon="gridicons:popout" />
+				<a href={getHref(venue.website)}>{venue.website ? venue.website : 'no website provided'}</a>
+			</div>
+			<div class="flex gap-2 items-center pt-4 text-md font-bold uppercase">
+				<Icon icon="mdi:eye-arrow-right-outline" />
+				<a href="/events?whereType=venueId&whereId={venue.id}&title={venue.name} events"
+					>View events</a
+				>
+			</div>
 		</div>
 
 		<!-- Publisher -->

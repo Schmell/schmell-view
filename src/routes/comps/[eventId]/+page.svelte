@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { ItemCard, Page } from '$components/layout';
-	import { formatDateTime } from '$lib/utils/formatters';
-	import Icon from '@iconify/svelte';
+	import { ItemCard, Page } from '$components/layout'
+	import { formatDateTime } from '$lib/utils/formatters'
+	import Icon from '@iconify/svelte'
 
-	export let data;
-	$: ({ user, comps } = data);
+	export let data
+	$: ({ user, comps } = data)
 	// $: console.log('comps: ', comps);
 </script>
 

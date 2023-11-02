@@ -111,17 +111,19 @@ export const actions = {
 		const form = await superValidate(request, venueSchema)
 
 		if (!form.valid) return { form }
-
+		// console.log('form: ', form)
+		const { name, ...rest } = form.data
 		try {
 			await prisma.venue.upsert({
 				where: { id: params.venueId },
 				create: { ...form.data, Publisher: { connect: { id: session.user.userId } } },
-				update: { ...form.data }
+				update: { ...rest }
 			})
 		} catch (error) {
 			console.log('error: ', error)
 			return { form }
 		}
+		console.log(url.searchParams.get('from'))
 
 		throw redirect(307, url.searchParams.get('from') ?? '/')
 	},

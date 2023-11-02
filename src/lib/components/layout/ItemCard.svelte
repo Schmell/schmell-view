@@ -43,7 +43,7 @@
 
 	<div class="hidden" bind:this={slot}><slot /></div>
 	<div
-		class="pt-2 pl-4 mb-6 relative min-h-8 bg-gradient-to-r from-base-100 to-base-200"
+		class="pt-2 pl-4 pb-2 relative min-h-8 bg-gradient-to-r from-base-100 to-base-200"
 		class:line-clamp-3={!more}
 	>
 		<slot />

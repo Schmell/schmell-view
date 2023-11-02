@@ -51,7 +51,7 @@
 				</div>
 			</dialog>
 		{:else}
-			<Accordion.Root value={['events', 'orgs']} class="pt-4" multiple>
+			<Accordion.Root value={['events', 'following']} class="pt-4" multiple>
 				<Accordion.Item value="events" class="py-2 text-base-content">
 					<Accordion.Header class="p-2 border-b border-base-100 w-full flex items-start">
 						<Accordion.Trigger class="flex w-full justify-between">
@@ -82,6 +82,7 @@
 												</div>
 											</div>
 										</div>
+
 										<div class="px-4">
 											{@html event?.name} -
 											<span class="text-xs">{@html event?.Venue?.name}</span>
@@ -151,61 +152,7 @@
 					</Accordion.Content>
 				</Accordion.Item>
 
-				<Accordion.Item value="orgs" class="py-2 text-base-content">
-					<Accordion.Header class="p-2 border-b border-base-100 w-full flex items-start">
-						<Accordion.Trigger class="flex w-full justify-between">
-							<div>Your Organizations</div>
-							<Icon icon="material-symbols:arrow-drop-down-circle-outline" />
-						</Accordion.Trigger>
-					</Accordion.Header>
-
-					<Accordion.Content class="p-2">
-						<div class="flex flex-col gap-2">
-							{#if !organizations.length}
-								<div class="text-sm">You have no Organizations yet</div>
-								<a href="/organization/edit" class="btn btn-primary rounded-full">
-									Add organization
-								</a>
-							{:else}
-								{#each organizations as org}
-									<a
-										href="/organization/{org.id}"
-										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-warning w-full rounded-lg shadow-xl"
-									>
-										<div
-											class="capitalize w-full p-2 font-bold rounded-r-xl bg-warning bg-opacity-10"
-										>
-											<div class="flex justify-between">
-												<div>{org.name}</div>
-												<div class="flex gap-1 items-center text-xs pr-2">
-													<Icon icon="mdi:thumb-up" />
-													{org._count.Likes} /
-													<Icon icon="material-symbols:bookmark-add-outline-rounded" />
-													{org._count.Follows}
-												</div>
-											</div>
-										</div>
-
-										<div class="flex justify-between items-end w-full px-4">
-											<div>
-												<div class="pb-4">
-													{@html org.description}
-												</div>
-												<div class="text-sm">
-													{org._count.Series} Series / {org._count.Events} Events
-												</div>
-												<div class="text-xs opacity-40">
-													{org.createdAt?.toLocaleDateString()}
-												</div>
-											</div>
-										</div>
-									</a>
-								{/each}
-							{/if}
-						</div>
-					</Accordion.Content>
-				</Accordion.Item>
-
+				<!-- Following -->
 				<Accordion.Item value="following" class="py-2 text-base-content">
 					<Accordion.Header class="p-2 border-b border-base-100 w-full flex items-start">
 						<Accordion.Trigger class="flex w-full justify-between">
@@ -219,7 +166,6 @@
 							<div class="text-sm">You are not Following anything yet</div>
 						{:else}
 							{#each following as follow}
-								<!-- content here -->
 								{#if follow.type === 'event'}
 									<a
 										href="/events/{follow.Event?.id}"
@@ -275,6 +221,7 @@
 									</div>
 								{/if}
 
+								<!-- follow orgs -->
 								{#if follow.type === 'organization'}
 									<div
 										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-warning w-full rounded-lg shadow-xl"
@@ -338,6 +285,62 @@
 								{/if}
 							{/each}
 						{/if}
+					</Accordion.Content>
+				</Accordion.Item>
+
+				<!-- Organizations -->
+				<Accordion.Item value="orgs" class="py-2 text-base-content">
+					<Accordion.Header class="p-2 border-b border-base-100 w-full flex items-start">
+						<Accordion.Trigger class="flex w-full justify-between">
+							<div>Your Organizations</div>
+							<Icon icon="material-symbols:arrow-drop-down-circle-outline" />
+						</Accordion.Trigger>
+					</Accordion.Header>
+
+					<Accordion.Content class="p-2">
+						<div class="flex flex-col gap-2">
+							{#if !organizations.length}
+								<div class="text-sm">You have no Organizations yet</div>
+								<a href="/organization/edit" class="btn btn-primary rounded-full">
+									Add organization
+								</a>
+							{:else}
+								{#each organizations as org}
+									<a
+										href="/organization/{org.id}"
+										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-warning w-full rounded-lg shadow-xl"
+									>
+										<div
+											class="capitalize w-full p-2 font-bold rounded-r-xl bg-warning bg-opacity-10"
+										>
+											<div class="flex justify-between">
+												<div>{org.name}</div>
+												<div class="flex gap-1 items-center text-xs pr-2">
+													<Icon icon="mdi:thumb-up" />
+													{org._count.Likes} /
+													<Icon icon="material-symbols:bookmark-add-outline-rounded" />
+													{org._count.Follows}
+												</div>
+											</div>
+										</div>
+
+										<div class="flex justify-between items-end w-full px-4">
+											<div>
+												<div class="pb-4">
+													{@html org.description}
+												</div>
+												<div class="text-sm">
+													{org._count.Series} Series / {org._count.Events} Events
+												</div>
+												<div class="text-xs opacity-40">
+													{org.createdAt?.toLocaleDateString()}
+												</div>
+											</div>
+										</div>
+									</a>
+								{/each}
+							{/if}
+						</div>
 					</Accordion.Content>
 				</Accordion.Item>
 

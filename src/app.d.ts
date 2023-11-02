@@ -28,6 +28,7 @@ declare global {
 
 	namespace PrismaJson {
 		type compRest = {
+			class?: string
 			rating?: string
 			sailNo?: string
 			nett?: string

@@ -35,6 +35,8 @@ export const load = (async ({ params, url }) => {
 					venueId: true,
 					venueName: true,
 					publisherId: true,
+					public: true,
+					complete: true,
 					eventwebsite: true,
 					_count: { select: { Comments: true, Likes: true, Follows: true } },
 					Comments: {

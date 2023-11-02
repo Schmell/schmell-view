@@ -3,11 +3,14 @@
 	import { page } from '$app/stores'
 	import { Page } from '$components/layout'
 	import ItemCard from '$components/layout/ItemCard.svelte'
-	import Like from '$lib/like/like.svelte'
+	import LikeCount from '$lib/like/like-count.svelte'
+	// import {
+	// 	excludePaginationSearchParams,
+	// 	excludeSortSearchParams
+	// } from '$lib/utils/searchParamUtils'
 	import Icon from '@iconify/svelte'
 	import { createPagination } from '@melt-ui/svelte'
 	import type { PageData } from './$types'
-	import LikeCount from '$lib/like/like-count.svelte'
 
 	export let data: PageData
 
@@ -89,11 +92,11 @@
 					<LikeCount userId={user?.userId} item={event} type="event" />
 				</div>
 
-				<div>
-					{@html event.description ?? ''}
+				<div class:opacity-60={!event.description}>
+					{@html event.description ?? 'No description provided'}
 				</div>
 
-				<div slot="bottom-left" class="p-2">
+				<div slot="bottom-left" class="p-2 text-base-content">
 					<a
 						href="/organization/{event.Organization?.id}"
 						class="flex items-center gap-2 line-clamp-1"
