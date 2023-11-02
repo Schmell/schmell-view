@@ -13,7 +13,7 @@
 		"test:unit": "vitest",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"gen": "npx prisma migrate dev --name again && npx prisma generate --accelerate && npx prisma generate --no-engine"
+		"gen": "npx prisma migrate dev --name again &&  npx prisma generate --no-engine"
 	},
 	"devDependencies": {
 		"@iconify/svelte": "^3.1.4",
