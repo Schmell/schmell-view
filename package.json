@@ -4,7 +4,8 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"build": "prisma generate --no-engine  && vite build",
+		"build": "prisma generate  && vite build",
+		"gen": "npx prisma migrate dev --name again &&  npx prisma generate",
 		"preview": "vite preview",
 		"start": "node build",
 		"test": "playwright test",
@@ -12,8 +13,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test:unit": "vitest",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write .",
-		"gen": "npx prisma migrate dev --name again &&  npx prisma generate --no-engine"
+		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"devDependencies": {
 		"@iconify/svelte": "^3.1.4",
