@@ -6,7 +6,7 @@
 	export let type
 </script>
 
-<div class="absolute right-2 bottom-0 z-10 flex items-center gap-1">
+<div class="flex items-center gap-1">
 	<div
 		class="p-3 text-xl w-8 h-8 flex items-center justify-center border-2 border-base-300 bg-base-100 rounded-full shadow-lg"
 	>

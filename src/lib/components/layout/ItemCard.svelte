@@ -24,7 +24,7 @@
 
 <div class={cn('item-card mb-4 snap-center', _class)}>
 	<header
-		class="min-h-12 flex items-center rounded-tl-xl shadow-md bg-gradient-to-r from-base-100 to-base-300"
+		class="min-h-12 flex items-center rounded-tl-xl shadow-md bg-gradient-to-l from-base-100 to-base-300"
 	>
 		<button
 			class="pl-4"

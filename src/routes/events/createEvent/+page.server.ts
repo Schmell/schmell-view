@@ -45,16 +45,16 @@ export const actions: Actions = {
 
 		const csvArray = await csv({ noheader: true, output: 'csv' }).fromString(await file.text())
 
-		const blw = new Blw({ data: csvArray })
+		const blw = new Blw({ data: csvArray, file })
 		const { uniqueIdString } = blw.getEvent()
 
-		const duplicate = await prisma.event.findFirst({
+		const duplicate = await prisma.event.findUnique({
 			where: { uniqueIdString: uniqueIdString },
 			select: { id: true }
 		})
 
 		if (duplicate) {
-			throw redirect(301, `/import/update?${url.search}&duplicate=1&eventId=${duplicate.id}`)
+			throw redirect(301, `/import/update${url.search}&duplicate=1&eventId=${duplicate.id}`)
 		}
 
 		await Populate({

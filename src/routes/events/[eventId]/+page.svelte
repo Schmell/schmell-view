@@ -6,6 +6,7 @@
 	import Icon from '@iconify/svelte'
 	import { superForm } from 'sveltekit-superforms/client'
 	import type { PageData } from './$types'
+	import { LikeFollowCount } from '$lib/like'
 
 	export let data: PageData
 	// export let form
@@ -43,8 +44,9 @@
 		>
 			<div class="md:flex">
 				<div class="md:shrink-0 flex relative">
-					<!-- {console.log('event?.Organization?.titleImage: ', event?.Organization?.titleImage)} -->
-					<div class="badge badge-warning absolute right-2 top-2">Private</div>
+					{#if !event.public}
+						<div class="badge badge-error absolute right-2 top-2 shadow-md">Private</div>
+					{/if}
 					{#if checkForImage(event.Venue?.burgee)}
 						<img
 							class="absolute z-10 left-2 top-2 rounded-full shadow-xl"
@@ -62,29 +64,33 @@
 							: 'https://picsum.photos/id/384/400/300/'}
 						alt="Title for {event?.name}"
 					/>
-
-					<LikeFollow item={event} userId={user?.userId} type="event" />
-				</div>
-				<div class="flex justify-end text-sm">
-					<span class="pr-1 flex items-center text-xs">
-						{event._count.Likes}
-						<Icon class="px-1 text-lg" icon="mdi:thumbs-up" />
-					</span>
-					/
-					<span class="pr-2 pl-2 flex items-center text-xs">
-						{event._count.Follows}
-						<Icon class="px-1 text-lg" icon="mdi:bell-ring" />
-					</span>
+					<div class="absolute w-full flex justify-end bottom-0 right-4 p-2">
+						<div>
+							<LikeFollow item={event} userId={user?.userId} type="event" />
+							<!-- Likes and follows -->
+							<div class="flex justify-end text-sm">
+								<span class="pr-1 flex items-center text-xs">
+									{event._count.Likes}
+									<Icon class="px-1 text-lg" icon="mdi:thumbs-up" />
+								</span>
+								/
+								<span class="pr-2 pl-2 flex items-center text-xs">
+									{event._count.Follows}
+									<Icon class="px-1 text-lg" icon="mdi:bell-ring" />
+								</span>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="pt-8 px-8 w-full">
 					<div class="flex justify-between w-full">
-						<div class="uppercase tracking-wide text-xl text-accent font-semibold">
+						<div class="uppercase tracking-wide text-xl text-accent font-semibold line-clamp-1">
 							{@html event?.name}
 						</div>
 						{#if event.complete}
-							<div class="badge badge-success">complete</div>
+							<div class="badge badge-success shadow-md">complete</div>
 						{:else}
-							<div class="badge badge-warning">In progress</div>
+							<div class="badge badge-warning shadow-md w-36">In progress</div>
 						{/if}
 					</div>
 					{#if event?.Venue}
@@ -128,74 +134,89 @@
 								</div>
 							</a>
 						{/if}
+						<!-- Likes and follows -->
+						<div class="flex justify-end text-sm">
+							<span class="pr-1 flex items-center text-xs">
+								{event._count.Likes}
+								<Icon class="px-1 text-lg" icon="mdi:thumbs-up" />
+							</span>
+							/
+							<span class="pr-2 pl-2 flex items-center text-xs">
+								{event._count.Follows}
+								<Icon class="px-1 text-lg" icon="mdi:bell-ring" />
+							</span>
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<!-- Tools  -->
-			<div class="px-4 pb-4 flex justify-between items-center">
-				<button
-					class="btn btn-ghost btn-xs"
-					on:click={() => {
-						showRaces = !showRaces
-					}}
-				>
-					{showRaces ? '^ Hide Races' : '⌄ Show Races'}
-				</button>
-				<div>
-					<div class="tooltip tooltip-top" data-tip="View Competitors">
-						<a href="/comps/{event?.id}" class="btn btn-ghost p-1">
-							<Icon class="text-3xl text-primary" icon="material-symbols:groups-outline-rounded" />
-						</a>
-					</div>
-
-					<div class="tooltip tooltip-top" data-tip="Edit Races">
-						<a href="/races/{event?.id}" class="btn btn-ghost p-1">
-							<Icon class="text-3xl text-primary" icon="material-symbols:box-edit-outline" />
-						</a>
-					</div>
-
-					{#if data.user?.userId === event?.publisherId}
-						<div class="tooltip tooltip-top" data-tip="Edit Event">
-							<a
-								href="/events/{event?.id}/edit?from={$page.url.pathname}"
-								class="btn btn-ghost p-1"
-							>
-								<Icon class="text-3xl text-primary" icon="material-symbols:edit-outline" />
+				<!-- Tools  -->
+				<div class="px-4 pb-4 flex justify-between items-center">
+					<button
+						class="btn btn-ghost btn-xs"
+						on:click={() => {
+							showRaces = !showRaces
+						}}
+					>
+						{showRaces ? '^ Hide Races' : '⌄ Show Races'}
+					</button>
+					<div>
+						<div class="tooltip tooltip-top" data-tip="View Competitors">
+							<a href="/comps/{event?.id}" class="btn btn-ghost p-1">
+								<Icon
+									class="text-3xl text-primary"
+									icon="material-symbols:groups-outline-rounded"
+								/>
 							</a>
 						</div>
-					{/if}
+
+						<div class="tooltip tooltip-top" data-tip="Edit Races">
+							<a href="/races/{event?.id}" class="btn btn-ghost p-1">
+								<Icon class="text-3xl text-primary" icon="material-symbols:box-edit-outline" />
+							</a>
+						</div>
+
+						{#if data.user?.userId === event?.publisherId}
+							<div class="tooltip tooltip-top" data-tip="Edit Event">
+								<a
+									href="/events/{event?.id}/edit?from={$page.url.pathname}"
+									class="btn btn-ghost p-1"
+								>
+									<Icon class="text-3xl text-primary" icon="material-symbols:edit-outline" />
+								</a>
+							</div>
+						{/if}
+					</div>
 				</div>
+
+				<!-- ////////////////////////////////////////////////////////////////////////////// -->
+
+				{#if showRaces}
+					{#each event.Races as race}
+						<a href="/results/{race.id}">
+							<div class=" p-0 m-2 mx-4 border-t text-base-content">
+								<div class="w-full pt-1">
+									<h1 class="text-xl font-semibold">{race.name}</h1>
+								</div>
+								<div class="flex justify-between">
+									<div class="text-xs">
+										{race.date ? race.date : ''}
+										{race.time ? `- ${race.time}` : ''}
+									</div>
+
+									<div
+										class="badge badge-success text-success-content shadow-md"
+										class:badge-error={!Number(race.sailed)}
+									>
+										{Number(race.sailed) ? 'Sailed' : 'Unsailed'}
+									</div>
+								</div>
+							</div>
+						</a>
+					{/each}
+				{/if}
 			</div>
 
-			<!-- ////////////////////////////////////////////////////////////////////////////// -->
-
-			{#if showRaces}
-				{#each event.Races as race}
-					<a href="/results/{race.id}">
-						<div class=" p-0 m-2 mx-4 border-t text-base-content">
-							<div class="w-full pt-1">
-								<h1 class="text-xl font-semibold">{race.name}</h1>
-							</div>
-							<div class="flex justify-between">
-								<div class="text-xs">
-									{race.date ? race.date : ''}
-									{race.time ? `- ${race.time}` : ''}
-								</div>
-
-								<div
-									class="badge badge-success text-success-content"
-									class:badge-error={!Number(race.sailed)}
-								>
-									{Number(race.sailed) ? 'Sailed' : 'Unsailed'}
-								</div>
-							</div>
-						</div>
-					</a>
-				{/each}
-			{/if}
-		</div>
-
-		<Comments item={event} type="event" {user} formObj={commentFormObj} />
-	</Page>
+			<Comments item={event} type="event" {user} formObj={commentFormObj} />
+		</div></Page
+	>
 {/if}

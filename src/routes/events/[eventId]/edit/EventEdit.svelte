@@ -81,7 +81,10 @@
 				</option>
 			{/each}
 		</select>
-		<a href="/venue/new/edit?{$page.url.searchParams.toString()}" class="text-primary shadow-lg">
+		<a
+			href="/venue/new/edit?{$page.url.searchParams.toString()}"
+			class="text-primary rounded-full shadow-lg"
+		>
 			<Icon icon="material-symbols:add-circle" width="44" />
 		</a>
 	</div>
@@ -93,7 +96,7 @@
 			<div class="text-2xl">Result Columns:</div>
 		</legend>
 		<div
-			class="w-full p-2 font-semibold bg-gradient-to-r from-base-100 to-base-300 rounded-br-2xl border-t border-accent shadow-md"
+			class="w-full p-2 font-semibold bg-gradient-to-r from-base-200 to-base-300 rounded-br-2xl border-t border-accent shadow-md"
 		>
 			Event Rankings
 		</div>
@@ -104,7 +107,7 @@
 		</div>
 
 		<div
-			class="w-full p-2 font-semibold bg-gradient-to-r from-base-100 to-base-300 rounded-br-2xl border-t border-accent shadow-md"
+			class="w-full p-2 font-semibold bg-gradient-to-r from-base-200 to-base-300 rounded-br-2xl border-t border-accent shadow-md"
 		>
 			Display names
 		</div>
@@ -115,7 +118,7 @@
 		</div>
 
 		<div
-			class="w-full p-2 font-semibold bg-gradient-to-r from-base-100 to-base-300 rounded-br-2xl border-t border-accent shadow-md"
+			class="w-full p-2 font-semibold bg-gradient-to-r from-base-200 to-base-300 rounded-br-2xl border-t border-accent shadow-md"
 		>
 			Race Outcomes
 		</div>

@@ -14,7 +14,7 @@
 	}
 
 	export let item
-	$: console.log('item: ', item)
+	// $: console.log('item: ', item)
 
 	export let type: string
 

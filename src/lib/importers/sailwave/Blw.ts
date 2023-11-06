@@ -3,9 +3,11 @@ import { formatTime } from '../../utils/formatters'
 
 export default class Blw {
 	data: any
+	file: any
 
 	constructor(props) {
 		this.data = props.data
+		this.file = props.file
 		this.data.cuid = createId()
 	}
 
@@ -202,18 +204,20 @@ export default class Blw {
 			const property = item[0].replace('ser', '')
 			eventObj[property] = item[1]
 		})
+		// console.log('eventObj: ', eventObj)
 
 		const { event, eventwebsite, venue, eventeid, ...rest } = eventObj
 
-		const uniqueIdString =
-			event.toLowerCase().trim().split(' ').join('_') +
-			'-' +
-			eventeid +
-			'-' +
-			venue.toLowerCase().trim().split(' ').join('_')
+		// console.log('blw: ', this.file)
+
+		const uniqueIdString = this.file.name.toLowerCase().trim().split(' ').join('_')
+		'-' + eventeid + '-' + event.toLowerCase().trim().split(' ').join('_')
+
+		const name = event.length > 1 ? event : this.file.name
+		// console.log('uniqueIdString: ', uniqueIdString)
 
 		return {
-			name: event,
+			name,
 			eventwebsite,
 			uniqueIdString,
 			venueName: venue,
@@ -243,7 +247,6 @@ export default class Blw {
 			const property = item[0].replace('scr', '')
 			obj[property] = item[1]
 		})
-
 
 		const { ratingsystem, ratsysa, ratsysb, ...rest } = obj
 

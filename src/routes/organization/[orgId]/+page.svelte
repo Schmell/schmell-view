@@ -41,23 +41,43 @@
 						alt="Title image for {org.name}"
 					/>
 					<!-- Likes and Follows -->
-					<LikeFollow item={org} userId={user?.userId} type="organization" />
+					<div class="right-4 bottom-0 absolute">
+						<LikeFollow item={org} userId={user?.userId} type="organization" />
+					</div>
 				</div>
 				<div class="pt-8 pb-4 px-8">
-					<div class="uppercase tracking-wide text-sm text-accent font-semibold">
+					<div class="uppercase tracking-wide text-2xl text-accent font-semibold">
 						{@html org.name}
 					</div>
 					<a
 						href="mailto:{org.email}"
 						class="block mt-1 text-lg leading-tight font-medium text-base-content hover:underline"
 					>
+						<Icon icon="mdi:email-outline" class="inline" />
 						{org.email}
 					</a>
-					<p class="mt-2 text-base-content">
+					<p class="mt-2 p-4">
 						{@html org.description ? org.description : 'No description provided'}
 					</p>
-					<a href={getHref(org)} class="text-secondary"> {org.website} </a>
+					<a href={getHref(org)} class="text-secondary">
+						<Icon icon="mdi:link" class="inline" />
+						{org.website}
+					</a>
 				</div>
+			</div>
+			<div class="px-4 flex flex-col">
+				<a href="/">
+					<Icon icon="clarity:organization-line" class="inline" />
+					View Series
+				</a>
+				<a href="/events?whereType=organizationId&whereId={org.id}&title={org.name} Events">
+					<Icon icon="mdi:calendar-blank-outline" class="inline" />
+					View Events
+				</a>
+				<a href="/">
+					<Icon icon="mdi:map-marker" class="inline" />
+					View Venues
+				</a>
 			</div>
 			<!-- Tools -->
 			<div class="px-4 pb-4 flex justify-end">

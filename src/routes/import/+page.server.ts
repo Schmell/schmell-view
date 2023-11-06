@@ -47,11 +47,12 @@ export const actions: Actions = {
 		const session = await locals.auth.validate()
 		const formData = await request.formData()
 		const { org, file }: any = Object.fromEntries(formData)
+		console.log('file: ', file)
 		const csvArray = await csv({ noheader: true, output: 'csv', ignoreEmpty: true }).fromString(
 			await file.text()
 		)
 
-		const blw = new Blw({ data: csvArray })
+		const blw = new Blw({ data: csvArray, file })
 		const { uniqueIdString } = blw.getEvent()
 
 		const duplicate = await prisma.event.findFirst({

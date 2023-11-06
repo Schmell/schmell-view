@@ -39,6 +39,7 @@ export async function Populate({ blw, userId, orgId }) {
 		}
 		//
 		const { venueemail, venuewebsite, venueburgee, ...rest } = event
+
 		const eventObj = {
 			...rest,
 			resultColumns,

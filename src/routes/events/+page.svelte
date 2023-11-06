@@ -122,6 +122,9 @@
 							</a>
 						</div>
 					{/if}
+					<div class="text-xs text-base-content pr-2 pb-1">
+						{event.createdAt?.toLocaleDateString()}
+					</div>
 				</div>
 			</ItemCard>
 		{/each}
