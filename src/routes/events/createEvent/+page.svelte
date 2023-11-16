@@ -19,6 +19,7 @@
 	let selectValue
 
 	let loading
+
 	function onSubmit() {
 		// use:enhance function
 		loading = true
@@ -34,9 +35,9 @@
 		step = 'import'
 	}
 
-	function addOrgHandler() {
-		orgId = selectValue
-	}
+	// function addOrgHandler() {
+	// 	orgId = selectValue
+	// }
 </script>
 
 <Page title="Create Event">

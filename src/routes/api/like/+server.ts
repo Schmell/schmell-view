@@ -5,21 +5,19 @@ import { prisma } from '$lib/server/prisma'
 
 export const GET: RequestHandler = async ({ url, locals }) => {
 	const session = await locals.auth.validate()
-	if(!session) throw redirect(307, `/auth/login?from=/results/${url.pathname}`)
+	if (!session) throw redirect(307, `/auth/login?from=/results/${url.pathname}`)
 
 	const likeType = url.searchParams.get('likeType')
-	// console.log('likeType: ', likeType)
 	const unlike = url.searchParams.get('unlike')
-	// console.log('unlike: ', unlike)
 	const itemId = url.searchParams.get('itemId')
-	// console.log('itemId: ', itemId)
+
 	if (!likeType || !itemId) throw fail(500, { message: 'API error' })
 
 	async function like() {
 		switch (likeType) {
 			case 'event':
 				try {
-					return await prisma.like.create({
+					await prisma.like.create({
 						data: {
 							type: 'event',
 							itemId: itemId!,

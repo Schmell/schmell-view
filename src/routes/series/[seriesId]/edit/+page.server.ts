@@ -3,6 +3,7 @@ import { fail, redirect } from '@sveltejs/kit'
 import { superValidate } from 'sveltekit-superforms/server'
 import type { Actions, PageServerLoad } from './$types'
 import { seriesSchema } from './seriesSchema'
+import { goto } from '$app/navigation'
 // import { seriesSchema } from './seriesSchema'
 
 export const load = (async ({ locals, params, url }) => {
@@ -82,7 +83,7 @@ export const actions = {
 		}
 
 		const { Events, organizationId, ...rest } = form.data
-		console.log(Events)
+		// console.log(Events)
 
 		try {
 			await prisma.series.upsert({
@@ -103,14 +104,16 @@ export const actions = {
 		}
 
 		function getRedirect() {
-			// console.log(url.searchParams.get('from'))
-			if (url.searchParams.get('from')) {
-				return url.searchParams.get('from') ?? ''
+			const from = url.searchParams.get('from')
+			if (from) {
+				url.searchParams.delete('from')
+				url.searchParams.delete('/series')
+				return from + url.search
 			}
 			return ''
 		}
-
-		throw redirect(302, getRedirect())
+		//  the redirect is happening on the client now
+		// throw redirect(301, getRedirect())
 	},
 
 	addEvent: async ({ params, url }) => {

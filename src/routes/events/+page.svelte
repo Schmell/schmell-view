@@ -11,6 +11,10 @@
 	import Icon from '@iconify/svelte'
 	import { createPagination } from '@melt-ui/svelte'
 	import type { PageData } from './$types'
+	import { enhance } from '$app/forms'
+	// import { flashCookieOptions } from 'sveltekit-flash-message/server'
+
+	import { getFlash } from 'sveltekit-flash-message/client'
 
 	export let data: PageData
 
@@ -23,7 +27,7 @@
 		elements: { root, pageTrigger, prevButton, nextButton },
 		states: { pages, range, page: currentPage }
 	} = createPagination({
-		count: data.count,
+		count: data.count ?? 0,
 		perPage: pageSize,
 		defaultPage: 1,
 		siblingCount: 1
@@ -87,7 +91,7 @@
 	{:then events}
 		{#each events as event}
 			<!--  -->
-			<ItemCard title={event.name} href="/events/{event.id}">
+			<ItemCard title={event.name} href="/events/{event.id}{$page.url.search}">
 				<div slot="top-right" class="text-xs flex gap-2">
 					<LikeCount userId={user?.userId} item={event} type="event" />
 				</div>
@@ -118,8 +122,24 @@
 									&{$page.url.searchParams.toString()}"
 								class="btn btn-ghost p-1"
 							>
-								<Icon class="text-3xl text-primary" icon="material-symbols:edit-outline" />
+								<Icon class="text-3xl text-primary" width="24" icon="mdi:pencil-outline" />
 							</a>
+						</div>
+
+						<div class="tooltip tooltip-top" data-tip="Delete Event">
+							<form method="post" use:enhance>
+								<button
+									formaction="?/deleteEvent&itemId={event.id}&from={$page.url
+										.pathname}&{$page.url.searchParams.toString()}"
+									data-sveltekit-replacestate={true}
+									class="btn btn-ghost p-1"
+									on:click={() => {
+										// const flash = getFlash(page)
+									}}
+								>
+									<Icon class="text-3xl text-primary" width="24" icon="mdi:trash-outline" />
+								</button>
+							</form>
 						</div>
 					{/if}
 					<div class="text-xs text-base-content pr-2 pb-1">
@@ -130,7 +150,7 @@
 		{/each}
 
 		<!-- Pagination -->
-		{#if data.count > pageSize}
+		{#if data.count && data.count > pageSize}
 			<div class="divider" />
 			<nav {...$root} use:root class="">
 				<p class="flex justify-center text-sm">Showing items {$range.start} - {$range.end}</p>

@@ -19,12 +19,12 @@ declare global {
 
 	// namespace svelte.JSX {
 	// 	interface HTMLAttributes<T> {
-	// 		onclick_outside: () => void;
+	// 		click_outside: () => void
 	// 	}
 	// }
-	interface HTMLAttributes<T> {
-		click_outside: () => void
-	}
+	// interface HTMLAttributes<T> {
+	// 	click_outside: () => void
+	// }
 
 	namespace PrismaJson {
 		type compRest = {

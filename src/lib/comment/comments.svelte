@@ -13,8 +13,6 @@
 		})
 		return new Set(array)
 	}
-
-	// $: console.log(uniqueAvatars())
 </script>
 
 <div class="mt-4">
@@ -23,7 +21,6 @@
 
 		<div class="avatar-group -space-x-4">
 			{#if item?.Comments}
-				<!-- {@const uniqueAvatars = new Set(item.Comments.name)} -->
 				{#each uniqueAvatars() as avatar}
 					<div class="avatar">
 						<div class="w-6 bg-base-300">

@@ -320,14 +320,14 @@
 	//
 </script>
 
-<div class="my-8 border-r-2 border-b-4 border-base-300 rounded-lg">
+<div class="w-fit mt-8 border-r-2 border-b-4 border-base-300 rounded-lg">
 	<div
 		class="flex justify-between py-4 mb-2 px-2 bg-gradient-to-r from-base-200 to-base-300 rounded-t-lg shadow-lg"
 	>
 		<h2 class="text-4xl tracking-wide font-medium">{fleetName}</h2>
 	</div>
 
-	<table class="table table-md table-zebra md:table-sm w-full mr-10 shadow-lg">
+	<table class="table table-md table-zebra md:table-sm shadow-lg w-fit">
 		<thead>
 			{#each $table.getHeaderGroups() as headerGroup}
 				<tr>
@@ -336,7 +336,7 @@
 							{#if !header.isPlaceholder}
 								<!--  -->
 								{#if ['Overall', 'Name', 'Score'].includes(header.column.id)}
-									<div class="dropdown dropdown-right">
+									<div class="dropdown">
 										<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 										<label
 											for=""

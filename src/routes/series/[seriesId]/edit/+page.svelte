@@ -34,9 +34,9 @@
 </script>
 
 <Page title={form.data.name === 'new' ? 'New Series' : form.data.name}>
-	<Form action="?/series" {formObj}>
+	<Form action="?/series&{$page.url.searchParams.toString()}" {formObj}>
 		<Input name="name" {formObj} />
-		<Textarea name="description" {formObj} />
+		<Textarea name="description" rows={4} {formObj} />
 		<Input name="logo" {formObj} />
 		<Input name="titleImage" label="Title Image" {formObj} />
 		<label for="organizationId" class="label"> Organization </label>

@@ -5,10 +5,6 @@
 	import FleetTable from './FleetTable.svelte'
 
 	export let data: PageData
-	
-	$: ({ race, results } = data)
-	// $: console.log('results: ', race)
-
 
 	// first step is turn the unique fleets if any in this race into an array
 	function getUniqueFleetsArray() {
@@ -24,7 +20,7 @@
 		]
 	}
 
-	function getFleetResults(key: string | null | undefined) {
+	function getFleetResults(key) {
 		return data.results?.filter((result) => {
 			// console.log('result: ', result)
 			if (result.Comp?.fleet) {
@@ -32,13 +28,10 @@
 			} else if (result.Comp?.division) {
 				return result.Comp?.division === key
 			}
-
 			// if there is no fleet or division
 			return result
 		})
 	}
-
-	let tables
 
 	function fleetsTables() {
 		let fleetsTables: (Result & {
@@ -54,20 +47,20 @@
 
 		return fleetsTables
 	}
-
-	tables = fleetsTables()
 </script>
 
-<Page title={race?.Event?.name}>
-	{#if !Number(race?.sailed)}
+<Page title={data.race?.Event?.name}>
+	{#if !Number(data.race?.sailed)}
 		<div class="bg-error w-full p-2 text-error-content rounded-md">This Race was not sailed</div>
 	{:else}
-		{#each tables as table}
-			<FleetTable
-				race={data.race}
-				results={table}
-				fleetName={table[0].Comp?.fleet ?? table[0].Comp?.division}
-			/>
-		{/each}
+		<div class="pt-2 flex flex-col items-center">
+			{#each fleetsTables() as table}
+				<FleetTable
+					race={data.race}
+					results={table}
+					fleetName={table[0].Comp?.fleet ?? table[0].Comp?.division}
+				/>
+			{/each}
+		</div>
 	{/if}
 </Page>

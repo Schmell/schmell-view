@@ -13,7 +13,11 @@ export const actions = {
 		const formObj = Object.fromEntries(await request.formData()) as Record<string, string>
 		const { id, type, itemId, comment } = formObj
 
-		await createComment()
+		if (comment.length >= 2) {
+			await createComment()
+		} else {
+			return null
+		}
 
 		async function createComment() {
 			const data = generateUpsert(id)

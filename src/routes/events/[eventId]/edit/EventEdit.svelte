@@ -4,19 +4,29 @@
 	import Icon from '@iconify/svelte'
 	import { superForm } from 'sveltekit-superforms/client'
 	import { eventSchema } from './eventSchema'
+	import { goto } from '$app/navigation'
 
 	export let data
+
+	let submitting = false
 
 	const formObj = superForm(data.form, {
 		taintedMessage: 'Are you sure you want to leave?',
 		validators: eventSchema,
-		dataType: 'json'
+		dataType: 'json',
+		onSubmit: () => {
+			console.log('😄: ')
+			submitting = true
+		},
+		onResult: () => {
+			const from = $page.url.searchParams.get('from') ?? ''
+			// console.log($page.url.searchParams.get('from'))
+			goto(from, { replaceState: true })
+		}
 	})
 
 	$: ({ form } = formObj)
-	// $: console.log('data: ', data.venues)
-	// $: console.log('form: ', $form)
-	// const uniqueIdString =
+
 	function getUniqueIdString() {
 		return (
 			$form.name.toLowerCase().trim().split(' ').join('_') +
@@ -131,5 +141,11 @@
 		</div>
 	</fieldset>
 
-	<Button>Submit</Button>
+	<Button disabled={submitting}>
+		{#if submitting}
+			<span class="loading loading-dots loading-lg" />
+		{:else}
+			Submit
+		{/if}
+	</Button>
 </Form>

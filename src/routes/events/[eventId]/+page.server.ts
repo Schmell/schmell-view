@@ -1,9 +1,10 @@
 import { luciaErrors, prismaError } from '$lib/error-handling'
 import { prisma } from '$lib/server/prisma'
-import { fail } from '@sveltejs/kit'
+import { fail, redirect } from '@sveltejs/kit'
 import { superValidate } from 'sveltekit-superforms/server'
 import { z } from 'zod'
 import type { PageServerLoad } from './$types'
+import type { Prisma } from '@prisma/client'
 
 const commentSchema = z.object({
 	comment: z.string().max(256).nullish(),
@@ -13,12 +14,6 @@ const commentSchema = z.object({
 })
 
 const deletCommentSchema = z.object({
-	id: z.string()
-})
-
-const likeSchema = z.object({
-	comment: z.string().max(256),
-	type: z.string(),
 	id: z.string()
 })
 
@@ -38,25 +33,11 @@ export const load = (async ({ params, url }) => {
 					public: true,
 					complete: true,
 					eventwebsite: true,
-					_count: { select: { Comments: true, Likes: true, Follows: true } },
-					Comments: {
-						orderBy: { createdAt: 'desc' },
-						select: {
-							comment: true,
-							id: true,
-							type: true,
-							User: true,
-							Likes: true,
-
-							_count: { select: { Likes: true } }
-						}
-					},
 					Organization: { select: { titleImage: true, name: true, id: true } },
 					Venue: { select: { name: true, website: true, burgee: true } },
-					// User: { select: { name: true, website: true } },
-					Races: { orderBy: { name: 'asc' } },
 					Likes: { select: { id: true, type: true, userId: true, itemId: true } },
-					Follows: { select: { id: true, type: true, userId: true, itemId: true } }
+					Follows: { select: { id: true, type: true, userId: true, itemId: true } },
+					_count: true
 				}
 			})
 		} catch (error) {
@@ -68,14 +49,77 @@ export const load = (async ({ params, url }) => {
 		}
 	} // getEvent()
 
+	function getRaces() {
+		try {
+			return prisma.race.findMany({
+				where: { eventId: params.eventId },
+				orderBy: { name: 'asc' }
+			})
+		} catch (error) {
+			console.log('error: ', error)
+			return []
+		}
+	}
+
+	function getCommentsAndCount() {
+		try {
+			return prisma.$transaction([
+				prisma.comment.findMany({
+					where: { eventId: params.eventId },
+					orderBy: { createdAt: 'desc' },
+					select: {
+						comment: true,
+						id: true,
+						type: true,
+						User: { select: { id: true, username: true, avatar: true } },
+						Likes: true,
+						Follow: true,
+						_count: true
+					},
+					skip: 0,
+					take: 4
+				}),
+
+				prisma.comment.count({
+					where: { eventId: params.eventId }
+				})
+			])
+			//
+		} catch (error) {
+			console.log('error: ', error)
+			return []
+		}
+	}
+
+	async function getComments() {
+		try {
+			return await prisma.comment.findMany({
+				where: { eventId: params.eventId },
+				orderBy: { createdAt: 'desc' },
+				select: {
+					comment: true,
+					id: true,
+					type: true,
+					User: { select: { id: true, username: true, avatar: true } },
+					Likes: true,
+					Follow: true,
+					_count: true
+				},
+				skip: 0,
+				take: 4
+			})
+			//
+		} catch (error) {
+			console.log('error: ', error)
+			return fail(500, { message: 'Mooked' })
+		}
+	}
+
 	// edit comment
 	let eventComment = {}
 	const editCommentId = url.searchParams.get('editComment')
 
 	if (editCommentId) {
-		// Pass the comment to be edited back to the page
-		// Make the comment component use the populated comment to pre-fill the form
-		// then just post to ?/comment formAction
 		try {
 			eventComment = await prisma.comment.findFirstOrThrow({
 				where: { id: editCommentId }
@@ -85,7 +129,6 @@ export const load = (async ({ params, url }) => {
 			prismaError(error)
 			console.log('error: ', error)
 			throw fail(500, { messgage: 'Unknown Error occured' })
-			// return fail(500, { messgage: 'Unknown Error occured' });
 		}
 	}
 
@@ -98,92 +141,26 @@ export const load = (async ({ params, url }) => {
 	return {
 		deleteCommentForm,
 		commentForm,
-		event: getEvent()
+		event: getEvent(),
+		comments: await getComments(),
+		await: {
+			// commentsAndCount: getCommentsAndCount(),
+			races: getRaces()
+		}
 	}
 }) satisfies PageServerLoad
 
-// export const actions = {
-// 	like: async ({ request, params, locals, url }) => {
-// 		const formData = Object.fromEntries(await request.formData()) as Record<string, string>
+export const actions = {
+	deleteEvent: async ({ locals, url }) => {
+		const session = locals.auth.validate()
+		if (!session) throw redirect(307, `/auth/login?from=${url.pathname}${url.search}`)
 
-// 		const session = await locals.auth.validate()
-// 		if (!session) throw redirect(301, `/login?from=${url.pathname}`)
+		const itemId = url.searchParams.get('itemId') ?? ''
 
-// 		try {
-// 			return await prisma.like.create({
-// 				data: {
-// 					type: 'comment',
-// 					eventComment: { connect: { id: formData.commentId } },
-// 					User: { connect: { id: session?.user?.userId } },
-// 					Event: { connect: { id: params.eventId } }
-// 				}
-// 			})
-// 			//
-// 		} catch (error) {
-// 			luciaErrors(error)
-// 			prismaError(error)
-// 			console.log('error: ', error)
-// 			return fail(500, {
-// 				message: 'Unknown Error occured'
-// 			})
-// 		}
-// 	},
-
-// 	unlike: async ({ request, locals, url }) => {
-// 		const formData = Object.fromEntries(await request.formData()) as Record<string, string>
-
-// 		const session = await locals.auth.validate()
-// 		if (!session) throw redirect(301, `/login?from=${url.pathname}`)
-
-// 		try {
-// 			await prisma.like.delete({
-// 				where: { id: formData.likeId }
-// 			})
-// 			//
-// 		} catch (error) {
-// 			luciaErrors(error)
-// 			prismaError(error)
-// 			console.log('error: ', error)
-// 			return fail(500, {
-// 				message: 'Unknown Error occured'
-// 			})
-// 		}
-// 	},
-
-// 	comment: async ({ request, locals, params, url }) => {
-// 		const commentForm = await superValidate(request, commentSchema, { id: 'commentForm' })
-
-// 		const { data } = commentForm
-
-// 		const session = await locals.auth.validate()
-// 		if (!session) throw redirect(301, `/login?from=${url.pathname}`)
-
-// 		try {
-// 			await prisma.comment.upsert({
-// 				where: { id: data.id },
-// 				update: {
-// 					comment: data.comment ?? '',
-// 					type: data.type
-// 				},
-// 				create: {
-// 					comment: data.comment ?? '',
-// 					type: data.type,
-// 					User: { connect: { id: session?.user?.userId } },
-// 					Event: { connect: { id: params.eventId } }
-// 				}
-// 			})
-
-// 			data.comment = ''
-// 			//
-// 		} catch (error) {
-// 			luciaErrors(error)
-// 			prismaError(error)
-// 			console.log('error: ', error)
-// 			return fail(500, {
-// 				message: 'Unknown Error occured'
-// 			})
-// 		}
-
-// 		throw redirect(307, `/events/${params.eventId}`)
-// 	}
-// } satisfies Actions
+		try {
+			await prisma.event.delete({ where: { id: itemId } })
+		} catch (error) {
+			console.log('error: ', error)
+		}
+	}
+}

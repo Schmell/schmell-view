@@ -1,40 +1,30 @@
 <script script lang="ts">
 	import { page } from '$app/stores'
 	import { Page } from '$components/layout'
-	import Comments from '$lib/comment/comments.svelte'
 	import LikeFollow from '$lib/like/like-follow.svelte'
+	import Comments from '$lib/newComment/comments.svelte'
+	import { isUrl } from '$lib/utils'
 	import Icon from '@iconify/svelte'
-	import { superForm } from 'sveltekit-superforms/client'
 	import type { PageData } from './$types'
-	import { LikeFollowCount } from '$lib/like'
 
 	export let data: PageData
-	// export let form
-	$: ({ event, user } = data)
-	// $: console.log('event: ', event)
-	// $: console.log('user: ', user)
+	$: ({ event, user, comments } = data)
 
 	let showRaces: boolean = true
 
 	function getHref(website: string | null) {
 		if (!website) return null
-		return website && website.startsWith('http://') ? website : `http://${website}`
+		return (website && website.startsWith('http://')) || website.startsWith('https://')
+			? website
+			: `http://${website}`
 	}
 
 	function checkForImage(imageString) {
 		if (!imageString) return null
-		if (
-			imageString.startsWith('http://') ||
-			imageString.startsWith('https://') ||
-			imageString.startsWith('data:image')
-		)
-			return imageString
-		return ''
+		if (isUrl(imageString)) return imageString
+		return null
 	}
-
-	const commentFormObj = superForm(data.commentForm)
-	// const deleteCommentFormObj = superForm(data.deleteCommentForm)
-	// $: console.log('$page.url.searchParams: ', $page.url.searchParams)
+	//
 </script>
 
 {#if data}
@@ -66,8 +56,8 @@
 					/>
 					<div class="absolute w-full flex justify-end bottom-0 right-4 p-2">
 						<div>
-							<LikeFollow item={event} userId={user?.userId} type="event" />
 							<!-- Likes and follows -->
+							<LikeFollow item={event} userId={user?.userId} type="event" />
 							<div class="flex justify-end text-sm">
 								<span class="pr-1 flex items-center text-xs">
 									{event._count.Likes}
@@ -187,36 +177,46 @@
 						{/if}
 					</div>
 				</div>
-
 				<!-- ////////////////////////////////////////////////////////////////////////////// -->
 
 				{#if showRaces}
-					{#each event.Races as race}
-						<a href="/results/{race.id}">
-							<div class=" p-0 m-2 mx-4 border-t text-base-content">
-								<div class="w-full pt-1">
-									<h1 class="text-xl font-semibold">{race.name}</h1>
-								</div>
-								<div class="flex justify-between">
-									<div class="text-xs">
-										{race.date ? race.date : ''}
-										{race.time ? `- ${race.time}` : ''}
+					{#await data.await.races}
+						<progress class="progress progress-accent px-4 w-full" />
+					{:then races}
+						{#each races as race}
+							<a href="/results/{race.id}">
+								<div class=" p-2 px-8 border-b-4 rounded-lg border-base-200 m-4">
+									<div class="w-full pt-1">
+										<h1 class="text-xl font-semibold">{race.name}</h1>
 									</div>
+									<div class="flex justify-between pb-2">
+										<div class="text-xs">
+											{race.date ? race.date : ''}
+											{race.time ? `- ${race.time}` : ''}
+										</div>
 
-									<div
-										class="badge badge-success text-success-content shadow-md"
-										class:badge-error={!Number(race.sailed)}
-									>
-										{Number(race.sailed) ? 'Sailed' : 'Unsailed'}
+										<div
+											class="badge badge-success shadow-md"
+											class:badge-error={!Number(race.sailed)}
+										>
+											{Number(race.sailed) ? 'Sailed' : 'Unsailed'}
+										</div>
 									</div>
 								</div>
-							</div>
-						</a>
-					{/each}
+							</a>
+						{/each}
+					{/await}
 				{/if}
 			</div>
-
-			<Comments item={event} type="event" {user} formObj={commentFormObj} />
-		</div></Page
-	>
+			<div class="p-4 pb-12">
+				<Comments
+					type="event"
+					item={event}
+					comments={data.comments}
+					{user}
+					commentForm={data.commentForm}
+				/>
+			</div>
+		</div>
+	</Page>
 {/if}

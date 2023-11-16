@@ -15,7 +15,7 @@
 		<h1>No user found</h1>
 	{:else}
 		<div
-			class="p-2 pl-4 w-full flex gap-4 items-center rounded-xl shadow-md bg-base-100 border-l-4 border-b-4 border-base-300"
+			class="p-2 pl-4 w-full flex gap-4 items-center rounded-xl shadow-md border-l-4 border-b-4 border-base-300"
 		>
 			<div class="p-1 bg-base-200 rounded-full shadow-md">
 				<img
@@ -71,7 +71,7 @@
 										href="/events/{event?.id}"
 										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-accent w-full rounded-lg shadow-xl"
 									>
-										<div class="capitalize w-full p-2 font-bold rounded-r-xl bg-info bg-opacity-10">
+										<div class="capitalize w-full p-2 font-bold rounded-t-xl bg-info bg-opacity-10">
 											<div class="flex justify-between">
 												<div class="line-clamp-1">{event.name}</div>
 												<div class="flex gap-1 items-center min-w-fit text-xs pr-2">
@@ -92,9 +92,14 @@
 												</div>
 												<!-- Need to have a complete flag on the event -->
 												{#if event._count.Races === event.Races.length || event.complete}
-													<div class="badge badge-success">Complete</div>
+													<div class="badge badge-success">
+														<Icon icon="mdi:check" />
+														<!-- complete -->
+													</div>
 												{:else}
-													<div class="badge badge-warning">In progress</div>
+													<div class="badge badge-warning">
+														<Icon icon="material-symbols:progress-activity" />
+													</div>
 												{/if}
 											</div>
 										</div>
@@ -126,25 +131,40 @@
 									</a>
 								{/each}
 
-								{#each series as event}
+								{#each series as ser}
 									<a
-										href="/series/{event?.id}"
+										href="/series/{ser?.id}"
 										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-secondary w-full rounded-lg shadow-xl"
 									>
 										<div
-											class="capitalize w-full pl-2 font-bold rounded-r-xl bg-secondary bg-opacity-10"
+											class="capitalize w-full p-2 font-bold rounded-t-xl bg-secondary bg-opacity-10"
 										>
-											{event.Organization?.name}
-										</div>
-
-										<div class="flex justify-between w-full pl-4">
-											<div>
-												{@html event?.name}
-												<div class="text-xs opacity-40">
-													{event?.createdAt?.toLocaleDateString()}
+											<div class="flex justify-between">
+												<div class="line-clamp-1">{ser.name}</div>
+												<div class="flex gap-1 items-center min-w-fit text-xs pr-2">
+													<Icon icon="mdi:thumb-up" />
+													{ser._count.Likes} /
+													<Icon icon="mdi:bell-ring" />
+													{ser._count.Follows}
 												</div>
 											</div>
 										</div>
+										<div class="p-2 px-4">
+											{@html ser.description}
+										</div>
+
+										<a
+											href="/organization/{ser.Organization?.id}"
+											class="flex justify-between w-full px-4"
+										>
+											<div class="flex gap-2 items-center text-xs">
+												<Icon icon="clarity:organization-line" />
+												{ser.Organization?.name}
+											</div>
+											<div class="text-xs opacity-40">
+												{ser?.createdAt?.toLocaleDateString()}
+											</div>
+										</a>
 									</a>
 								{/each}
 							{/if}
@@ -173,7 +193,7 @@
 									>
 										<a href="/events/{follow.Event?.id}">
 											<div
-												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-info bg-opacity-10"
+												class="capitalize w-full pl-2 font-bold rounded-t-xl bg-info bg-opacity-10"
 											>
 												{follow.type}
 											</div>
@@ -200,7 +220,7 @@
 									>
 										<a href="/venue/{follow.Venue?.id}">
 											<div
-												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-secondary bg-opacity-10"
+												class="capitalize w-full pl-2 font-bold rounded-t-xl bg-secondary bg-opacity-10"
 											>
 												{follow.type}
 											</div>
@@ -228,7 +248,7 @@
 									>
 										<a href="/organization/{follow.Organization?.id}">
 											<div
-												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-warning bg-opacity-10"
+												class="capitalize w-full pl-2 font-bold rounded-t-xl bg-warning bg-opacity-10"
 											>
 												{follow.type}
 											</div>
@@ -261,7 +281,7 @@
 									>
 										<a href="/comp/{follow.Comp?.id}">
 											<div
-												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-success bg-opacity-10"
+												class="capitalize w-full pl-2 font-bold rounded-t-xl bg-success bg-opacity-10"
 											>
 												{follow.type}
 											</div>
@@ -311,7 +331,7 @@
 										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-warning w-full rounded-lg shadow-xl"
 									>
 										<div
-											class="capitalize w-full p-2 font-bold rounded-r-xl bg-warning bg-opacity-10"
+											class="capitalize w-full p-2 font-bold rounded-t-xl bg-warning bg-opacity-10"
 										>
 											<div class="flex justify-between">
 												<div>{org.name}</div>
@@ -363,7 +383,7 @@
 									>
 										<a href="/events/{like.Event?.id}">
 											<div
-												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-info bg-opacity-10"
+												class="capitalize w-full pl-2 font-bold rounded-t-xl bg-info bg-opacity-10"
 											>
 												{like.type}
 											</div>
@@ -392,7 +412,7 @@
 										class="p-0 pb-2 flex flex-col gap-4 mb-4 border-l-4 border-success w-full rounded-lg shadow-xl"
 									>
 										<div
-											class="flex justify-between w-full pl-2 py-2 pr-4 rounded-r-xl bg-success bg-opacity-10"
+											class="flex justify-between w-full pl-2 py-2 pr-4 rounded-t-xl bg-success bg-opacity-10"
 										>
 											<div class="capitalize tracking-wide font-bold">
 												{like.Comment?.type}
@@ -446,7 +466,7 @@
 									>
 										<a href="/venue/{like.Venue?.id}">
 											<div
-												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-secondary bg-opacity-10"
+												class="capitalize w-full pl-2 font-bold rounded-t-xl bg-secondary bg-opacity-10"
 											>
 												{like.type}
 											</div>
@@ -478,7 +498,7 @@
 									>
 										<a href="/venue/{like.Organization?.id}">
 											<div
-												class="capitalize w-full pl-2 font-bold rounded-r-xl bg-warning bg-opacity-10"
+												class="capitalize w-full pl-2 font-bold rounded-t-xl bg-warning bg-opacity-10"
 											>
 												{like.type}
 											</div>

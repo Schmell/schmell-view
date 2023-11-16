@@ -1,13 +1,13 @@
 <script lang="ts">
+	import { enhance } from '$app/forms'
 	import { page } from '$app/stores'
-	import { Form } from '$components/form'
 	import LikeCount from '$lib/like/like-count.svelte'
 	import { formatDateTime } from '$lib/utils/formatters'
 	import Icon from '@iconify/svelte'
+	import type { User } from 'lucia'
 
-	export let formObj
 	export let item
-	export let user
+	export let user: User
 </script>
 
 <div class="flex items-start gap-2">
@@ -28,25 +28,26 @@
 			</div>
 		</div>
 		{#if user.userId === item.User?.id || user?.userId === item.publisherId}
-			<div class="dropdown dropdown-end pb-1">
+			<div class="dropdown dropdown-top dropdown-end pb-1">
 				<!--svelte-ignore a11y-label-has-associated-control -->
 				<label tabindex="-1"> <Icon icon="mdi:dots-vertical" /> </label>
 
-				<ul
-					tabindex="-1"
-					class="dropdown-content z-10 menu p-2 shadow bg-base-100 rounded-box w-52"
-				>
-					<li>
-						<a href="{$page.url.pathname}?editComment={item.id}"> Edit </a>
-					</li>
+				<div tabindex="-1" class="dropdown-content menu shadow-lg bg-base-200 rounded-box w-24">
+					<a href="{$page.url.pathname}?editComment={item.id}" class="btn btn-xs"> Edit </a>
+					<!-- <button
+						on:click={() => {
+							goto(`${$page.url.pathname}?editComment=${item.id}`)
+						}}
+						class="btn btn-xs p-1 place-content-start"
+					>
+						Edit
+					</button> -->
 
-					<Form action="/api/comment/?/delete" {formObj}>
-						<li>
-							<input type="hidden" name="id" value={item.id} />
-							<button class="text-error"> Delete </button>
-						</li>
-					</Form>
-				</ul>
+					<form method="post" action="/api/comment/?/delete" use:enhance>
+						<input type="hidden" name="id" value={item.id} />
+						<button class="btn btn-xs w-full text-error"> Delete </button>
+					</form>
+				</div>
 			</div>
 		{/if}
 

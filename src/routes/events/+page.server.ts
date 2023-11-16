@@ -1,12 +1,19 @@
 import { prisma } from '$lib/server/prisma'
-import { fail, redirect, type Actions } from '@sveltejs/kit'
+import { fail, type Actions } from '@sveltejs/kit'
+import { redirect, setFlash } from 'sveltekit-flash-message/server'
 import type { PageServerLoad } from './$types'
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async (event) => {
+	const { locals, url } = event
 	const session = await locals.auth.validate()
 
 	if (!session) {
-		throw redirect(302, `/auth/login?from=${url.pathname}`)
+		throw redirect(
+			302,
+			`/auth/login?from=${url.pathname}`,
+			{ type: 'error', message: 'Not Authorised' },
+			event
+		)
 	}
 
 	const skip = url.searchParams.get('skip')
@@ -24,33 +31,36 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		return {}
 	}
 	// console.log('getWhere(): ', getWhere())
+	async function getEventsCount() {
+		try {
+			return await prisma.event.count({ where: getWhere() })
+		} catch (error) {
+			console.log('error: ', error)
+		}
+	}
 
 	async function getEvents() {
 		try {
-			return await prisma.$transaction([
-				prisma.event.findMany({
-					where: getWhere(),
-					orderBy: sort(),
-					select: {
-						id: true,
-						publisherId: true,
-						name: true,
-						venueName: true,
-						description: true,
-						createdAt: true,
-						Publisher: true,
-						Organization: { select: { name: true, id: true } },
-						Venue: { select: { name: true, id: true } },
-						Follows: true,
-						Likes: { select: { id: true, eventId: true, userId: true } },
-						_count: { select: { Likes: true, Follows: true } }
-					},
-					skip: Number(skip ?? 0),
-					take: Number(take ?? 10)
-				}),
-
-				prisma.event.count({ where: getWhere() })
-			])
+			return await prisma.event.findMany({
+				where: getWhere(),
+				orderBy: sort(),
+				select: {
+					id: true,
+					publisherId: true,
+					name: true,
+					venueName: true,
+					description: true,
+					createdAt: true,
+					Publisher: true,
+					Organization: { select: { name: true, id: true } },
+					Venue: { select: { name: true, id: true } },
+					Follows: true,
+					Likes: { select: { id: true, eventId: true, userId: true } },
+					_count: { select: { Likes: true, Follows: true } }
+				},
+				skip: Number(skip ?? 0),
+				take: Number(take ?? 10)
+			})
 		} catch (error: any) {
 			throw fail(500, { message: 'Get event Fail', error: error.message })
 		}
@@ -70,12 +80,12 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		}
 	}
 
-	const [events, count] = await getEvents()
+	// const [events, count] = await getEvents()
 	// console.log('count: ', count)
 	return {
 		title,
-		events,
-		count
+		events: getEvents(),
+		count: getEventsCount()
 	}
 }
 
@@ -89,5 +99,29 @@ export const actions = {
 			console.log('error: ', error)
 			return fail(500, { message: 'Sort By Org Fail' })
 		}
+	},
+
+	deleteEvent: async (event) => {
+		const { locals, url } = event
+		const session = locals.auth.validate()
+		if (!session) throw redirect(307, `/auth/login?from=${url.pathname}${url.search}`)
+
+		const itemId = url.searchParams.get('itemId') ?? ''
+
+		try {
+			// Need this because of many-to-many relations
+			await prisma.comp.deleteMany({
+				where: { Events: { every: { id: itemId } } }
+			})
+
+			await prisma.event.delete({
+				where: { id: itemId }
+			})
+		} catch (error) {
+			console.log('error: ', error)
+		}
+
+		const message = { type: 'success', message: 'Event was deleted' } as const
+		setFlash(message, event)
 	}
 } satisfies Actions

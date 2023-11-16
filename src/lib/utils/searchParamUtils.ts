@@ -4,6 +4,22 @@ page.subscribe((store) => {
 	p = store
 })
 
+export function searchParams<T extends readonly string[]>(keys: T, url: URL) {
+	const params = url.searchParams
+
+	for (let key of keys) {
+		if (!params.has(key)) {
+			throw new Error()
+		}
+	}
+
+	return {
+		get<K extends T[number]>(key: K): string | null {
+			return url.searchParams.get(key)
+		}
+	}
+}
+
 export function excludePaginationSearchParams() {
 	// May have to provide a
 	if (p.url.searchParams.get('skip')) {
