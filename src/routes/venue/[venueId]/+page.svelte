@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores'
-	import Comments from '$lib/comment/comments.svelte'
+	import Comments from '$lib/newComment/comments.svelte'
 	import Page from '$lib/components/layout/Page.svelte'
 	import LikeFollow from '$lib/like/like-follow.svelte'
 	import Icon from '@iconify/svelte'
@@ -26,7 +26,7 @@
 		return ''
 	}
 
-	const commentFormObj = superForm(data.commentForm)
+	// const commentFormObj = superForm(data.commentForm)
 </script>
 
 <Page title={venue.name}>
@@ -39,18 +39,21 @@
 				alt={venue.name}
 			/>
 		{/if}
-		<div class="w-full rounded-tr-xl rounded-tl-xl rounded-bl-xl rounded-br-full">
-			<img
-				class="pl-2 rounded-xl w-full"
-				class:blur-sm={!venue.titleImage}
-				src={venue.titleImage
-					? venue.titleImage
-					: 'https://cork.org/wp-content/uploads/2011/06/POHBirdsEyeView.jpg'}
-				alt={venue.name}
-			/>
+		<div class="relative pb-0">
+			<div class="w-full rounded-tr-xl rounded-tl-xl rounded-bl-xl rounded-br-full">
+				<img
+					class="pl-2 rounded-xl w-full"
+					class:blur-sm={!venue.titleImage}
+					src={venue.titleImage
+						? venue.titleImage
+						: 'https://cork.org/wp-content/uploads/2011/06/POHBirdsEyeView.jpg'}
+					alt={venue.name}
+				/>
+			</div>
+			<div class="absolute -bottom-3 right-0">
+				<LikeFollow type="venue" item={venue} userId={user?.userId} />
+			</div>
 		</div>
-
-		<LikeFollow type="venue" item={venue} userId={user?.userId} />
 	</div>
 
 	{#if venue.description}
@@ -75,9 +78,9 @@
 			</div>
 			<div class="flex gap-2 items-center pt-4 text-md font-bold uppercase">
 				<Icon icon="mdi:eye-arrow-right-outline" />
-				<a href="/events?whereType=venueId&whereId={venue.id}&title={venue.name} events"
-					>View events</a
-				>
+				<a href="/events?whereType=venueId&whereId={venue.id}&title={venue.name} events">
+					View events
+				</a>
 			</div>
 		</div>
 
@@ -154,5 +157,12 @@
 			</div>
 		{/if}
 	</div>
-	<Comments item={venue} type="venue" user={data.user} formObj={commentFormObj} />
+	<!-- <Comments item={venue} type="venue" user={data.user} formObj={commentFormObj} /> -->
+	<Comments
+		item={venue}
+		type="venue"
+		user={data.user}
+		commentForm={data.commentForm}
+		comments={venue.Comments}
+	/>
 </Page>

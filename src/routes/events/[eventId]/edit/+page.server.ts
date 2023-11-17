@@ -20,9 +20,7 @@ export const load = async ({ params, locals, url }) => {
 
 	async function getVenues() {
 		try {
-			return await prisma.venue.findMany({
-				// where: { publisherId: session?.user.userId }
-			})
+			return await prisma.venue.findMany()
 		} catch (err) {
 			throw error(404, { message: `get venue in event edit page error: ${err}` })
 		}
@@ -49,8 +47,6 @@ export const actions = {
 		}
 
 		const { Venue, ...rest } = form.data
-
-		// console.log('form: ', form)
 
 		try {
 			await prisma.event.upsert({

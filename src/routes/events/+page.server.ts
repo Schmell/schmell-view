@@ -51,7 +51,7 @@ export const load: PageServerLoad = async (event) => {
 					venueName: true,
 					description: true,
 					createdAt: true,
-					Publisher: true,
+					Publisher: { select: { id: true, username: true, avatar: true } },
 					Organization: { select: { name: true, id: true } },
 					Venue: { select: { name: true, id: true } },
 					Follows: true,

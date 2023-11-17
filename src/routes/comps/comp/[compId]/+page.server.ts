@@ -38,7 +38,6 @@ export const actions = {
 				})
 			} catch (error) {
 				console.log('error: ', error)
-				// return fail(404, { message: 'getEvents failed' })
 				return {
 					Events: [null]
 				}

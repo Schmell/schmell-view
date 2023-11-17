@@ -1,6 +1,4 @@
 <script lang="ts">
-	import type { Prisma } from '@prisma/client'
-	import type { User } from 'lucia'
 	import Comment from './comment.svelte'
 	import CommentForm from './commentForm.svelte'
 
@@ -10,9 +8,10 @@
 	export let commentForm
 	export let type: string
 
+	// $: console.log('item: ', item._count.Comments)
+
 	function uniqueAvatars(): Set<string> {
 		const array = comments?.map((comment) => {
-			// @ts-ignore
 			return comment.User?.avatar
 		})
 		return new Set(array)
@@ -76,20 +75,24 @@
 			}}
 		/> -->
 	</div>
-	<div class="py-4">
-		<button
-			on:click={() => {
-				getNextComments()
-			}}
-			class="btn btn-outline btn-sm w-full"
-			disabled={nextCommentsLoading}
-		>
-			{#if nextCommentsLoading}
-				<span class="loading loading-dots loading-md" />
-			{:else}
-				See more
-			{/if}
-		</button>
-	</div>
+
+	<!--  -->
+	{#if item._count.Comments > 4}
+		<div class="py-4">
+			<button
+				on:click={() => {
+					getNextComments()
+				}}
+				class="btn btn-outline btn-sm w-full"
+				disabled={nextCommentsLoading}
+			>
+				{#if nextCommentsLoading}
+					<span class="loading loading-dots loading-md" />
+				{:else}
+					See more
+				{/if}
+			</button>
+		</div>
+	{/if}
 	<!-- item._count.Comments > pageComments.length -->
 </div>

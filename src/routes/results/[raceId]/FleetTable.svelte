@@ -557,17 +557,17 @@
 			{/each}
 		</thead>
 
+		<!-- Body -->
 		<tbody>
 			{#each $table.getRowModel().rows as row, i}
-				<!-- {@debug row} -->
 				<tr
 					on:click={(e) => {
 						row.toggleSelected()
 					}}
-					class:odd={i % 2 == 0 && !row.getIsSelected()}
-					class:even={!(i % 2 == 0) && !row.getIsSelected()}
 					class:selectedEven={row.getIsSelected() && i % 2 == 0}
 					class:selectedOdd={row.getIsSelected() && !(i % 2 == 0)}
+					class:odd={i % 2 == 0 && !row.getIsSelected()}
+					class:even={!(i % 2 == 0) && !row.getIsSelected()}
 				>
 					{#each row.getVisibleCells() as cell}
 						<td>
@@ -600,21 +600,21 @@
 </div>
 
 <style>
-	/* tr:nth-child(odd) td {
-		@apply bg-base-100;
-	} */
-
 	.odd {
 		@apply bg-base-100;
 	}
+
 	.even {
 		@apply bg-base-200;
 	}
 
 	.selectedEven {
-		@apply bg-info border border-accent;
+		@apply bg-info text-neutral-focus;
 	}
+
 	.selectedOdd {
-		@apply bg-info text-info-content border border-accent;
+		--tw-bg-opacity: 0.8 !important;
+		background-color: hsl(var(--in) / var(--tw-bg-opacity)) !important;
+		@apply text-neutral-focus;
 	}
 </style>

@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types'
 
-export const load = (async ({ locals, params, url }) => {
+export const load = (async () => {
 	//
 	function getSeries() {
 		try {

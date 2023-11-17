@@ -12,7 +12,7 @@
 
 <div>
 	<div class={cn(' w-full h-full fixed top-0 overflow-scroll', { className })}>
-		<div class="mt-32 relative">
+		<div class="mt-36 relative">
 			<div class="mx-4 mb-24">
 				<slot />
 			</div>

@@ -8,7 +8,7 @@
 	export let data: PageData
 
 	$: ({ orgs, user } = data)
-	// $: console.log('orgs: ', orgs);
+	$: console.log('orgs: ', orgs)
 </script>
 
 <Page title="All Organizations">
@@ -33,7 +33,7 @@
 					{/if}
 				</div>
 				<div slot="top-right" class="text-xs">
-					<a href="/">
+					<a href="/user/{org.Owner?.id}">
 						@{org.Owner?.username}
 					</a>
 				</div>

@@ -46,7 +46,7 @@
 		"vite": "^4.3.6",
 		"vitest": "^0.25.3",
 		"zod": "^3.22.2",
-		"zod-prisma-types": "^2.7.9"
+		"zod-prisma-types": "^3.1.6"
 	},
 	"type": "module",
 	"dependencies": {
