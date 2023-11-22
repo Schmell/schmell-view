@@ -3,18 +3,17 @@
 	import { page } from '$app/stores'
 	import { Button } from '$components/form'
 	import Icon from '@iconify/svelte'
-	import { onMount } from 'svelte'
 
 	export let orgs
 	export let action
 	$: ({ orgs, data } = $$props)
 
 	let orgId
-	$: console.log('orgId: ', orgId)
+	// $: console.log('orgId: ', orgId)
 	$: if (orgId) step = 'import'
 
 	let step = ''
-	$: console.log('step: ', step)
+	// $: console.log('step: ', step)
 
 	let selectValue
 	// $: console.log('selectValue: ', selectValue)

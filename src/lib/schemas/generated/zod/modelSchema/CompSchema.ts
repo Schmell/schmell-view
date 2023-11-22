@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { NullableJsonValue } from "../inputTypeSchemas/NullableJsonValue"
-import type { NullableJsonInput } from '../inputTypeSchemas/transformJsonNull';
+import { JsonValueSchema } from '../inputTypeSchemas/JsonValueSchema'
+import type { JsonValueType } from '../inputTypeSchemas/JsonValueSchema';
 import type { UserWithRelations } from './UserSchema'
 import type { UserPartialWithRelations } from './UserSchema'
 import type { EventWithRelations } from './EventSchema'
@@ -52,7 +52,7 @@ export const CompSchema = z.object({
   /**
    * [compRest]
    */
-  rest: NullableJsonValue.optional(),
+  rest: JsonValueSchema,
   image: z.string().nullish(),
   publisherId: z.string().nullish(),
   createdAt: z.date().nullish(),
@@ -84,7 +84,7 @@ export type CompRelations = {
 };
 
 export type CompWithRelations = Omit<z.infer<typeof CompSchema>, "rest"> & {
-  rest?: NullableJsonInput;
+  rest?: JsonValueType | null;
 } & CompRelations
 
 export const CompWithRelationsSchema: z.ZodType<CompWithRelations> = CompSchema.merge(z.object({
@@ -112,7 +112,7 @@ export type CompPartialRelations = {
 };
 
 export type CompPartialWithRelations = Omit<z.infer<typeof CompPartialSchema>, "rest"> & {
-  rest?: NullableJsonInput;
+  rest?: JsonValueType | null;
 } & CompPartialRelations
 
 export const CompPartialWithRelationsSchema: z.ZodType<CompPartialWithRelations> = CompPartialSchema.merge(z.object({
@@ -126,7 +126,7 @@ export const CompPartialWithRelationsSchema: z.ZodType<CompPartialWithRelations>
 })).partial()
 
 export type CompWithPartialRelations = Omit<z.infer<typeof CompSchema>, "rest"> & {
-  rest?: NullableJsonInput;
+  rest?: JsonValueType | null;
 } & CompPartialRelations
 
 export const CompWithPartialRelationsSchema: z.ZodType<CompWithPartialRelations> = CompSchema.merge(z.object({

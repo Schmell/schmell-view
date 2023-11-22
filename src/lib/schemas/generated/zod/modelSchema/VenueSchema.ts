@@ -11,10 +11,10 @@ import type { CommentWithRelations } from './CommentSchema'
 import type { CommentPartialWithRelations } from './CommentSchema'
 import type { AddressWithRelations } from './AddressSchema'
 import type { AddressPartialWithRelations } from './AddressSchema'
-import type { UserWithRelations } from './UserSchema'
-import type { UserPartialWithRelations } from './UserSchema'
 import type { ContactWithRelations } from './ContactSchema'
 import type { ContactPartialWithRelations } from './ContactSchema'
+import type { UserWithRelations } from './UserSchema'
+import type { UserPartialWithRelations } from './UserSchema'
 import { EventWithRelationsSchema } from './EventSchema'
 import { EventPartialWithRelationsSchema } from './EventSchema'
 import { SeriesWithRelationsSchema } from './SeriesSchema'
@@ -27,10 +27,10 @@ import { CommentWithRelationsSchema } from './CommentSchema'
 import { CommentPartialWithRelationsSchema } from './CommentSchema'
 import { AddressWithRelationsSchema } from './AddressSchema'
 import { AddressPartialWithRelationsSchema } from './AddressSchema'
-import { UserWithRelationsSchema } from './UserSchema'
-import { UserPartialWithRelationsSchema } from './UserSchema'
 import { ContactWithRelationsSchema } from './ContactSchema'
 import { ContactPartialWithRelationsSchema } from './ContactSchema'
+import { UserWithRelationsSchema } from './UserSchema'
+import { UserPartialWithRelationsSchema } from './UserSchema'
 
 /////////////////////////////////////////
 // VENUE SCHEMA
@@ -71,8 +71,8 @@ export type VenueRelations = {
   Follows: FollowWithRelations[];
   Comments: CommentWithRelations[];
   Addresses: AddressWithRelations[];
-  Publisher?: UserWithRelations | null;
   Contacts: ContactWithRelations[];
+  Publisher?: UserWithRelations | null;
 };
 
 export type VenueWithRelations = z.infer<typeof VenueSchema> & VenueRelations
@@ -84,8 +84,8 @@ export const VenueWithRelationsSchema: z.ZodType<VenueWithRelations> = VenueSche
   Follows: z.lazy(() => FollowWithRelationsSchema).array(),
   Comments: z.lazy(() => CommentWithRelationsSchema).array(),
   Addresses: z.lazy(() => AddressWithRelationsSchema).array(),
-  Publisher: z.lazy(() => UserWithRelationsSchema).nullish(),
   Contacts: z.lazy(() => ContactWithRelationsSchema).array(),
+  Publisher: z.lazy(() => UserWithRelationsSchema).nullish(),
 }))
 
 /////////////////////////////////////////
@@ -99,8 +99,8 @@ export type VenuePartialRelations = {
   Follows?: FollowPartialWithRelations[];
   Comments?: CommentPartialWithRelations[];
   Addresses?: AddressPartialWithRelations[];
-  Publisher?: UserPartialWithRelations | null;
   Contacts?: ContactPartialWithRelations[];
+  Publisher?: UserPartialWithRelations | null;
 };
 
 export type VenuePartialWithRelations = z.infer<typeof VenuePartialSchema> & VenuePartialRelations
@@ -112,8 +112,8 @@ export const VenuePartialWithRelationsSchema: z.ZodType<VenuePartialWithRelation
   Follows: z.lazy(() => FollowPartialWithRelationsSchema).array(),
   Comments: z.lazy(() => CommentPartialWithRelationsSchema).array(),
   Addresses: z.lazy(() => AddressPartialWithRelationsSchema).array(),
-  Publisher: z.lazy(() => UserPartialWithRelationsSchema).nullish(),
   Contacts: z.lazy(() => ContactPartialWithRelationsSchema).array(),
+  Publisher: z.lazy(() => UserPartialWithRelationsSchema).nullish(),
 })).partial()
 
 export type VenueWithPartialRelations = z.infer<typeof VenueSchema> & VenuePartialRelations
@@ -125,8 +125,8 @@ export const VenueWithPartialRelationsSchema: z.ZodType<VenueWithPartialRelation
   Follows: z.lazy(() => FollowPartialWithRelationsSchema).array(),
   Comments: z.lazy(() => CommentPartialWithRelationsSchema).array(),
   Addresses: z.lazy(() => AddressPartialWithRelationsSchema).array(),
-  Publisher: z.lazy(() => UserPartialWithRelationsSchema).nullish(),
   Contacts: z.lazy(() => ContactPartialWithRelationsSchema).array(),
+  Publisher: z.lazy(() => UserPartialWithRelationsSchema).nullish(),
 }).partial())
 
 export default VenueSchema;

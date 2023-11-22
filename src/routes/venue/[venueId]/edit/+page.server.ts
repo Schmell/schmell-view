@@ -1,7 +1,9 @@
 import { fail, redirect } from '@sveltejs/kit'
-import { superValidate } from 'sveltekit-superforms/server'
+import { message, setError, superValidate } from 'sveltekit-superforms/server'
 import type { PageServerLoad } from './$types'
 import { venueSchema, addressSchema, contactSchema } from './schemas'
+import { prismaError } from '$lib/error-handling'
+import { Prisma } from '@prisma/client'
 
 export const load = (async ({ locals, params, url }) => {
 	//
@@ -117,10 +119,24 @@ export const actions = {
 			await prisma.venue.upsert({
 				where: { id: params.venueId },
 				create: { ...form.data, Publisher: { connect: { id: session.user.userId } } },
-				update: { ...rest }
+				update: { ...form.data }
 			})
-		} catch (error) {
+		} catch (error: any) {
 			console.log('error: ', error)
+
+			if (error instanceof Prisma.PrismaClientKnownRequestError) {
+				if (error.code === 'P2002') {
+					// @ts-ignore
+					if (error.meta?.target.includes('name')) {
+						setError(form, 'name', 'Duplicate name')
+					}
+				}
+
+				return {
+					form
+				}
+			}
+
 			return { form }
 		}
 		console.log(url.searchParams.get('from'))

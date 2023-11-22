@@ -21,7 +21,5 @@ export { NullableJsonNullValueInputSchema } from './NullableJsonNullValueInputSc
 export { QueryModeSchema } from './QueryModeSchema';
 export { NullsOrderSchema } from './NullsOrderSchema';
 export { JsonNullValueFilterSchema } from './JsonNullValueFilterSchema';
-export { transformJsonNull } from './transformJsonNull';
-export { NullableJsonValue } from './NullableJsonValue';
-export { InputJsonValue } from './InputJsonValue';
-export { JsonValue } from './JsonValue';
+export { InputJsonValueSchema } from './InputJsonValueSchema';
+export { JsonValueSchema } from './JsonValueSchema';

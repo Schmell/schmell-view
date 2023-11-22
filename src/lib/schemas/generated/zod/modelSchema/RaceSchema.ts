@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { NullableJsonValue } from "../inputTypeSchemas/NullableJsonValue"
-import type { NullableJsonInput } from '../inputTypeSchemas/transformJsonNull';
+import { JsonValueSchema } from '../inputTypeSchemas/JsonValueSchema'
+import type { JsonValueType } from '../inputTypeSchemas/JsonValueSchema';
 import type { EventWithRelations } from './EventSchema'
 import type { EventPartialWithRelations } from './EventSchema'
 import type { UserWithRelations } from './UserSchema'
@@ -39,18 +39,18 @@ export const RaceSchema = z.object({
   raceId: z.string().nullish(),
   uniqueRaceString: z.string(),
   name: z.string().nullish(),
-  starts: NullableJsonValue.optional(),
+  starts: JsonValueSchema,
   rank: z.string().nullish(),
   date: z.string().nullish(),
   time: z.string().nullish(),
   notes: z.string().nullish(),
   sailed: z.string().nullish(),
   rating: z.string().nullish(),
-  resultColumns: NullableJsonValue.optional(),
+  resultColumns: JsonValueSchema,
   /**
    * [raceRest]
    */
-  rest: NullableJsonValue.optional(),
+  rest: JsonValueSchema,
   eventId: z.string().nullish(),
   publisherId: z.string().nullish(),
   createdAt: z.date().nullish(),
@@ -82,9 +82,9 @@ export type RaceRelations = {
 };
 
 export type RaceWithRelations = Omit<z.infer<typeof RaceSchema>, "starts" | "resultColumns" | "rest"> & {
-  starts?: NullableJsonInput;
-  resultColumns?: NullableJsonInput;
-  rest?: NullableJsonInput;
+  starts?: JsonValueType | null;
+  resultColumns?: JsonValueType | null;
+  rest?: JsonValueType | null;
 } & RaceRelations
 
 export const RaceWithRelationsSchema: z.ZodType<RaceWithRelations> = RaceSchema.merge(z.object({
@@ -112,9 +112,9 @@ export type RacePartialRelations = {
 };
 
 export type RacePartialWithRelations = Omit<z.infer<typeof RacePartialSchema>, "starts" | "resultColumns" | "rest"> & {
-  starts?: NullableJsonInput;
-  resultColumns?: NullableJsonInput;
-  rest?: NullableJsonInput;
+  starts?: JsonValueType | null;
+  resultColumns?: JsonValueType | null;
+  rest?: JsonValueType | null;
 } & RacePartialRelations
 
 export const RacePartialWithRelationsSchema: z.ZodType<RacePartialWithRelations> = RacePartialSchema.merge(z.object({
@@ -128,9 +128,9 @@ export const RacePartialWithRelationsSchema: z.ZodType<RacePartialWithRelations>
 })).partial()
 
 export type RaceWithPartialRelations = Omit<z.infer<typeof RaceSchema>, "starts" | "resultColumns" | "rest"> & {
-  starts?: NullableJsonInput;
-  resultColumns?: NullableJsonInput;
-  rest?: NullableJsonInput;
+  starts?: JsonValueType | null;
+  resultColumns?: JsonValueType | null;
+  rest?: JsonValueType | null;
 } & RacePartialRelations
 
 export const RaceWithPartialRelationsSchema: z.ZodType<RaceWithPartialRelations> = RaceSchema.merge(z.object({

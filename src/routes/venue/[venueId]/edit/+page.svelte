@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms'
 	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
-	import { Button, Form, Input, Label, Textarea } from '$components/form'
+	import { Button, Form, Input, Textarea } from '$components/form'
 	import { Page } from '$components/layout'
 	import Icon from '@iconify/svelte'
 	import { superForm } from 'sveltekit-superforms/client'
@@ -10,7 +10,7 @@
 	import { addressSchema, contactSchema, venueSchema } from './schemas'
 
 	export let data: PageData
-	// console.log('page: ', $page.url.searchParams.get('editAddress'))
+
 	let showAddressForm = false
 	let showContactForm = false
 	let showNameField = false
@@ -25,11 +25,9 @@
 		validators: venueSchema
 	})
 
-	const { form, capture, restore } = formObj
+	const { form, errors, capture, restore } = formObj
 
-	// console.log($form.name)
-
-	export const snapshot = { capture, restore }
+	// export const snapshot = { capture, restore }
 
 	const addressFormObj = superForm(data.addressForm, {
 		taintedMessage: 'Finish filling out the form or your information will be lost?',
@@ -53,12 +51,25 @@
 		{#if showNameField}
 			<div class="relative join rounded-lg w-full items-center">
 				<Input name="name" {formObj} class="join-item" />
-				<button class="btn btn-primary join-item rounded-r-lg absolute right-0 top-7">
+				<button
+					on:click={() => (showNameField = false)}
+					class="btn btn-primary join-item rounded-r-lg absolute right-0 top-7"
+				>
 					cancel
 				</button>
-				<label for="name" class="text-sm text-warning absolute top-16 pt-3">Must be Unique</label>
+				<label for="name" class="text-sm absolute top-16 pt-3" class:text-warning={$errors.name}>
+					Must be Unique
+				</label>
 			</div>
-			<!-- <Label name="name" {formObj} label="Must be unique" class="m-0" /> -->
+
+			{#if $errors.name?.includes('Duplicate name')}
+				<a
+					href="/venue/{$page.params.venueId}/merge?name={$form.name}"
+					class="btn btn-xs btn-primary"
+				>
+					Merge this venue
+				</a>
+			{/if}
 		{:else}
 			<div class="flex justify-between items-center py-2">
 				<input type="hidden" name="name" value={$form.name} />

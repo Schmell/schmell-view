@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { NullableJsonValue } from "../inputTypeSchemas/NullableJsonValue"
-import type { NullableJsonInput } from '../inputTypeSchemas/transformJsonNull';
+import { JsonValueSchema } from '../inputTypeSchemas/JsonValueSchema'
+import type { JsonValueType } from '../inputTypeSchemas/JsonValueSchema';
 import type { OrganizationWithRelations } from './OrganizationSchema'
 import type { OrganizationPartialWithRelations } from './OrganizationSchema'
 import type { UserWithRelations } from './UserSchema'
@@ -60,15 +60,15 @@ export const EventSchema = z.object({
   /**
    * [fileInfo]
    */
-  fileInfo: NullableJsonValue.optional(),
+  fileInfo: JsonValueSchema,
   /**
    * [resultColumns]
    */
-  resultColumns: NullableJsonValue.optional(),
+  resultColumns: JsonValueSchema,
   /**
    * [eventRest]
    */
-  rest: NullableJsonValue.optional(),
+  rest: JsonValueSchema,
   email: z.string().nullish(),
   organizationId: z.string().nullish(),
   publisherId: z.string().nullish(),
@@ -106,9 +106,9 @@ export type EventRelations = {
 };
 
 export type EventWithRelations = Omit<z.infer<typeof EventSchema>, "fileInfo" | "resultColumns" | "rest"> & {
-  fileInfo?: NullableJsonInput;
-  resultColumns?: NullableJsonInput;
-  rest?: NullableJsonInput;
+  fileInfo?: JsonValueType | null;
+  resultColumns?: JsonValueType | null;
+  rest?: JsonValueType | null;
 } & EventRelations
 
 export const EventWithRelationsSchema: z.ZodType<EventWithRelations> = EventSchema.merge(z.object({
@@ -142,9 +142,9 @@ export type EventPartialRelations = {
 };
 
 export type EventPartialWithRelations = Omit<z.infer<typeof EventPartialSchema>, "fileInfo" | "resultColumns" | "rest"> & {
-  fileInfo?: NullableJsonInput;
-  resultColumns?: NullableJsonInput;
-  rest?: NullableJsonInput;
+  fileInfo?: JsonValueType | null;
+  resultColumns?: JsonValueType | null;
+  rest?: JsonValueType | null;
 } & EventPartialRelations
 
 export const EventPartialWithRelationsSchema: z.ZodType<EventPartialWithRelations> = EventPartialSchema.merge(z.object({
@@ -161,9 +161,9 @@ export const EventPartialWithRelationsSchema: z.ZodType<EventPartialWithRelation
 })).partial()
 
 export type EventWithPartialRelations = Omit<z.infer<typeof EventSchema>, "fileInfo" | "resultColumns" | "rest"> & {
-  fileInfo?: NullableJsonInput;
-  resultColumns?: NullableJsonInput;
-  rest?: NullableJsonInput;
+  fileInfo?: JsonValueType | null;
+  resultColumns?: JsonValueType | null;
+  rest?: JsonValueType | null;
 } & EventPartialRelations
 
 export const EventWithPartialRelationsSchema: z.ZodType<EventWithPartialRelations> = EventSchema.merge(z.object({

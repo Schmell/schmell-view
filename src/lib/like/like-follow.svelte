@@ -15,7 +15,6 @@
 	<div
 		class="p-4 text-xl w-8 h-8 flex items-center justify-center border-2 border-base-300 bg-base-100 rounded-full shadow-lg"
 	>
-		<!-- <Icon class="text-base-content" icon="mdi:bell-badge-outline" /> -->
 		<FollowButton class="text-base-content" {item} {userId} {type} />
 	</div>
 </div>

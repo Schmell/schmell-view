@@ -1,8 +1,9 @@
-import nodemailer from 'nodemailer';
-import { google } from 'googleapis';
-import { USER_EMAIL, CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN } from '$env/static/private';
+import * as nodemailer from 'nodemailer'
+import { google } from 'googleapis'
+import { USER_EMAIL, CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN } from '$env/static/private'
+import { error } from '@sveltejs/kit'
 
-const OAuth2 = google.auth.OAuth2;
+const OAuth2 = google.auth.OAuth2
 
 export const createTransporter = async () => {
 	try {
@@ -10,23 +11,23 @@ export const createTransporter = async () => {
 			CLIENT_ID,
 			CLIENT_SECRET,
 			'https://developers.google.com/oauthplayground'
-		);
+		)
 
 		oauth2Client.setCredentials({
 			refresh_token: REFRESH_TOKEN
-		});
+		})
 
 		const accessToken = await new Promise((resolve, reject) => {
 			oauth2Client.getAccessToken((err, token) => {
 				if (err) {
-					console.log('*ERR: ', err.response?.data);
+					console.log('*ERR: ', err.response?.data)
 
-					reject();
+					reject()
 				}
 
-				resolve(token);
-			});
-		});
+				resolve(token)
+			})
+		})
 
 		const transporter = nodemailer.createTransport({
 			// not sure why im not getting proper types from nodemailer
@@ -40,11 +41,11 @@ export const createTransporter = async () => {
 				clientSecret: CLIENT_SECRET,
 				refreshToken: REFRESH_TOKEN
 			}
-		});
+		})
 
-		return transporter;
-	} catch (err) {
-		console.log('createTranspporter err: ', err);
-		return err;
+		return transporter
+	} catch (err: any) {
+		console.log('createTranspporter err: ', err)
+		throw error(500, 'transporter error')
 	}
-};
+}

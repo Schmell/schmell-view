@@ -220,11 +220,11 @@ model Venue {
   Follows     Follow[]
   Comments    Comment[]
   Addresses   Address[]
+  Contacts    Contact[]
   publisherId String?
   Publisher   User?     @relation(fields: [publisherId], references: [id], onDelete: SetNull)
   createdAt   DateTime? @default(now())
   updatedAt   DateTime? @updatedAt
-  Contacts    Contact[]
 }
 
 model Address {

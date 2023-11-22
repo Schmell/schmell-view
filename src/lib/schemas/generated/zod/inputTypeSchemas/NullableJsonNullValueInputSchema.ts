@@ -1,6 +1,4 @@
 import { z } from 'zod';
-import transformJsonNull from './transformJsonNull'
+import { Prisma } from '@prisma/client';
 
-export const NullableJsonNullValueInputSchema = z.enum(['DbNull','JsonNull',]).transform((v) => transformJsonNull(v));
-
-export default NullableJsonNullValueInputSchema;
+export const NullableJsonNullValueInputSchema = z.enum(['DbNull','JsonNull',]).transform((value) => value === 'JsonNull' ? Prisma.JsonNull : value === 'DbNull' ? Prisma.DbNull : value);
