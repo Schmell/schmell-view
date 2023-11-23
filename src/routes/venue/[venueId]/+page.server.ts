@@ -41,6 +41,7 @@ export const load = (async ({ params, url }) => {
 			})
 		} catch (error) {
 			console.log('error: ', error)
+
 			throw fail(404, {})
 		}
 	}

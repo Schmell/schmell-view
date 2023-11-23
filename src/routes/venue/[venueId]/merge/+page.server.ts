@@ -1,3 +1,4 @@
+import { sendMergeRequest } from '$lib/server/email'
 import type { PageServerLoad } from './$types'
 import { redirect } from 'sveltekit-flash-message/server'
 
@@ -11,6 +12,7 @@ export const load = (async ({ params, url, locals }) => {
 			return prisma.venue.findUnique({
 				where: { id: params.venueId },
 				include: {
+					Publisher: true,
 					Events: { select: { id: true, name: true } },
 					Series: { select: { id: true, name: true } },
 					Comments: { select: { id: true } },
@@ -35,6 +37,7 @@ export const load = (async ({ params, url, locals }) => {
 				const venue = await prisma.venue.findFirst({
 					where: { name: url.searchParams.get('name') ?? '' },
 					include: {
+						Publisher: true,
 						_count: true
 					}
 				})
@@ -138,15 +141,21 @@ export const actions = {
 		mergeItems()
 	},
 
-	requestMerge: async ({ locals, request, params, url }) => {
+	requestMerge: async ({ locals, request }) => {
 		const session = locals.auth.validate()
 		// @ts-ignore
 		if (!session) throw redirect('/auth/login', { type: 'success', message: 'Not Authorised' })
 
-		const formData = Object.fromEntries(await request.formData()) as Record<string, string>
-
+		const formData = Object.fromEntries(await request.formData())
 		console.log('formData: ', formData)
 		// Ok so now i need to send and email to the publisher
 		// and the callback to either merge or send a denial email
+		return await sendMergeRequest({
+			publisherEmail: formData.publisherEmail,
+			requesterEmail: formData.requesterEmail,
+			venueId: formData.venueId,
+			toMergeId: formData.toMergeId
+		})
 	}
+	//
 } satisfies import('./$types').Actions

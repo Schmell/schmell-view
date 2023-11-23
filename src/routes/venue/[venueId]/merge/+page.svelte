@@ -41,7 +41,10 @@
 
 		<form method="post" action="?/merge" use:enhance>
 			<input type="hidden" name="venueId" value={venue.data?.id} />
-			<input type="hidden" name="venueToMergeId" value={venueToMerge?.id} />
+			<input type="hidden" name="toMergeId" value={venueToMerge?.id} />
+			<input type="hidden" name="publisherEmail" value={venue.data.Publisher?.email} />
+			<input type="hidden" name="requesterEmail" value={venueToMerge?.Publisher?.email} />
+
 			{#if venueToMerge?._count.Series}
 				<label for="series" class="label">
 					<div>Series <span class="tex-xs opacity-60">({venueToMerge._count.Series})</span></div>
