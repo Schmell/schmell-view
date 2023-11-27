@@ -1,44 +1,106 @@
 import { createTransporter } from '$lib/emails/createTransporter'
 import { CALLBACK_HOST } from '$env/static/private'
 import { dev } from '$app/environment'
+import { render } from 'svelte-email'
+import RequestMerge from '$lib/emailTemplates/requestMerge.svelte'
+import DenialEmail from '$lib/emailTemplates/denialEmail.svelte'
+import ClaimCompEmail from '$lib/emailTemplates/claimCompEmail.svelte'
 
 async function sendEmail(emailOptions) {
 	let emailTransporter = await createTransporter()
 	await emailTransporter.sendMail(emailOptions)
 }
 
-type sendMergeRequestProps = {
-	publisherEmail: string
-	requesterEmail: string
-	venueId: string
-	toMergeId: string
-	events?: string
+export async function sendClaimCompEmail({
+	publisherEmail,
+	requesterEmail,
+	toMergeId,
+	userId,
+	compName
+}) {
+	const allowUrl = `${CALLBACK_HOST}/comps/${toMergeId}/merge?allow=true&userId=${userId} `
+	const cancelUrl = `${CALLBACK_HOST}/comps/${toMergeId}/merge?allow=false&pe=${publisherEmail}&re=${requesterEmail}`
+
+	const emailHtml = render({
+		template: ClaimCompEmail,
+		props: {
+			requesterEmail,
+			allowUrl,
+			cancelUrl,
+			compName
+		}
+	})
+
+	const options = {
+		from: 'do_not_reply@vitesail.com',
+		to: publisherEmail,
+		subject: `Vite Sail - A User wants to claim Competitor`,
+		html: emailHtml
+	}
+
+	try {
+		sendEmail(options)
+		return { status: 'ok' }
+	} catch (error) {
+		console.log('send Merge request error: ', error)
+		return { status: 'error' }
+	}
 }
 
-export async function sendMergeRequest({ publisherEmail, requesterEmail, venueId, toMergeId }) {
-	// console.log(email, venueId)
-	// this should be to a page
-	// const allowUrl = `${CALLBACK_HOST}/api/mergeVenues?allow=true&venueId=${venueId}&toMergeId=${toMergeId} `
-	const allowUrl = `${CALLBACK_HOST}/venue/${venueId}/merge?allow=true&venueId=${venueId}&toMergeId=${toMergeId} `
+export async function sendDenialEmail({ type, publisherEmail, requesterEmail }) {
+	const emailHtml = render({
+		template: DenialEmail,
+		props: {
+			type,
+			publisherEmail
+		}
+	})
 
-	const cancelUrl = `${CALLBACK_HOST}/api/mergeVenues?allow=false`
-
-	const message = {
-		from: 'sheldon.street@gmail.com',
-		to: publisherEmail,
-		subject: 'VITE SAIL: A request to merge venues',
-		text: `A request to merge venues from ${requesterEmail}`,
-		html: `A request to merge venues from ${requesterEmail}. <br>
-		This will just connect Series, Events, Comments, Likes and or Follows to the current venue and will not change any of the details you have entered <br>
-		You can contact the User in question at ${requesterEmail} to discuss what activitites they are citing at the venue in question. <br> <hr/>
-		Use this link to Allow the merge to happen <br>
-		<a href=${allowUrl}>ALLOW</a> <br>
-		or <br>
-		Use this link to Cancel the request. <br>
-		<a href=${cancelUrl}>CANCEL</a> <br>`
+	const options = {
+		from: 'do_not_reply@vitesail.com',
+		to: requesterEmail,
+		subject: `Vite Sail - Your request to merge ${type} was denied`,
+		html: emailHtml
 	}
+
 	try {
-		sendEmail(message)
+		sendEmail(options)
+		return { status: 'ok' }
+	} catch (error) {
+		console.log('send Merge request error: ', error)
+		return { status: 'error' }
+	}
+}
+
+export async function sendMergeRequest({
+	publisherEmail,
+	requesterEmail,
+	venueId,
+	toMergeId,
+	type
+}) {
+	const allowUrl = `${CALLBACK_HOST}/venue/${toMergeId}/merge?allow=true&toMergeId=${venueId} `
+	const cancelUrl = `${CALLBACK_HOST}/venue/${toMergeId}/merge?allow=false&pe=${publisherEmail}&re=${requesterEmail}`
+
+	const emailHtml = render({
+		template: RequestMerge,
+		props: {
+			type,
+			allowUrl,
+			cancelUrl,
+			requesterEmail
+		}
+	})
+
+	const options = {
+		from: 'do_not_reply@vitesail.com',
+		to: publisherEmail,
+		subject: `Vite Sail - A request to merge with your ${type}`,
+		html: emailHtml
+	}
+
+	try {
+		sendEmail(options)
 		return { status: 'ok' }
 	} catch (error) {
 		console.log('send Merge request error: ', error)

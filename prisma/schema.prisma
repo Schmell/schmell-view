@@ -120,9 +120,9 @@ model Race {
 }
 
 model Comp {
-  id          String    @id @default(cuid())
-  compId      String    @unique // right now this will only be unique on the same event
-  // uniqueCompId String?   @unique
+  id          String     @id @default(cuid())
+  compId      String     @unique // right now this will only be unique on the same event
+  // uniqueCompId String?   @unique 
   description String?
   raceId      String?
   club        String?
@@ -139,15 +139,16 @@ model Comp {
   rest        Json?
   image       String?
   publisherId String?
-  Publisher   User?     @relation(fields: [publisherId], references: [id], onDelete: SetNull)
+  Publisher   User?      @relation(fields: [publisherId], references: [id], onDelete: SetNull)
   Events      Event[]
   Results     Result[]
   Follows     Follow[]
   Likes       Like[]
   Commments   Comment[]
   Races       Race[]
-  createdAt   DateTime? @default(now())
-  updatedAt   DateTime? @updatedAt
+  UserComps   UserComp[]
+  createdAt   DateTime?  @default(now())
+  updatedAt   DateTime?  @updatedAt
 
   @@index([compId])
 }
@@ -363,6 +364,13 @@ model User {
   Comment        Comment[]
   Address        Address[]
   Contact        Contact[]
+}
+
+model UserComp {
+  id     String @id @unique @default(cuid())
+  role   String
+  Comp   Comp   @relation(fields: [compId], references: [id])
+  compId String
 }
 
 model UserSettings {

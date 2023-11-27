@@ -15,6 +15,22 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
 	async function like() {
 		switch (likeType) {
+			case 'series':
+				try {
+					await prisma.like.create({
+						data: {
+							type: 'series',
+							itemId: itemId!,
+							Series: { connect: { id: itemId! } },
+							User: { connect: { id: session!.user!.userId } }
+						}
+					})
+					break
+				} catch (error) {
+					prismaError(error)
+					console.log('error: ', error)
+				}
+
 			case 'event':
 				try {
 					await prisma.like.create({
@@ -25,6 +41,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 							User: { connect: { id: session!.user!.userId } }
 						}
 					})
+					break
 				} catch (error) {
 					prismaError(error)
 					console.log('error: ', error)
@@ -32,7 +49,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
 			case 'comment':
 				try {
-					return await prisma.like.create({
+					await prisma.like.create({
 						data: {
 							type: 'comment',
 							itemId: itemId!,
@@ -40,15 +57,15 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 							User: { connect: { id: session!.user!.userId } }
 						}
 					})
+					break
 				} catch (error) {
 					prismaError(error)
 					console.log('error: ', error)
 				}
 
 			case 'venue':
-				console.log('venue: ')
 				try {
-					return await prisma.like.create({
+					await prisma.like.create({
 						data: {
 							type: 'venue',
 							itemId: itemId!,
@@ -56,13 +73,15 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 							User: { connect: { id: session!.user!.userId } }
 						}
 					})
+					break
 				} catch (error) {
 					prismaError(error)
 					console.log('error: ', error)
 				}
+
 			case 'organization':
 				try {
-					return await prisma.like.create({
+					await prisma.like.create({
 						data: {
 							type: 'organization',
 							itemId: itemId!,
@@ -70,6 +89,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 							User: { connect: { id: session!.user!.userId } }
 						}
 					})
+					break
 				} catch (error) {
 					prismaError(error)
 					console.log('error: ', error)
@@ -82,7 +102,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 	async function unLike() {
 		try {
 			if (!unlike) throw error(500, { message: `unlike error` })
-			console.log('unlike: ', unlike)
+			// console.log('unlike: ', unlike)
 			return await prisma.like.delete({
 				where: { id: unlike }
 			})

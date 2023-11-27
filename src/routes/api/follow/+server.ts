@@ -18,6 +18,21 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
 	async function follow() {
 		switch (followType) {
+			case 'series':
+				try {
+					return await prisma.follow.create({
+						data: {
+							type: 'series',
+							itemId: itemId!,
+							Series: { connect: { id: itemId! } },
+							User: { connect: { id: session!.user!.userId } }
+						}
+					})
+				} catch (error) {
+					prismaError(error)
+					throw fail(500, { message: `Series follow error: ${error}` })
+				}
+
 			case 'event':
 				try {
 					return await prisma.follow.create({

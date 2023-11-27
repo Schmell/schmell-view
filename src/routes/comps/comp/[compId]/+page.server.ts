@@ -6,7 +6,8 @@ export const load = (async ({ params }) => {
 	const getComp = async () => {
 		try {
 			return await prisma.comp.findUniqueOrThrow({
-				where: { id: params.compId }
+				where: { id: params.compId },
+				include: { Publisher: true }
 			})
 		} catch (error) {
 			console.log('error: ', error)

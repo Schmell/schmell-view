@@ -6,13 +6,21 @@
 	import { compSchema } from './schema'
 	import Button from '$components/form/button.svelte'
 	import Textarea from '$components/form/textarea.svelte'
+	import * as flashModule from 'sveltekit-flash-message/client'
 
 	export let data: PageData
 
 	const formObj = superForm(data.form, {
 		taintedMessage: 'Finish filling out the form or your data will be lost?',
 		validators: compSchema,
-		dataType: 'json'
+		dataType: 'json',
+		flashMessage: {
+			module: flashModule,
+			onError: ({ result, message }) => {
+				const errorMessage = result.error.message
+				message.set({ type: 'error', message: 'Error' })
+			}
+		}
 	})
 </script>
 

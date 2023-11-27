@@ -1,4 +1,3 @@
-import sailCloth from '$lib/assets/Kevlyar-Mylar-300x219.jpg'
 /** @type {import('tailwindcss').Config}*/
 
 const config = {

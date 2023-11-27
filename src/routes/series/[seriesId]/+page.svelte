@@ -37,7 +37,7 @@
 						/>
 						<div class="absolute w-full flex justify-end bottom-0 right-4 p-2">
 							<div>
-								<LikeFollow item={series} userId={data.user?.userId} type="event" />
+								<LikeFollow item={series} type="series" userId={data.user?.userId} />
 								<!-- Likes and follows -->
 								<div class="flex justify-end text-sm">
 									<span class="pr-1 flex items-center text-xs">

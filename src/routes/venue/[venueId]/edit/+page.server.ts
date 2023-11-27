@@ -122,19 +122,25 @@ export const actions = {
 				update: { ...form.data }
 			})
 		} catch (error: any) {
-			console.log('error: ', error)
-
 			if (error instanceof Prisma.PrismaClientKnownRequestError) {
+				let duplicateId
 				if (error.code === 'P2002') {
 					// @ts-ignore
 					if (error.meta?.target.includes('name')) {
 						setError(form, 'name', 'Duplicate name')
+						duplicateId = await prisma.venue.findFirst({
+							where: { name: form.data.name },
+							select: { id: true }
+						})
 					}
 				}
-
+				console.log('duplicateId: ', duplicateId)
 				return {
+					duplicateId,
 					form
 				}
+			} else {
+				console.log('error: ', error)
 			}
 
 			return { form }

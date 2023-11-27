@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores'
 	import { Button, Check, Form, Input, Label, Textarea } from '$components/form'
 	import Icon from '@iconify/svelte'
 	import { superForm } from 'sveltekit-superforms/client'
 	import { eventSchema } from './eventSchema'
 	import { goto } from '$app/navigation'
+	import * as flashModule from 'sveltekit-flash-message/client'
 
 	export let data
 
@@ -15,17 +16,30 @@
 		validators: eventSchema,
 		dataType: 'json',
 		onSubmit: () => {
-			console.log('😄: ')
 			submitting = true
 		},
 		onResult: () => {
 			const from = $page.url.searchParams.get('from') ?? ''
 			// console.log($page.url.searchParams.get('from'))
 			goto(from, { replaceState: true })
-		}
+		},
+		onError({ result }) {
+			$message = result.error.message
+		},
+		flashMessage: {
+			module: flashModule,
+			onError: ({ result, message }) => {
+				// Error handling for the flash message:
+				// - result is the ActionResult
+				// - message is the flash store (not the status message store)
+				const errorMessage = result.error.message
+				message.set({ type: 'error', message: 'error' })
+			}
+		},
+		syncFlashMessage: false
 	})
 
-	$: ({ form } = formObj)
+	$: ({ form, message } = formObj)
 
 	function getUniqueIdString() {
 		return (

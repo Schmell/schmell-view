@@ -1,13 +1,25 @@
-import { sendMergeRequest } from '$lib/server/email'
+import { sendDenialEmail, sendMergeRequest } from '$lib/server/email'
 import type { PageServerLoad } from './$types'
 import { redirect } from 'sveltekit-flash-message/server'
 
-export const load = (async ({ params, url, locals }) => {
+export const load = (async (event) => {
+	const { params, url, locals } = event
 	const session = await locals.auth.validate()
 	// @ts-ignore
-	if (!session) throw redirect('/auth/login', { type: 'success', message: 'Not Authorized' })
+	if (!session) throw redirect('/auth/login', { type: 'success', message: 'Not Authorized' }, event)
+	if (url.searchParams.get('allow') === 'false') {
+		//  send denial email
+		await sendDenialEmail({
+			type: 'Venue',
+			publisherEmail: url.searchParams.get('pe'),
+			requesterEmail: url.searchParams.get('re')
+		})
+		throw redirect('/', { type: 'success', message: 'Your message was sent' }, event)
+	}
+	// console.log(params.venueId)
 
 	async function getVenueToMerge() {
+		console.log('params.venueId: ', params.venueId)
 		try {
 			return prisma.venue.findUnique({
 				where: { id: params.venueId },
@@ -26,11 +38,6 @@ export const load = (async ({ params, url, locals }) => {
 		}
 	}
 
-	type objReturnType = {
-		error?: string
-		data?: any
-	}
-
 	async function getVenue() {
 		try {
 			if (url.searchParams.get('name')) {
@@ -41,13 +48,23 @@ export const load = (async ({ params, url, locals }) => {
 						_count: true
 					}
 				})
+
 				if (venue?.publisherId === session?.user.userId) {
-					// console.log('session: ', session)
 					return { data: venue }
 				} else {
 					return { error: 'This is not Your Venue to merge', errCode: 'm-001', data: venue }
 				}
+			} else if (url.searchParams.get('toMergeId')) {
+				const venue = await prisma.venue.findFirst({
+					where: { id: url.searchParams.get('toMergeId') ?? '' },
+					include: {
+						Publisher: true,
+						_count: true
+					}
+				})
+				return { data: venue }
 			}
+
 			return { error: 'No Venue found' }
 		} catch (error) {
 			console.log('error: ', error)
@@ -57,23 +74,26 @@ export const load = (async ({ params, url, locals }) => {
 
 	return {
 		venueToMerge: getVenueToMerge(),
-		venue: await getVenue()
+		venue: getVenue()
 	}
+	//
 }) satisfies PageServerLoad
 
 export const actions = {
-	merge: async ({ locals, request, params, url }) => {
+	merge: async (event) => {
+		const { locals, request, params, url } = event
 		const session = locals.auth.validate()
-		// @ts-ignore
-		if (!session) throw redirect('/auth/login', { type: 'success', message: 'Not Authorised' })
+
+		if (!session)
+			throw redirect('/auth/login', { type: 'success', message: 'Not Authorised' }, event)
 
 		const formData = Object.fromEntries(await request.formData()) as Record<string, string>
 
-		console.log('formData: ', formData)
+		// console.log('formData: ', formData)
 
 		async function getVenueToMerge() {
 			return await prisma.venue.findUnique({
-				where: { id: formData.venueToMergeId },
+				where: { id: params.venueId },
 				include: {
 					Series: true,
 					Events: true,
@@ -86,15 +106,7 @@ export const actions = {
 
 		async function buildConnects() {
 			const ven = await getVenueToMerge()
-			// console.log('ven: ', ven)
-			// switch (formData) {
-			// 	case value:
 
-			// 		break;
-
-			// 	default:
-			// 		break;
-			// }
 			const seriesIds: any = ven?.Series.map((item) => {
 				return { id: item.id }
 			})
@@ -102,13 +114,16 @@ export const actions = {
 			const eventIds: any = ven?.Events.map((item) => {
 				return { id: item.id }
 			})
+
 			const commentIds: any = ven?.Comments.map((item) => {
 				console.log('item: ', item)
 				return { id: item.id }
 			})
+
 			const likeIds: any = ven?.Likes.map((item) => {
 				return { id: item.id }
 			})
+
 			const followIds: any = ven?.Follows.map((item) => {
 				return { id: item.id }
 			})
@@ -132,8 +147,9 @@ export const actions = {
 				})
 				if (merged)
 					await prisma.venue.delete({
-						where: { id: formData.venueToMergeId }
+						where: { id: formData.toMergeId }
 					})
+				throw redirect('/events', { type: 'success', message: 'Merge was succesfull' }, event)
 			} catch (error) {
 				console.log('error: ', error)
 			}
@@ -154,7 +170,8 @@ export const actions = {
 			publisherEmail: formData.publisherEmail,
 			requesterEmail: formData.requesterEmail,
 			venueId: formData.venueId,
-			toMergeId: formData.toMergeId
+			toMergeId: formData.toMergeId,
+			type: 'Venue'
 		})
 	}
 	//

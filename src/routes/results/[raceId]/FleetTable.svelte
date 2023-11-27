@@ -310,9 +310,8 @@
 	}
 
 	const handleClick = () => {
-		const elem = document.activeElement
+		const elem = document.activeElement as HTMLInputElement
 		if (elem) {
-			// @ts-ignore
 			elem?.blur()
 		}
 	}
@@ -322,9 +321,10 @@
 
 <div class="w-fit mt-8 border-r-2 border-b-4 border-base-300 rounded-lg">
 	<div
-		class="flex justify-between py-4 mb-2 px-2 bg-gradient-to-r from-base-200 to-base-300 rounded-t-lg shadow-lg"
+		class="flex justify-between items-center py-4 mb-2 px-2 bg-gradient-to-r from-base-200 to-base-300 rounded-t-lg shadow-lg"
 	>
-		<h2 class="text-4xl tracking-wide font-medium">{fleetName}</h2>
+		<h2 class="text-4xl tracking-wide font-medium">{fleetName ?? 'Fleet'}</h2>
+		<p class="pr-2">{race.name}</p>
 	</div>
 
 	<table class="table table-md table-zebra md:table-sm shadow-lg w-fit">
@@ -348,8 +348,8 @@
 													flexRender(header.column.columnDef.header, header.getContext())
 												)}
 											/>
-											<Icon icon="material-symbols:arrow-drop-down-circle-outline" /></label
-										>
+											<Icon icon="material-symbols:arrow-drop-down-circle-outline" />
+										</label>
 										<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 										<ul
 											tabindex="0"
@@ -365,7 +365,7 @@
 														const form = target?.form
 														const formObj = Object.fromEntries(new FormData(form))
 														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
-														handleClick()
+														// handleClick()
 													}}
 												>
 													<div class="join">
@@ -413,7 +413,7 @@
 														const form = target?.form
 														const formObj = Object.fromEntries(new FormData(form))
 														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
-														handleClick()
+														// handleClick()
 													}}
 												>
 													<label class="label">
@@ -454,12 +454,12 @@
 													method="post"
 													use:enhance
 													class="text-xs font-normal"
-													on:change={({ target }) => {
+													on:change={(event) => {
 														// @ts-ignore
-														const form = target?.form
+														const form = event.target?.form
 														const formObj = Object.fromEntries(new FormData(form))
 														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
-														handleClick()
+														// handleClick()
 													}}
 												>
 													<label class="label">

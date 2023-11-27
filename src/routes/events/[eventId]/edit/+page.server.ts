@@ -41,7 +41,7 @@ export const load = async ({ params, locals, url }) => {
 export const actions = {
 	default: async ({ request, params, url }) => {
 		const form = await superValidate(request, eventSchema)
-
+		// console.log('form: ', form)
 		if (!form.valid) {
 			return fail(400, { form })
 		}

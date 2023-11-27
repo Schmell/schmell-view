@@ -19,6 +19,7 @@
 	export let type: string
 
 	let likeAction: Response | undefined
+	let likeLoading = false
 
 	$: if (likeAction?.ok) {
 		invalidateAll()
@@ -44,6 +45,7 @@
 
 	async function like(type: string, item, unlike = false) {
 		try {
+			likeLoading = true
 			likeAction = await fetch(
 				`/api/like?likeType=${type}&itemId=${item.id}${
 					unlike ? `&unlike=${getUserLikedId(item)}` : ''
@@ -56,6 +58,7 @@
 					}
 				}
 			)
+			likeLoading = false
 		} catch (error) {
 			console.log('error: ', error)
 
@@ -71,7 +74,11 @@
 			like(type, item, getUserLikedId(item))
 		}}
 	>
-		<Icon class={cn('text-base-100', _class)} icon="mdi:thumb-up" />
+		{#if likeLoading}
+			<span class="loading loading-spinner loading-sm" />
+		{:else}
+			<Icon class={cn('text-base-100', _class)} icon="mdi:thumb-up" />
+		{/if}
 	</button>
 {:else}
 	<!-- can't like your own comment -->

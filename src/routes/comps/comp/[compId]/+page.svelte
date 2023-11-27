@@ -5,11 +5,14 @@
 	import { addOrdinalsuffix } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
+	// import { sendClaimCompEmail } from '$lib/server/email'
+	import { flashCookieOptions, setFlash } from 'sveltekit-flash-message/server'
+	import { updateFlash } from 'sveltekit-flash-message/client'
 
 	export let data: PageData
 	export let form
 	// $: console.log('form: ', form)
-	$: ({ comp } = data)
+	$: ({ comp, user } = data)
 
 	let my_modal_2
 	let showRaces: boolean = false
@@ -21,6 +24,16 @@
 		}
 		return `http://${uri}`
 	}
+
+	// async function sendClaimEmail() {
+	// 	const email = await sendClaimCompEmail({
+	// 		publisherEmail: comp?.Publisher?.email,
+	// 		requesterEmail: user?.email,
+	// 		toMergeId: comp?.id,
+	// 		userId: user?.userId,
+	// 		compName: comp?.boat
+	// 	})
+	// }
 </script>
 
 {#if comp}
@@ -34,9 +47,12 @@
 						alt="Title for {comp?.boat}"
 					/>
 					<div class="flex items-center absolute right-2 bottom-2">
-						<button class="btn btn-secondary btn-sm absolute right-10 bottom-0 rounded-full">
+						<a
+							href="/api/claimComp?compId={comp.id}"
+							class="btn btn-secondary btn-sm absolute right-10 bottom-0 rounded-full"
+						>
 							Claim
-						</button>
+						</a>
 
 						<button
 							on:click={my_modal_2.showModal()}

@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const eventSchema = z.object({
 	eventeid: z.string().nullable(),
 	uniqueIdString: z.string(),
-	name: z.string(),
+	name: z.string().min(3).max(64),
 	eventwebsite: z.string().nullable(),
 	email: z.string().email().nullable(),
 	venueName: z.string().nullable(),
