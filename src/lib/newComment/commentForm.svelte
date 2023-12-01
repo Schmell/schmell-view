@@ -27,6 +27,7 @@
 		}
 		//
 	})
+	$: ({ delayed } = formObj)
 </script>
 
 <Form {action} {formObj}>
@@ -35,14 +36,14 @@
 	<input type="hidden" name="userId" value={user?.userId} />
 	<div class="join w-full">
 		<Input
-			class="rounded-r-none shadow-lg"
 			{formObj}
 			name="comment"
 			label=" "
 			placeholder="add a comment"
+			class="rounded-r-none shadow-lg"
 		/>
-		{#if submitting}
-			<button class="join-item btn btn-primary w-24 mt-1" disabled={submitting}>
+		{#if $delayed}
+			<button class="join-item btn btn-primary w-24 mt-1" disabled={$delayed}>
 				<span class="loading loading-dots loading-md" />
 			</button>
 		{:else}

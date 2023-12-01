@@ -13,7 +13,7 @@
 	let className: string | undefined = undefined
 	export { className as class }
 
-	let isRequired
+	let isRequired: boolean
 
 	const { form, errors, constraints } = formObj
 
@@ -32,46 +32,46 @@
 
 	{#if type === 'password'}
 		<input
-			class={cn('input input-bordered w-full max-w-lg', className)}
-			class:input-error={$errors[name]}
 			{name}
-			type="password"
-			placeholder={placeholder ?? ''}
-			aria-invalid={$errors.email ? 'true' : undefined}
 			bind:value={$form[name]}
 			on:change
+			type="password"
+			placeholder={placeholder ?? ''}
+			aria-invalid={$errors.password ? 'true' : undefined}
+			class={cn('input input-bordered w-full max-w-lg', className)}
+			class:input-error={$errors[name]}
 		/>
 	{:else if type === 'email'}
 		<input
-			class={cn('input input-bordered w-full max-w-lg', className)}
-			class:input-error={$errors[name]}
 			{name}
+			bind:value={$form[name]}
+			on:change
 			type="email"
 			placeholder={placeholder ?? ''}
 			aria-invalid={$errors.email ? 'true' : undefined}
-			bind:value={$form[name]}
-			on:change
+			class={cn('input input-bordered w-full max-w-lg', className)}
+			class:input-error={$errors[name]}
 		/>
 	{:else if type === 'address'}
 		<input
-			class={cn('input input-bordered w-full max-w-lg', className)}
-			class:input-error={$errors[name]}
 			{name}
-			type="text"
-			placeholder={placeholder ?? ''}
-			aria-invalid={$errors.email ? 'true' : undefined}
 			bind:value={$form.address[name]}
 			on:change
+			type="text"
+			placeholder={placeholder ?? ''}
+			aria-invalid={$errors[name] ? 'true' : undefined}
+			class={cn('input input-bordered w-full max-w-lg', className)}
+			class:input-error={$errors[name]}
 		/>
 	{:else}
 		<input
-			class={cn('input input-bordered w-full max-w-lg', className)}
-			class:input-error={$errors[name]}
 			{name}
-			placeholder={placeholder ?? ''}
-			aria-invalid={$errors.email ? 'true' : undefined}
 			bind:value={$form[name]}
 			on:change
+			placeholder={placeholder ?? ''}
+			aria-invalid={$errors[name] ? 'true' : undefined}
+			class={cn('input input-bordered w-full max-w-lg', className)}
+			class:input-error={$errors[name]}
 		/>
 	{/if}
 

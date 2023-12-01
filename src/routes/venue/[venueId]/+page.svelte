@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores'
-	import Comments from '$lib/newComment/comments.svelte'
 	import Page from '$lib/components/layout/Page.svelte'
 	import LikeFollow from '$lib/like/like-follow.svelte'
+	import Comments from '$lib/newComment/comments.svelte'
 	import Icon from '@iconify/svelte'
-	import { superForm } from 'sveltekit-superforms/client'
 	import type { PageData } from './$types'
 
 	export let data: PageData

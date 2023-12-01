@@ -1,25 +1,25 @@
 <script lang="ts">
-	import { superForm } from 'sveltekit-superforms/client';
-	import * as flashModule from 'sveltekit-flash-message/client';
-	import Icon from '@iconify/svelte';
+	import { superForm } from 'sveltekit-superforms/client'
+	import * as flashModule from 'sveltekit-flash-message/client'
+	import Icon from '@iconify/svelte'
 
-	import { Form, Input, Button } from '$components/form/index.js';
-	import { Page } from '$components/layout';
+	import { Form, Input, Button } from '$components/form/index.js'
+	import { Page } from '$components/layout'
 
-	export let data;
+	export let data
 
 	const formObj = superForm(data.form, {
 		autoFocusOnError: true,
 		flashMessage: {
 			module: flashModule,
 			onError: ({ result, message }) => {
-				const errorMessage = result.error.message;
-				message.set({ type: 'error', message: errorMessage });
+				const errorMessage = result.error.message
+				message.set({ type: 'error', message: errorMessage })
 			}
 		},
 
 		syncFlashMessage: true
-	});
+	})
 
 	//
 </script>
@@ -28,7 +28,7 @@
 	<title>Login - Svelte-way</title>
 </svelte:head>
 <Page title="Login">
-	<p class="m-0">Don't have an account? <a href="/auth/register">Register</a></p>
+	<p class="m-0">Don't have an account? <a href="/auth/register"> Register </a></p>
 	<Form {formObj}>
 		<Input name="email" type="email" {formObj} />
 		<Input name="password" type="password" {formObj} />

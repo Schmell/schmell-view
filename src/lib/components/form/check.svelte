@@ -6,7 +6,7 @@
 	import { cn } from '$lib/utils'
 	import { afterUpdate } from 'svelte'
 
-	export let formObj: SuperForm<AnyZodObject, any>
+	export let formObj: any
 	export let name: string
 	export let group: string | undefined = undefined
 	export let label: string | undefined = undefined

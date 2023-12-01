@@ -1,19 +1,15 @@
 <script lang="ts">
-	import type { PageData } from './$types'
-	import { Page, ItemCard } from '$components/layout'
-	import Comments from '$lib/comment/comments.svelte'
 	import { page } from '$app/stores'
+	import { Page } from '$components/layout'
 	import LikeFollow from '$lib/like/like-follow.svelte'
+	import Comments from '$lib/newComment/comments.svelte'
 	import { getHref } from '$lib/utils'
 	import Icon from '@iconify/svelte'
-	import { superForm } from 'sveltekit-superforms/client'
+	import type { PageData } from './$types'
 
 	export let data: PageData
 
 	let showEvents = true
-
-	// commentFormObj
-	const commentFormObj = superForm(data.commentForm)
 </script>
 
 <Page title="Series">
@@ -80,18 +76,6 @@
 									</div>
 								</a>
 							{/if}
-							<!-- Likes and follows -->
-							<!-- <div class="flex justify-end text-sm">
-							<span class="pr-1 flex items-center text-xs">
-								{series?._count.Likes}
-								<Icon class="px-1 text-lg" icon="mdi:thumbs-up" />
-							</span>
-							/
-							<span class="pr-2 pl-2 flex items-center text-xs">
-								{series?._count.Follows}
-								<Icon class="px-1 text-lg" icon="mdi:bell-ring" />
-							</span>
-						</div> -->
 						</div>
 					</div>
 
@@ -115,7 +99,6 @@
 							{#if data.user?.userId === series?.publisherId}
 								<div class="tooltip tooltip-top" data-tip="Edit Event">
 									<a
-										data-sveltekit-replacestate={true}
 										href="/series/{series?.id}/edit?from={$page.url.pathname}"
 										class="btn btn-ghost p-1"
 									>
@@ -155,7 +138,14 @@
 					{/each}
 				{/if}
 				<div class="p-2">
-					<Comments item={series} type="series" user={data.user} formObj={commentFormObj} />
+					<!-- <Comments item={series} type="series" user={data.user} formObj={commentFormObj} /> -->
+					<Comments
+						item={series}
+						type="series"
+						user={data.user}
+						commentForm={data.commentForm}
+						comments={series?.Comments}
+					/>
 				</div>
 			</div>
 		{/if}

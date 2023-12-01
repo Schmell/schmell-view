@@ -59,6 +59,7 @@ export const actions = {
 			return { form }
 		}
 
-		throw redirect(302, `${url.searchParams.get('from')}?${url.searchParams.toString()}`)
+		return { form }
+		// throw redirect(302, `${url.searchParams.get('from')}?${url.searchParams.toString()}`)
 	}
 }

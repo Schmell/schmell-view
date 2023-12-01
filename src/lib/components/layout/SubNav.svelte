@@ -1,9 +1,9 @@
 <script>
-	export let title;
+	export let title
 </script>
 
 <div class="sub-nav">
-	<div class="h-full items-center">
+	<div class="h-full items-center tooltip tooltip-bottom" data-tip={title}>
 		<div class="text-3xl font-semibold select-none line-clamp-1">{@html title}</div>
 	</div>
 	<div class="mr-4"><slot name="trailing" /></div>

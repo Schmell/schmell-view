@@ -83,9 +83,8 @@ export const actions = {
 
 			return { form }
 		}
-		const from = url.searchParams.get('from')
-		url.searchParams.delete('from')
 
-		throw redirect(303, `${from}?${url.searchParams.toString()}`)
+		// Everything is good return the form
+		return { form }
 	}
 }

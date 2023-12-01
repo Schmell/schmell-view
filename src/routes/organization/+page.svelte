@@ -4,6 +4,7 @@
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
+	import { getHref } from '$lib/utils'
 
 	export let data: PageData
 
@@ -24,18 +25,24 @@
 	{:else}
 		{#each orgs as org}
 			<ItemCard title={org.name} href="/organization/{org.id}">
-				<div>{org.description ?? 'No description provided'}</div>
-				<div>{org.website}</div>
-
-				<div slot="bottom-left">
-					{#if org.createdAt}
-						<div class="text-xs m-2 ml-2">{formatDateTime(org.createdAt)}</div>
-					{/if}
-				</div>
+				<div>{@html org.description ?? 'No description provided'}</div>
+				<a
+					href={getHref(org.website)}
+					target="_blank"
+					class="pt-2 flex items-center gap-1 text-sm font-semibold text-secondary"
+				>
+					<Icon icon="clarity:pop-out-line" class="inline" /><span>{org.website}</span>
+				</a>
 				<div slot="top-right" class="text-xs">
 					<a href="/user/{org.Owner?.id}">
 						@{org.Owner?.username}
 					</a>
+				</div>
+
+				<div slot="bottom-left">
+					{#if org.createdAt}
+						<div class="text-xs text-base-content m-2 ml-2">{org.createdAt.toLocaleString()}</div>
+					{/if}
 				</div>
 
 				<div slot="bottom-right" class="flex justify-end text-primary">

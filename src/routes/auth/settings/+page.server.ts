@@ -5,6 +5,7 @@ import type { Actions, PageServerLoad } from './$types'
 
 import { UserSettingsSchema } from '$lib/schemas/generated/zod'
 import { superValidate } from 'sveltekit-superforms/server'
+import { invalidateAll } from '$app/navigation'
 
 export let ssr = false
 

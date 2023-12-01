@@ -103,15 +103,8 @@ export const actions = {
 			return { form }
 		}
 
-		function getRedirect() {
-			const from = url.searchParams.get('from')
-			if (from) {
-				url.searchParams.delete('from')
-				url.searchParams.delete('/series')
-				return from + url.search
-			}
-			return ''
-		}
+		return { form }
+
 		//  the redirect is happening on the client now
 		// throw redirect(301, getRedirect())
 	},

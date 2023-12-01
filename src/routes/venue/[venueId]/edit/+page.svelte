@@ -5,6 +5,7 @@
 	import { Button, Form, Input, Textarea } from '$components/form'
 	import { Page } from '$components/layout'
 	import Icon from '@iconify/svelte'
+	import * as flashModule from 'sveltekit-flash-message/client'
 	import { superForm } from 'sveltekit-superforms/client'
 	import type { PageData } from './$types'
 	import { addressSchema, contactSchema, venueSchema } from './schemas'
@@ -14,6 +15,7 @@
 	let showAddressForm = false
 	let showContactForm = false
 	let showNameField = false
+	let submitting = false
 
 	if ($page.params.venueId === 'new') {
 		showNameField = true
@@ -21,13 +23,24 @@
 
 	const formObj = superForm(data.venueForm, {
 		id: data.venueForm?.id,
+		autoFocusOnError: true,
 		taintedMessage: 'Finish filling out the form or your information will be lost?',
-		validators: venueSchema
+		validators: venueSchema,
+		onUpdated() {
+			const from = $page.url.searchParams.get('from')
+			$page.url.searchParams.delete('from')
+			goto(from + $page.url.search, { replaceState: true })
+		},
+		flashMessage: {
+			module: flashModule,
+			onError: ({ result, message }) => {
+				const errorMessage = result.error.message
+				message.set({ type: 'error', message: errorMessage })
+			}
+		}
 	})
 
-	const { form, errors, capture, restore } = formObj
-
-	// export const snapshot = { capture, restore }
+	const { form, errors, delayed } = formObj
 
 	const addressFormObj = superForm(data.addressForm, {
 		taintedMessage: 'Finish filling out the form or your information will be lost?',
@@ -89,7 +102,13 @@
 		<Input name="email" {formObj} />
 		<Input name="burgee" {formObj} />
 		<Input name="titleImage" label="Title Image" {formObj} />
-		<Button>Submit</Button>
+		<Button disabled={$delayed}>
+			{#if $delayed}
+				<span class="loading loading-dots loading-md" />
+			{:else}
+				Submit
+			{/if}
+		</Button>
 	</Form>
 
 	{#if showAddressForm}

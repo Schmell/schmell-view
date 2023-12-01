@@ -1,36 +1,46 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import { Form, Input, Textarea } from '$components/form'
+	import Button from '$components/form/button.svelte'
 	import { Page } from '$components/layout'
+	import Icon from '@iconify/svelte'
+	import * as flashModule from 'sveltekit-flash-message/client'
 	import { superForm } from 'sveltekit-superforms/client'
 	import type { PageData } from './$types'
-	import Button from '$components/form/button.svelte'
-	import Icon from '@iconify/svelte'
 	import { seriesSchema } from './seriesSchema'
+	import { goto } from '$app/navigation'
 
 	export let data: PageData
-	$: ({ form, orgs, events } = data)
-	// $: console.log(events)
-	// $: console.log(data.form.data)
+	$: ({ form, events } = data)
 
 	const formObj = superForm(data.form, {
-		// validators: seriesSchema,
-		dataType: 'json'
+		taintedMessage: 'Finish filling out the form or you will loose your data?',
+		autoFocusOnError: true,
+		validators: seriesSchema,
+		dataType: 'json',
+		onUpdated() {
+			const from = $page.url.searchParams.get('from')
+			$page.url.searchParams.delete('from')
+			if (from) {
+				goto(from + $page.url.search, { replaceState: true })
+			} else {
+				history.replaceState({ from: '/' }, '')
+			}
+		},
+		onError({ result }) {
+			$message = result.error.message
+		},
+		flashMessage: {
+			module: flashModule,
+			onError: ({ result, message }) => {
+				message.set({ type: 'error', message: result.error.message })
+			}
+		},
+
+		syncFlashMessage: false
 	})
 
-	// function getSelectedEvents(events) {
-	// 	const eventIds = form.data.Events?.map((event) => {
-	// 		console.log('event: ', event.id)
-	// 		return events.find((ev) => {
-	// 			console.log('ev: ', ev.name)
-	// 			return ev.id === event.id
-	// 		})
-	// 	})
-	// 	return eventIds
-	// }
-	// $: console.log(getSelectedEvents(events))
-
-	$: ({ form: supaForm } = formObj)
+	$: ({ form: supaForm, message, delayed } = formObj)
 </script>
 
 <Page title={form.data.name === 'new' ? 'New Series' : form.data.name}>
@@ -85,6 +95,12 @@
 			{/each}
 		</div>
 
-		<Button>Submit</Button>
+		<Button>
+			{#if $delayed}
+				<span class="loading loading-dots loading-lg" />
+			{:else}
+				Submit
+			{/if}
+		</Button>
 	</Form>
 </Page>

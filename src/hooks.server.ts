@@ -1,6 +1,7 @@
-import { auth } from '$lib/server/lucia';
-import type { Handle } from '@sveltejs/kit';
-import { sequence } from '@sveltejs/kit/hooks';
+import { invalidateAll } from '$app/navigation'
+import { auth } from '$lib/server/lucia'
+import type { Handle } from '@sveltejs/kit'
+import { sequence } from '@sveltejs/kit/hooks'
 
 // export const handle: Handle = async ({ event, resolve }) => {
 // 	// we can pass `event` because we used the SvelteKit middleware
@@ -20,35 +21,29 @@ import { sequence } from '@sveltejs/kit/hooks';
 export const luciaHandle: Handle = async ({ event, resolve }) => {
 	// we can pass `event` because we used the SvelteKit middleware
 
-	event.locals.auth = auth.handleRequest(event);
-	return await resolve(event);
-};
+	event.locals.auth = auth.handleRequest(event)
+	return await resolve(event)
+}
 
 export const themeHandle: Handle = async ({ resolve, event }) => {
-	let theme: string | null = null;
-	// console.log('event: ', event);
+	let theme: string | null = null
 
-	const newTheme = event.url.searchParams.get('theme');
-
-	const cookieTheme = event.cookies.get('colorTheme');
+	const newTheme = event.url.searchParams.get('theme')
+	const cookieTheme = event.cookies.get('colorTheme')
 
 	if (cookieTheme) {
-		// console.log('newTheme: ', cookieTheme);
-		theme = cookieTheme;
+		theme = cookieTheme
 	} else if (newTheme) {
-		// console.log('cookieTheme: ', newTheme);
-		theme = newTheme;
+		theme = newTheme
 	}
-
-	// console.log('theme: ', theme);
 
 	if (theme) {
 		return await resolve(event, {
 			transformPageChunk: ({ html }) => html.replace('data-theme=""', `data-theme="${theme}"`)
-		});
+		})
 	}
 
-	return resolve(event);
-};
+	return resolve(event)
+}
 
-export const handle: Handle = sequence(luciaHandle, themeHandle);
+export const handle: Handle = sequence(luciaHandle, themeHandle)

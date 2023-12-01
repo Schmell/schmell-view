@@ -6,6 +6,7 @@
 	import { isUrl } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
+	import { goto } from '$app/navigation'
 
 	export let data: PageData
 	$: ({ event, user, comments } = data)
@@ -19,11 +20,6 @@
 			: `http://${website}`
 	}
 
-	function checkForImage(imageString) {
-		if (!imageString) return null
-		if (isUrl(imageString)) return imageString
-		return null
-	}
 	//
 </script>
 
@@ -36,8 +32,10 @@
 				<div class="md:shrink-0 flex relative">
 					{#if !event.public}
 						<div class="badge badge-error absolute right-2 top-2 shadow-md">Private</div>
+						<!-- {:else}
+						<div class="badge badge-success absolute right-2 top-2 shadow-md">Public</div> -->
 					{/if}
-					{#if checkForImage(event.Venue?.burgee)}
+					{#if isUrl(event.Venue?.burgee)}
 						<img
 							class="absolute z-10 left-2 top-2 rounded-full shadow-xl"
 							width="60px"
@@ -51,7 +49,7 @@
 							? event?.titleImage
 							: event.Organization?.titleImage
 							? event.Organization.titleImage
-							: 'https://picsum.photos/id/384/400/300/'}
+							: 'https://picsum.photos/200/400'}
 						alt="Title for {event?.name}"
 					/>
 					<div class="absolute w-full flex justify-end bottom-0 right-4 p-2">
@@ -72,16 +70,18 @@
 						</div>
 					</div>
 				</div>
-				<div class="pt-8 px-8 w-full">
-					<div class="flex justify-between w-full">
-						<div class="uppercase tracking-wide text-xl text-accent font-semibold line-clamp-1">
-							{@html event?.name}
-						</div>
+				<div class="pt-2 px-8 w-full">
+					<div class="flex justify-end">
 						{#if event.complete}
 							<div class="badge badge-success shadow-md">complete</div>
 						{:else}
 							<div class="badge badge-warning shadow-md w-36">In progress</div>
 						{/if}
+					</div>
+					<div class="flex justify-between w-full">
+						<div class="uppercase tracking-wide text-xl text-accent font-semibold line-clamp-1">
+							{@html event?.name}
+						</div>
 					</div>
 					{#if event?.Venue}
 						<div class="flex items-center gap-4">
@@ -138,76 +138,78 @@
 						</div>
 					</div>
 				</div>
+			</div>
 
-				<!-- Tools  -->
-				<div class="px-4 pb-4 flex justify-between items-center">
-					<button
-						class="btn btn-ghost btn-xs"
-						on:click={() => {
-							showRaces = !showRaces
-						}}
-					>
-						{showRaces ? '^ Hide Races' : '⌄ Show Races'}
-					</button>
-					<div>
-						<div class="tooltip tooltip-top" data-tip="View Competitors">
-							<a href="/comps/{event?.id}" class="btn btn-ghost p-1">
-								<Icon
-									class="text-3xl text-primary"
-									icon="material-symbols:groups-outline-rounded"
-								/>
-							</a>
-						</div>
-
-						<div class="tooltip tooltip-top" data-tip="Edit Races">
-							<a href="/races/{event?.id}" class="btn btn-ghost p-1">
-								<Icon class="text-3xl text-primary" icon="material-symbols:box-edit-outline" />
-							</a>
-						</div>
-
-						{#if data.user?.userId === event?.publisherId}
-							<div class="tooltip tooltip-top" data-tip="Edit Event">
-								<a
-									href="/events/{event?.id}/edit?from={$page.url.pathname}"
-									class="btn btn-ghost p-1"
-								>
-									<Icon class="text-3xl text-primary" icon="material-symbols:edit-outline" />
-								</a>
-							</div>
-						{/if}
+			<div class="px-4 pb-4 flex justify-between items-center">
+				<button
+					class="btn btn-ghost btn-xs"
+					on:click={() => {
+						showRaces = !showRaces
+					}}
+				>
+					{showRaces ? '^ Hide Races' : '⌄ Show Races'}
+				</button>
+				<div>
+					<div class="tooltip tooltip-top" data-tip="View Competitors">
+						<a href="/comps/{event?.id}" class="btn btn-ghost p-1">
+							<Icon class="text-3xl text-primary" icon="material-symbols:groups-outline-rounded" />
+						</a>
 					</div>
+
+					<div class="tooltip tooltip-top" data-tip="Edit Races">
+						<a href="/races/{event?.id}" class="btn btn-ghost p-1">
+							<Icon class="text-3xl text-primary" icon="material-symbols:box-edit-outline" />
+						</a>
+					</div>
+
+					{#if data.user?.userId === event?.publisherId}
+						<div class="tooltip tooltip-top" data-tip="Edit Event">
+							<!-- href="/events/{event?.id}/edit?from={$page.url.pathname}" -->
+							<button
+								on:click={() => {
+									goto(`/events/${event?.id}/edit?from=${$page.url.pathname}`, {
+										// replaceState: true,
+										state: { info: 'this is info' }
+									})
+								}}
+								class="btn btn-ghost p-1"
+							>
+								<Icon class="text-3xl text-primary" icon="material-symbols:edit-outline" />
+							</button>
+						</div>
+					{/if}
 				</div>
-				<!-- ////////////////////////////////////////////////////////////////////////////// -->
+			</div>
+			<!-- ////////////////////////////////////////////////////////////////////////////// -->
 
-				{#if showRaces}
-					{#await data.await.races}
-						<progress class="progress progress-accent px-4 w-full" />
-					{:then races}
-						{#each races as race}
-							<a href="/results/{race.id}">
-								<div class=" p-2 px-8 border-b-4 rounded-lg border-base-200 m-4">
-									<div class="w-full pt-1">
-										<h1 class="text-xl font-semibold">{race.name}</h1>
+			{#if showRaces}
+				{#await data.await.races}
+					<progress class="progress progress-accent px-4 w-full" />
+				{:then races}
+					{#each races as race}
+						<a href="/results/{race.id}">
+							<div class=" p-2 px-8 border-b-4 border-l-4 rounded-lg border-base-200 m-4">
+								<div class="w-full pt-1">
+									<h1 class="text-xl font-semibold">{race.name}</h1>
+								</div>
+								<div class="flex justify-between pb-2">
+									<div class="text-xs">
+										{race.date ? race.date : ''}
+										{race.time ? `- ${race.time}` : ''}
 									</div>
-									<div class="flex justify-between pb-2">
-										<div class="text-xs">
-											{race.date ? race.date : ''}
-											{race.time ? `- ${race.time}` : ''}
-										</div>
 
-										<div
-											class="badge badge-success shadow-md"
-											class:badge-error={!Number(race.sailed)}
-										>
-											{Number(race.sailed) ? 'Sailed' : 'Unsailed'}
-										</div>
+									<div
+										class="badge badge-success shadow-md"
+										class:badge-error={!Number(race.sailed)}
+									>
+										{Number(race.sailed) ? 'Sailed' : 'Unsailed'}
 									</div>
 								</div>
-							</a>
-						{/each}
-					{/await}
-				{/if}
-			</div>
+							</div>
+						</a>
+					{/each}
+				{/await}
+			{/if}
 			<div class="p-4 pb-12">
 				<Comments
 					type="event"

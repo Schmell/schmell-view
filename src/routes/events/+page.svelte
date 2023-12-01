@@ -1,20 +1,13 @@
 <script lang="ts">
+	import { enhance } from '$app/forms'
 	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
 	import { Page } from '$components/layout'
 	import ItemCard from '$components/layout/ItemCard.svelte'
 	import LikeCount from '$lib/like/like-count.svelte'
-	// import {
-	// 	excludePaginationSearchParams,
-	// 	excludeSortSearchParams
-	// } from '$lib/utils/searchParamUtils'
 	import Icon from '@iconify/svelte'
 	import { createPagination } from '@melt-ui/svelte'
 	import type { PageData } from './$types'
-	import { enhance } from '$app/forms'
-	// import { flashCookieOptions } from 'sveltekit-flash-message/server'
-
-	import { getFlash } from 'sveltekit-flash-message/client'
 
 	export let data: PageData
 
@@ -42,12 +35,6 @@
 	function excludeSortSearchParams() {
 		$page.url.searchParams.delete('sortBy')
 		$page.url.searchParams.delete('sortOrder')
-		return $page.url.searchParams.toString()
-	}
-
-	function excludeWhereSearchParams() {
-		$page.url.searchParams.delete('whereType')
-		$page.url.searchParams.delete('whereId')
 		return $page.url.searchParams.toString()
 	}
 </script>

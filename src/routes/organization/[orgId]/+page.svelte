@@ -1,12 +1,12 @@
 <script lang="ts">
+	import { page } from '$app/stores'
 	import { Page } from '$components/layout'
+	import Comments from '$lib/newComment/comments.svelte'
 	import LikeFollow from '$lib/like/like-follow.svelte'
 	import Icon from '@iconify/svelte'
 	import type { Organization } from '@prisma/client'
-	import type { PageData } from './$types'
-	import Comments from '$lib/comment/comments.svelte'
 	import { superForm } from 'sveltekit-superforms/client'
-	import { page } from '$app/stores'
+	import type { PageData } from './$types'
 
 	export let data: PageData
 
@@ -104,5 +104,12 @@
 			</div>
 		</div>
 	{/if}
-	<Comments item={org} type="organization" {user} formObj={commentFormObj} />
+	<!-- <Comments item={org} type="organization" {user} formObj={commentFormObj} /> -->
+	<Comments
+		item={org}
+		type="organization"
+		user={data.user}
+		commentForm={data.commentForm}
+		comments={org?.Comments}
+	/>
 </Page>

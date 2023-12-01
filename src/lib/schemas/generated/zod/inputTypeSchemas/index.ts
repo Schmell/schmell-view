@@ -12,6 +12,7 @@ export { CommentScalarFieldEnumSchema } from './CommentScalarFieldEnumSchema';
 export { FollowScalarFieldEnumSchema } from './FollowScalarFieldEnumSchema';
 export { LikeScalarFieldEnumSchema } from './LikeScalarFieldEnumSchema';
 export { UserScalarFieldEnumSchema } from './UserScalarFieldEnumSchema';
+export { UserCompScalarFieldEnumSchema } from './UserCompScalarFieldEnumSchema';
 export { UserSettingsScalarFieldEnumSchema } from './UserSettingsScalarFieldEnumSchema';
 export { SessionScalarFieldEnumSchema } from './SessionScalarFieldEnumSchema';
 export { KeyScalarFieldEnumSchema } from './KeyScalarFieldEnumSchema';

@@ -145,9 +145,8 @@ export const actions = {
 
 			return { form }
 		}
-		console.log(url.searchParams.get('from'))
-
-		throw redirect(307, url.searchParams.get('from') ?? '/')
+		// throw redirect(307, url.searchParams.get('from') ?? '/')
+		return { form }
 	},
 
 	address: async ({ locals, request, params, url }) => {

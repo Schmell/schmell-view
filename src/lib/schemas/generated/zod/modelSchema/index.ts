@@ -11,6 +11,7 @@ export * from './CommentSchema';
 export * from './FollowSchema';
 export * from './LikeSchema';
 export * from './UserSchema';
+export * from './UserCompSchema';
 export * from './UserSettingsSchema';
 export * from './SessionSchema';
 export * from './KeySchema';

@@ -15,6 +15,8 @@ import type { CommentWithRelations } from './CommentSchema'
 import type { CommentPartialWithRelations } from './CommentSchema'
 import type { RaceWithRelations } from './RaceSchema'
 import type { RacePartialWithRelations } from './RaceSchema'
+import type { UserCompWithRelations } from './UserCompSchema'
+import type { UserCompPartialWithRelations } from './UserCompSchema'
 import { UserWithRelationsSchema } from './UserSchema'
 import { UserPartialWithRelationsSchema } from './UserSchema'
 import { EventWithRelationsSchema } from './EventSchema'
@@ -29,6 +31,8 @@ import { CommentWithRelationsSchema } from './CommentSchema'
 import { CommentPartialWithRelationsSchema } from './CommentSchema'
 import { RaceWithRelationsSchema } from './RaceSchema'
 import { RacePartialWithRelationsSchema } from './RaceSchema'
+import { UserCompWithRelationsSchema } from './UserCompSchema'
+import { UserCompPartialWithRelationsSchema } from './UserCompSchema'
 
 /////////////////////////////////////////
 // COMP SCHEMA
@@ -81,6 +85,7 @@ export type CompRelations = {
   Likes: LikeWithRelations[];
   Commments: CommentWithRelations[];
   Races: RaceWithRelations[];
+  UserComps: UserCompWithRelations[];
 };
 
 export type CompWithRelations = Omit<z.infer<typeof CompSchema>, "rest"> & {
@@ -95,6 +100,7 @@ export const CompWithRelationsSchema: z.ZodType<CompWithRelations> = CompSchema.
   Likes: z.lazy(() => LikeWithRelationsSchema).array(),
   Commments: z.lazy(() => CommentWithRelationsSchema).array(),
   Races: z.lazy(() => RaceWithRelationsSchema).array(),
+  UserComps: z.lazy(() => UserCompWithRelationsSchema).array(),
 }))
 
 /////////////////////////////////////////
@@ -109,6 +115,7 @@ export type CompPartialRelations = {
   Likes?: LikePartialWithRelations[];
   Commments?: CommentPartialWithRelations[];
   Races?: RacePartialWithRelations[];
+  UserComps?: UserCompPartialWithRelations[];
 };
 
 export type CompPartialWithRelations = Omit<z.infer<typeof CompPartialSchema>, "rest"> & {
@@ -123,6 +130,7 @@ export const CompPartialWithRelationsSchema: z.ZodType<CompPartialWithRelations>
   Likes: z.lazy(() => LikePartialWithRelationsSchema).array(),
   Commments: z.lazy(() => CommentPartialWithRelationsSchema).array(),
   Races: z.lazy(() => RacePartialWithRelationsSchema).array(),
+  UserComps: z.lazy(() => UserCompPartialWithRelationsSchema).array(),
 })).partial()
 
 export type CompWithPartialRelations = Omit<z.infer<typeof CompSchema>, "rest"> & {
@@ -137,6 +145,7 @@ export const CompWithPartialRelationsSchema: z.ZodType<CompWithPartialRelations>
   Likes: z.lazy(() => LikePartialWithRelationsSchema).array(),
   Commments: z.lazy(() => CommentPartialWithRelationsSchema).array(),
   Races: z.lazy(() => RacePartialWithRelationsSchema).array(),
+  UserComps: z.lazy(() => UserCompPartialWithRelationsSchema).array(),
 }).partial())
 
 export default CompSchema;
