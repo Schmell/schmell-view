@@ -9,7 +9,7 @@
 	import { goto } from '$app/navigation'
 
 	export let data: PageData
-	$: ({ event, user, comments } = data)
+	$: ({ event, user } = data)
 
 	let showRaces: boolean = true
 

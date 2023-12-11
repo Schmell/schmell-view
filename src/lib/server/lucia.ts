@@ -9,7 +9,6 @@ import { github, google, facebook } from '@lucia-auth/oauth/providers'
 import {
 	GITHUB_CLIENT_ID,
 	GITHUB_CLIENT_SECRET,
-	// GITHUB_CLIENT_REDIRECTURI,
 	GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET,
 	GOOGLE_CLIENT_REDIRECTURI,
@@ -41,7 +40,6 @@ export const auth = lucia({
 export const githubAuth = github(auth, {
 	clientId: GITHUB_CLIENT_ID,
 	clientSecret: GITHUB_CLIENT_SECRET
-	// redirectUri: GITHUB_CLIENT_REDIRECTURI
 })
 
 export const googleAuth = google(auth, {

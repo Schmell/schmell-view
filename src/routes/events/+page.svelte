@@ -8,13 +8,18 @@
 	import Icon from '@iconify/svelte'
 	import { createPagination } from '@melt-ui/svelte'
 	import type { PageData } from './$types'
+	import { eventStore } from '$lib/stores'
+	import { onMount } from 'svelte'
 
 	export let data: PageData
 
-	$: ({ events, user } = data)
-
+	$: ({ user, events, awaited } = data)
 	let pageSize = 10
+	// $: console.log($eventStore)
 
+	// onMount(() => {
+	// 	eventStore.set(events)
+	// })
 	// melt-ui pagination component
 	const {
 		elements: { root, pageTrigger, prevButton, nextButton },
@@ -70,12 +75,13 @@
 		{/if}
 	</div>
 
-	{#await events}
+	{#await awaited.events}
+		<progress class="progress w-full" />
+	{:then events}
 		{#if !events.length}
 			<h1 class="text-xl font-semibold">You do not have any events yet.</h1>
 			<a class="link-primary hover:link-hover" href="/import"> Upload events here </a>
 		{/if}
-	{:then events}
 		{#each events as event}
 			<!--  -->
 			<ItemCard title={event.name} href="/events/{event.id}{$page.url.search}">
@@ -102,31 +108,28 @@
 				</div>
 				<div slot="bottom-right">
 					{#if data.user?.userId === event?.publisherId}
-						<div class="tooltip tooltip-top" data-tip="Edit Event">
-							<a
-								data-sveltekit-replacestate={true}
-								href="/events/{event?.id}/edit?from={$page.url.pathname}
+						<div class="flex items-center">
+							<div class="tooltip tooltip-top" data-tip="Edit Event">
+								<a
+									href="/events/{event?.id}/edit?from={$page.url.pathname}
 									&{$page.url.searchParams.toString()}"
-								class="btn btn-ghost p-1"
-							>
-								<Icon class="text-3xl text-primary" width="24" icon="mdi:pencil-outline" />
-							</a>
-						</div>
-
-						<div class="tooltip tooltip-top" data-tip="Delete Event">
-							<form method="post" use:enhance>
-								<button
-									formaction="?/deleteEvent&itemId={event.id}&from={$page.url
-										.pathname}&{$page.url.searchParams.toString()}"
-									data-sveltekit-replacestate={true}
 									class="btn btn-ghost p-1"
-									on:click={() => {
-										// const flash = getFlash(page)
-									}}
 								>
-									<Icon class="text-3xl text-primary" width="24" icon="mdi:trash-outline" />
-								</button>
-							</form>
+									<Icon class="text-3xl text-primary" width="24" icon="mdi:pencil-outline" />
+								</a>
+							</div>
+
+							<div class="tooltip tooltip-top" data-tip="Delete Event">
+								<form method="post" use:enhance>
+									<button
+										formaction="?/deleteEvent&itemId={event.id}&from={$page.url
+											.pathname}&{$page.url.searchParams.toString()}"
+										class="btn btn-ghost p-1"
+									>
+										<Icon class="text-3xl text-primary" width="24" icon="mdi:trash-outline" />
+									</button>
+								</form>
+							</div>
 						</div>
 					{/if}
 					<div class="text-xs text-base-content pr-2 pb-1">

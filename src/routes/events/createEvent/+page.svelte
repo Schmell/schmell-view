@@ -117,10 +117,10 @@
 			upload a Sailwave series
 		</p>
 		<div class="flex justify-between">
-			<button on:click={() => (showImport = !showImport)} class="btn btn-outline mb-6"
-				>Import Sailwave file</button
-			>
-			<a href="/events/edit/new" class="btn btn-outline mb-6">Enter Event manualy</a>
+			<button on:click={() => (showImport = !showImport)} class="btn btn-outline mb-6">
+				Import Sailwave file
+			</button>
+			<a href="/events/edit/new" class="btn btn-outline mb-6"> Enter Event manualy </a>
 		</div>
 	{/if}
 

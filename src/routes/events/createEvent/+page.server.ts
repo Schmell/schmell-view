@@ -1,10 +1,10 @@
 import { Populate } from '$lib/importers/sailwave'
 import Blw from '$lib/importers/sailwave/Blw'
 import { prisma } from '$lib/server/prisma'
-import { redirect } from '@sveltejs/kit'
 import csv from 'csvtojson'
 import type { Actions, PageServerLoad } from './$types'
 import { prismaError } from '$lib/error-handling'
+import { redirect } from 'sveltekit-flash-message/server'
 
 export const load = (async ({ locals }) => {
 	const session = await locals.auth.validate()
@@ -37,11 +37,20 @@ export const actions: Actions = {
 		const formObj: any = Object.fromEntries(await request.formData())
 	},
 
-	newImport: async ({ request, locals, url }) => {
+	newImport: async (event) => {
+		const { request, locals, url } = event
 		const session = await locals.auth.validate()
+		// const message =  as const;
+		if (!session)
+			throw redirect(
+				`/auth/login?from=${url.pathname}`,
+				{ type: 'error', message: 'Not Authorised' },
+				event
+			)
 
 		const formData = await request.formData()
-		const { orgId, file }: any = Object.fromEntries(formData)
+		const file = formData.get('file') as File
+		const orgId = formData.get('orgId') as string
 
 		const csvArray = await csv({ noheader: true, output: 'csv' }).fromString(await file.text())
 
@@ -54,12 +63,16 @@ export const actions: Actions = {
 		})
 
 		if (duplicate) {
-			throw redirect(301, `/import/update${url.search}&duplicate=1&eventId=${duplicate.id}`)
+			throw redirect(
+				`/import/update${url.search}&duplicate=1&eventId=${duplicate.id}`,
+				{ type: 'error', message: 'Duplicate entry' },
+				event
+			)
 		}
 
 		await Populate({
 			blw,
-			userId: session?.user.userId,
+			userId: session.user.userId,
 			orgId
 		})
 

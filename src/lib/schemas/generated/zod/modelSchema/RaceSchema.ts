@@ -40,7 +40,7 @@ export const RaceSchema = z.object({
   uniqueRaceString: z.string(),
   name: z.string().nullish(),
   starts: JsonValueSchema,
-  rank: z.string().nullish(),
+  rank: z.number().nullish(),
   date: z.string().nullish(),
   time: z.string().nullish(),
   notes: z.string().nullish(),

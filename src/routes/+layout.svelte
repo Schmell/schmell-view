@@ -45,7 +45,7 @@
 </script>
 
 <!-- <div> -->
-<div class="fixed top-0 z-20 w-full lg:max-w-lg">
+<div class="fixed top-0 z-20 w-full">
 	<nav class="navbar border-base-300 text-secondary-content">
 		<button
 			on:click={() => {

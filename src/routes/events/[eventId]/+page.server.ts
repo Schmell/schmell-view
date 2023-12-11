@@ -53,7 +53,7 @@ export const load = (async ({ params, url }) => {
 		try {
 			return prisma.race.findMany({
 				where: { eventId: params.eventId },
-				orderBy: { name: 'asc' }
+				orderBy: { rank: 'asc' }
 			})
 		} catch (error) {
 			console.log('error: ', error)

@@ -27,7 +27,7 @@
 		}
 	})
 
-	const { form, delayed } = formObj
+	const { form, delayed, timeout } = formObj
 </script>
 
 <Page title={$form.name === 'New Organization' ? 'Add a new Organization' : 'Edit Organization'}>
@@ -39,7 +39,7 @@
 		<Input name="email" type="email" {formObj} />
 		<Input name="titleImage" label="Title Image Url" {formObj} />
 		<Button disabled={$delayed}>
-			{#if $delayed}
+			{#if $delayed || $timeout}
 				<span class="loading loading-dots loading-md" />
 			{:else}
 				Submit

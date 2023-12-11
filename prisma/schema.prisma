@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 generator json {
@@ -97,7 +98,7 @@ model Race {
   uniqueRaceString String    @unique
   name             String?
   starts           Json?
-  rank             String?
+  rank             Int?
   date             String?
   time             String?
   notes            String?

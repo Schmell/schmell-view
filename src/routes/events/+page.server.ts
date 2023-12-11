@@ -68,7 +68,7 @@ export const load: PageServerLoad = async (event) => {
 
 	function sort() {
 		let sort = {}
-		const sortBy: any = url.searchParams.get('sortBy') ?? 'createdAt'
+		const sortBy = url.searchParams.get('sortBy') ?? 'createdAt'
 		const sortOrder = url.searchParams.get('sortOrder') ?? 'desc'
 		if (sortBy === 'org') {
 			return { Organization: { name: 'asc' } }
@@ -85,7 +85,10 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		title,
 		events: getEvents(),
-		count: getEventsCount()
+		count: getEventsCount(),
+		awaited: {
+			events: getEvents()
+		}
 	}
 }
 

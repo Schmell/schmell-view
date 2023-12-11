@@ -1,27 +1,29 @@
 import { createId } from '@paralleldrive/cuid2'
 import { formatTime } from '../../utils/formatters'
+import type { Comp } from '$lib/schemas/generated/zod/modelSchema/CompSchema'
 
 export default class Blw {
 	data: any
-	file: any
+	file?: File
 
-	constructor(props) {
+	constructor(props: { data: any; file?: File }) {
 		this.data = props.data
 		this.file = props.file
 		this.data.cuid = createId()
 	}
 
 	getComps() {
-		const compData: any = []
-		const compBoats = this.data.filter((item: any) => {
+		const compData: Comp[] = []
+
+		const compBoats = this.data.filter((item) => {
 			return item[0] === 'comphigh'
 		})
+
 		compBoats.sort().forEach((compBoat: any) => {
 			let competitor: any = {
-				compId: '',
-				uniqueCompId: ''
+				compId: ''
+				// uniqueCompId: ''
 			}
-			// console.log('compBoat: ', compBoat)
 
 			competitor.compId = `${compBoat[2]}-${this.data.cuid}`
 			// also need a uniqueCompId for connecting comps to users
@@ -38,9 +40,9 @@ export default class Blw {
 				competitor[newName] = item[1] ?? ''
 			})
 
-			competitor.uniqueCompId = ` ${competitor.sailNo ?? 0}_${competitor.boat ?? 'none'}_${
-				competitor.helname ?? 'none'
-			}_${competitor.club ?? 'none'} `
+			// competitor.uniqueCompId = ` ${competitor.sailNo ?? 0}_${competitor.boat ?? 'none'}_${
+			// 	competitor.helname ?? 'none'
+			// }_${competitor.club ?? 'none'} `
 
 			// console.log('competitor: ', competitor)
 
@@ -50,7 +52,7 @@ export default class Blw {
 		return compData
 	} // getComps
 
-	getResults(raceId) {
+	getResults(raceId: string) {
 		// const data = await this.getFileData()
 		const resultsArr: any = []
 		// use rdisc to get an individuals result
@@ -58,27 +60,27 @@ export default class Blw {
 			return item[0] === 'rdisc' && item[3] === raceId
 		})
 
-		results.forEach((result: any) => {
+		results.forEach((result) => {
 			// Results in blw file have no prefix to speak of (just an r)
 			// So we need to find each row individually
 			const resultRow = {
 				raceCompId: `${result[3]}-${result[2]}`,
 				compId: `${result[2]}-${this.data.cuid}`,
-				finish: this.resultHelp('rft', this.data, result),
-				start: this.resultHelp('rst', this.data, result),
-				points: this.resultHelp('rpts', this.data, result),
-				position: this.resultHelp('rpos', this.data, result),
-				discard: this.resultHelp('rdisc', this.data, result),
-				corrected: this.resultHelp('rcor', this.data, result),
-				resultType: this.resultHelp('rrestyp', this.data, result),
-				code: this.resultHelp('rcod', this.data, result),
-				elapsed: this.resultHelp('rele', this.data, result),
-				supposedRating: this.resultHelp('srat', this.data, result),
-				elapsedWin: this.resultHelp('rewin', this.data, result),
-				ratingWin: this.resultHelp('rrwin', this.data, result),
-				rrset: this.resultHelp('rrset', this.data, result),
-				recordedPosition: this.resultHelp('rrecpos', this.data, result),
-				raceRating: this.resultHelp('rrat', this.data, result)
+				finish: this.resultHelp('rft', this.data, result) ?? '',
+				start: this.resultHelp('rst', this.data, result) ?? '',
+				points: this.resultHelp('rpts', this.data, result) ?? '',
+				position: this.resultHelp('rpos', this.data, result) ?? '',
+				discard: this.resultHelp('rdisc', this.data, result) ?? '',
+				corrected: this.resultHelp('rcor', this.data, result) ?? '',
+				resultType: this.resultHelp('rrestyp', this.data, result) ?? '',
+				code: this.resultHelp('rcod', this.data, result) ?? '',
+				elapsed: this.resultHelp('rele', this.data, result) ?? '',
+				supposedRating: this.resultHelp('srat', this.data, result) ?? '',
+				elapsedWin: this.resultHelp('rewin', this.data, result) ?? '',
+				ratingWin: this.resultHelp('rrwin', this.data, result) ?? '',
+				rrset: this.resultHelp('rrset', this.data, result) ?? '',
+				recordedPosition: this.resultHelp('rrecpos', this.data, result) ?? '',
+				raceRating: this.resultHelp('rrat', this.data, result) ?? ''
 			}
 
 			resultsArr.push(resultRow)
@@ -171,7 +173,7 @@ export default class Blw {
 			}) // resultRows.forEach
 
 			// now add the starts to raceObj
-			raceStarts.forEach((start: any) => {
+			raceStarts.forEach(() => {
 				raceObj.starts = raceStarts
 			})
 
@@ -210,10 +212,10 @@ export default class Blw {
 
 		// console.log('blw: ', this.file)
 
-		const uniqueIdString = this.file.name.toLowerCase().trim().split(' ').join('_')
+		const uniqueIdString = this.file?.name.toLowerCase().trim().split(' ').join('_')
 		'-' + eventeid + '-' + event.toLowerCase().trim().split(' ').join('_')
 
-		const name = event.length > 1 ? event : this.file.name
+		const name = event.length > 1 ? event : this.file?.name
 		// console.log('uniqueIdString: ', uniqueIdString)
 
 		return {
@@ -258,3 +260,6 @@ export default class Blw {
 		}
 	}
 } // Blw
+
+// export
+export type BLW = typeof Blw
