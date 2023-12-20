@@ -55,6 +55,7 @@
 		"@lucia-auth/oauth": "^2.0.1",
 		"@paralleldrive/cuid2": "^2.2.2",
 		"@prisma/client": "^5.7.0",
+		"@sveltejs/adapter-vercel": "^4.0.3",
 		"@tanstack/svelte-table": "^8.10.4",
 		"bits-ui": "^0.5.7",
 		"class-variance-authority": "^0.7.0",
