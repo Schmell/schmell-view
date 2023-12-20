@@ -7,6 +7,7 @@
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
 	import { goto } from '$app/navigation'
+	import { enhance } from '$app/forms'
 
 	export let data: PageData
 	$: ({ event, user } = data)
@@ -177,6 +178,17 @@
 								<Icon class="text-3xl text-primary" icon="material-symbols:edit-outline" />
 							</button>
 						</div>
+						<div class="tooltip tooltip-top" data-tip="Delete Event">
+							<form method="post" use:enhance>
+								<button
+									formaction="?/deleteEvent&itemId={event.id}&from={$page.url
+										.pathname}&{$page.url.searchParams.toString()}"
+									class="btn btn-ghost p-1"
+								>
+									<Icon class="text-3xl text-primary" width="24" icon="mdi:trash-outline" />
+								</button>
+							</form>
+						</div>
 					{/if}
 				</div>
 			</div>
@@ -194,7 +206,7 @@
 								</div>
 								<div class="flex justify-between pb-2">
 									<div class="text-xs">
-										{race.date ? race.date : ''}
+										{race.date ?? ''}
 										{race.time ? `- ${race.time}` : ''}
 									</div>
 

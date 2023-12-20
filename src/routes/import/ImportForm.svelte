@@ -66,7 +66,7 @@
 
 				<div class="tooltip tooltip-bottom-right" data-tip="Add Organization">
 					<a
-						href="/organization/edit/new?from={$page.url.pathname}{$page.url.search}"
+						href="/organization/new/edit?from={$page.url.pathname}{$page.url.search}"
 						class="btn btn-primary btn-circle btn-sm hover:btn-primary-focus"
 					>
 						<Icon class="text-3xl" icon="ic:baseline-add" />

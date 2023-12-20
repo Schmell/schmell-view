@@ -454,12 +454,10 @@
 													method="post"
 													use:enhance
 													class="text-xs font-normal"
-													on:change={(event) => {
-														// @ts-ignore
-														const form = event.target?.form
+													on:change={({ currentTarget }) => {
+														const form = currentTarget.form
 														const formObj = Object.fromEntries(new FormData(form))
 														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
-														// handleClick()
 													}}
 												>
 													<label class="label">
@@ -541,9 +539,7 @@
 										on:keyup
 									>
 										<svelte:component
-											this={notypecheck(
-												flexRender(header.column.columnDef.header, header.getContext())
-											)}
+											this={flexRender(header.column.columnDef.header, header.getContext())}
 										/>
 										<span class="pl-1">
 											<svelte:component this={getSortSymbol(header.column.getIsSorted())} />
@@ -561,7 +557,7 @@
 		<tbody>
 			{#each $table.getRowModel().rows as row, i}
 				<tr
-					on:click={(e) => {
+					on:click={() => {
 						row.toggleSelected()
 					}}
 					class:selectedEven={row.getIsSelected() && i % 2 == 0}
@@ -571,9 +567,7 @@
 				>
 					{#each row.getVisibleCells() as cell}
 						<td>
-							<svelte:component
-								this={notypecheck(flexRender(cell.column.columnDef.cell, cell.getContext()))}
-							/>
+							<svelte:component this={flexRender(cell.column.columnDef.cell, cell.getContext())} />
 						</td>
 					{/each}
 				</tr>
@@ -586,9 +580,7 @@
 						<th colSpan={header.colSpan}>
 							{#if !header.isPlaceholder}
 								<svelte:component
-									this={notypecheck(
-										flexRender(header.column.columnDef.footer, header.getContext())
-									)}
+									this={flexRender(header.column.columnDef.footer, header.getContext())}
 								/>
 							{/if}
 						</th>

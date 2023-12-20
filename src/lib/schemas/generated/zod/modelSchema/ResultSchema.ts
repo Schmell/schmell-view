@@ -36,11 +36,13 @@ export const ResultSchema = z.object({
   ratingWin: z.string().nullish(),
   raceRating: z.string().nullish(),
   supposedRating: z.string().nullish(),
+  fleet: z.string().nullish(),
   rrset: z.string().nullish(),
   publisherId: z.string(),
   eventId: z.string().nullish(),
   compId: z.string().nullish(),
   raceId: z.string().nullish(),
+  raceCompId: z.string().nullish(),
   createdAt: z.date().nullish(),
   updatedAt: z.date().nullish(),
 })

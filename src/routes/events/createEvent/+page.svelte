@@ -1,11 +1,10 @@
 <script lang="ts">
-	import type { PageData } from './$types'
-	import { Page } from '$components/layout'
-	import { page } from '$app/stores'
-	// import ImportForm from '../../import/ImportForm.svelte'
-	import Icon from '@iconify/svelte'
-	import { Button } from '$components/form'
 	import { enhance } from '$app/forms'
+	import { page } from '$app/stores'
+	import { Button } from '$components/form'
+	import { Page } from '$components/layout'
+	import Icon from '@iconify/svelte'
+	import type { PageData } from './$types'
 
 	import { createEventDispatcher } from 'svelte'
 	const dispatch = createEventDispatcher()
@@ -13,12 +12,16 @@
 	export let data: PageData
 	$: ({ orgs } = data)
 
+	$: if (orgs?.length === 1) {
+		// skip the select org if the user has only one org
+		orgId = orgs[0].id
+		setOrgId()
+	}
+
 	let showImport = false
 	let step = 'start'
-	let orgId
-	let selectValue
-
-	let loading
+	let orgId = ''
+	let loading = false
 
 	function onSubmit() {
 		// use:enhance function
@@ -34,10 +37,6 @@
 		})
 		step = 'import'
 	}
-
-	// function addOrgHandler() {
-	// 	orgId = selectValue
-	// }
 </script>
 
 <Page title="Create Event">

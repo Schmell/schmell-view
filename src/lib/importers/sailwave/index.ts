@@ -1,7 +1,8 @@
 import { prisma } from '$lib/server/prisma'
+import { fail } from '@sveltejs/kit'
+import Blw, { type BLW, type IBlw } from './Blw'
+import type { Result } from '$lib/schemas/generated/zod'
 import { Prisma } from '@prisma/client'
-import Blw, { type BLW } from './Blw'
-import { redirect } from '@sveltejs/kit'
 
 export async function CheckForDuplicates({ data, file }) {
 	const blw = new Blw({ data, file })
@@ -18,6 +19,12 @@ export async function CheckForDuplicates({ data, file }) {
 	return await prisma.event.findUnique({
 		where: { uniqueIdString: usid.toLowerCase() }
 	})
+}
+
+type PopulateProps = {
+	blw: IBlw
+	userId: string
+	orgId: string
 }
 
 export async function Populate({ blw, userId, orgId }) {
@@ -40,10 +47,11 @@ export async function Populate({ blw, userId, orgId }) {
 			total: false
 		}
 		//
-		const { venueemail, venuewebsite, venueburgee, ...rest } = event
+		const { venueemail, venuewebsite, venueburgee } = event.rest as any
 
 		const eventObj = {
-			...rest,
+			// ...rest,
+			...event,
 			resultColumns,
 
 			Publisher: {
@@ -72,7 +80,9 @@ export async function Populate({ blw, userId, orgId }) {
 		}
 	}
 
-	function racesUpsert() {
+	let racesArray: { raceId: string; uniqueRaceString: string }[] = []
+
+	function racesCreate() {
 		const compList = blw.getComps().map((comp) => {
 			// This is where we can join comps over multiple events
 			return { compId: comp.compId }
@@ -81,6 +91,7 @@ export async function Populate({ blw, userId, orgId }) {
 
 		return blw.getRaces(uniqueIdString).map((race) => {
 			const { rank, ...rest } = race
+			racesArray.push({ raceId: race.raceId, uniqueRaceString: race.uniqueRaceString })
 			return {
 				where: { uniqueRaceString: race.uniqueRaceString },
 				update: { rank: Number(rank), ...rest },
@@ -101,7 +112,7 @@ export async function Populate({ blw, userId, orgId }) {
 		})
 	}
 
-	function compsUpset() {
+	function compsCreate() {
 		return blw.getComps().map((comp) => {
 			// Comps need to get a uniqueId so we can re-use comps which allow for
 			// Users to attach there profile to and also will let people follow
@@ -109,10 +120,10 @@ export async function Populate({ blw, userId, orgId }) {
 				// where: { uniqueCompId: comp.uniqueCompId },
 				where: { compId: comp.compId },
 				update: {
-					// uniqueCompId: comp.uniqueCompId,
 					club: comp.club,
 					boat: comp.boat,
 					skipper: comp.helmname,
+					// uniqueCompId: comp.uniqueCompId,
 					fleet: comp.fleet,
 					division: comp.division,
 					rank: comp.rank,
@@ -126,12 +137,12 @@ export async function Populate({ blw, userId, orgId }) {
 				},
 
 				create: {
-					// uniqueCompId: comp.uniqueCompId,
 					compId: comp.compId,
 					club: comp.club,
 					boat: comp.boat,
 					sailno: comp.sailno,
 					skipper: comp.helmname,
+					// uniqueCompId: comp.uniqueCompId,
 					fleet: comp.fleet,
 					division: comp.division,
 					rank: comp.rank,
@@ -141,99 +152,6 @@ export async function Populate({ blw, userId, orgId }) {
 					rest: comp,
 					Events: {
 						connect: [{ uniqueIdString: uniqueIdString }]
-					},
-					Publisher: {
-						connect: { id: userId }
-					}
-				}
-			}
-		})
-	}
-
-	function resultsUpsert() {
-		return blw.getRaces(uniqueIdString).map((race) => {
-			return blw.getResults(race.raceId).map((result) => {
-				return {
-					resultId: result.resultId,
-					raceCompId: result.raceCompId,
-					fleet: result.fleet,
-					start: result.start,
-					finish: result.finish,
-					points: result.points,
-					position: result.position,
-					resultType: result.resultType,
-					code: result.code,
-					discard: result.discard,
-					elasped: result.elasped,
-					corrected: result.corrected,
-					elapsedWin: result.elapsedWin,
-					ratingWin: result.ratingWin,
-
-					Publisher: {
-						connect: { id: userId }
-					},
-					Event: {
-						connect: { uniqueIdString: event.uniqueIdString }
-					},
-					Comp: {
-						connect: { compId: result.compId }
-					},
-					Race: {
-						connect: { uniqueRaceString: race.uniqueRaceString }
-					}
-				}
-			})
-		})
-	}
-
-	function compsCreate() {
-		return blw.getComps().map((comp) => {
-			// Comps need to get a uniqueId so we can re-use comps which allow for
-			// Users to attach there profile to and also will let people follow
-			return {
-				data: {
-					// uniqueCompId: comp.uniqueCompId,
-					compId: comp.compId,
-					club: comp.club,
-					boat: comp.boat,
-					sailno: comp.sailno,
-					skipper: comp.helmname,
-					fleet: comp.fleet,
-					division: comp.division,
-					rank: comp.rank,
-					nett: comp.nett,
-					total: comp.total,
-					rating: comp.rating,
-					rest: comp,
-					Events: {
-						connect: [{ uniqueIdString: uniqueIdString }]
-					},
-					Publisher: {
-						connect: { id: userId }
-					}
-				}
-			}
-		})
-	}
-
-	function racesCreate() {
-		const compList = blw.getComps().map((comp) => {
-			// This is where we can join comps over multiple events
-			return { compId: comp.compId }
-			// return { uniqueCompId: comp.uniqueCompId }
-		})
-
-		return blw.getRaces(uniqueIdString).map((race) => {
-			const { rank, ...rest } = race
-			return {
-				data: {
-					rank: Number(rank),
-					...rest,
-					Comps: {
-						connect: compList
-					},
-					Event: {
-						connect: { uniqueIdString: uniqueIdString }
 					},
 					Publisher: {
 						connect: { id: userId }
@@ -244,7 +162,7 @@ export async function Populate({ blw, userId, orgId }) {
 	}
 
 	function resultsCreate() {
-		return blw.getRaces(uniqueIdString).map((race) => {
+		return racesArray.map((race) => {
 			return blw.getResults(race.raceId).map((result) => {
 				return {
 					resultId: result.resultId,
@@ -286,78 +204,62 @@ export async function Populate({ blw, userId, orgId }) {
 	return addTables()
 
 	async function addTables() {
-		// const event = eventCreate()
 		const comps = compsCreate()
-		// const {}
-		// const comps = blw.getComps()
-		// console.log(comps)
 		const races = racesCreate()
-		const resultsArray = await resultsUpsert()
+		const resultsArray = resultsCreate()
 
-		// console.log(resultsArray)
+		console.log('Start import')
+		console.time('time')
 
-		try {
-			await prisma.$transaction(
-				async (tx) => {
-					//
-					console.log('Start import')
-					console.time('time')
+		// Need to change this to a transaction
 
-					const newEvent = await tx.event.upsert(eventCreate())
-					console.timeLog('time', 'event comlpete')
+		// return prisma.$transaction(async (tx) => {
 
-					await Promise.all(
-						comps.map(async (comp) => {
-							await tx.comp.create(comp)
+		const { id: newEventId } = await prisma.event.upsert(eventCreate())
+
+		console.timeLog('time', 'event comlpete: ')
+
+		await Promise.all(
+			comps.map(async (comp) => {
+				return await prisma.comp.upsert(comp)
+			})
+		)
+
+		console.timeLog('time', 'comps complete')
+
+		await Promise.all(
+			races.map(async (race) => {
+				return await prisma.race.upsert(race)
+			})
+		)
+
+		console.timeLog('time', 'races comlpete: ')
+
+		await Promise.all(
+			resultsArray.map(async (results: Result[]) => {
+				results.map(async (result: Result) => {
+					const uniqueRaceId = `${result.raceCompId}-${newEventId}`
+					result.resultId = uniqueRaceId
+					// console.log(result)
+					try {
+						return await prisma.result.upsert({
+							where: { resultId: uniqueRaceId },
+							update: { ...result },
+							create: { ...result }
 						})
-					)
-					console.timeLog('time', 'comps complete')
+					} catch (e: any) {
+						if (e instanceof Prisma.PrismaClientKnownRequestError) {
+							console.log(result)
+							console.log(e.message)
+						}
+						return fail(400, { message: ' Damn' })
+					}
+				})
+			})
+		)
 
-					await Promise.all(
-						races.map(async (race) => {
-							await tx.race.create(race)
-						})
-					)
-					console.timeLog('time', 'races comlpete: ')
-
-					//////////////////////////////////////
-					await Promise.all(
-						resultsArray.map(async (results) => {
-							await Promise.all(
-								results.map(async (result) => {
-									const { raceCompId, ...rest } = result
-									const uniqueRaceId = `${raceCompId}-${newEvent.id}`
-									rest.resultId = uniqueRaceId
-
-									await tx.result.create({
-										// where: { resultId: uniqueRaceId },
-										// update: { ...rest },
-										data: { ...rest }
-									})
-								})
-							)
-						})
-					)
-					console.timeLog('time', 'results complete ')
-					console.timeEnd('time')
-				},
-				{
-					// isolationLevel: Prisma.TransactionIsolationLevel.Serializable, // optional, default defined by database configuration
-					maxWait: 10000 * 10, // default: 2000
-					timeout: 20000 * 10 * 10 // default: 5000
-				}
-			)
-		} catch (error) {
-			if (error instanceof Prisma.PrismaClientKnownRequestError) {
-				console.log('Import Error: ', error.message)
-			} else {
-				console.log(error)
-			}
-			console.timeEnd('time')
-			return {
-				success: false
-			}
-		}
+		console.timeLog('time', 'results comlpete ')
+		console.timeEnd('time')
 
 		return {
 			success: true

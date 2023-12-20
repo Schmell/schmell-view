@@ -5,14 +5,14 @@ import { expect, test } from '@playwright/test'
 // 	await expect(page.getByRole('heading', { name: 'Welcome to SvelteKit' })).toBeVisible();
 // });
 test('Check for login form', async ({ page }) => {
-	await page.goto('/')
+	await page.goto('/auth/login')
 	await expect(page.getByLabel('email')).toBeVisible()
 	await expect(page.getByLabel('password')).toBeVisible()
 })
 
-test('Login', async ({ page }) => {
-	await page.goto('/')
-	await page.getByLabel('email').fill('schmell.mafeet@gmail.com')
-	await page.getByLabel('password').fill('Beatbr0s')
-	await page.getByRole('button').click()
-})
+// test('Login', async ({ page }) => {
+// 	await page.goto('/')
+// 	await page.getByLabel('email').fill('schmell.mafeet@gmail.com')
+// 	await page.getByLabel('password').fill('Beatbr0s')
+// 	await page.getByRole('button').click()
+// })

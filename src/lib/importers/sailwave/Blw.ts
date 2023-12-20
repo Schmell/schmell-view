@@ -1,6 +1,7 @@
 import { createId } from '@paralleldrive/cuid2'
 import { formatTime } from '../../utils/formatters'
 import type { Comp } from '$lib/schemas/generated/zod/modelSchema/CompSchema'
+import type { Event, Race, Result } from '$lib/schemas/generated/zod'
 
 export default class Blw {
 	data: any
@@ -100,6 +101,8 @@ export default class Blw {
 			return ''
 		}
 	}
+
+	getRacesIds(uniqueIdString: string) {}
 
 	getRaces(uniqueIdString: string) {
 		// new object to be returned
@@ -224,9 +227,9 @@ export default class Blw {
 			uniqueIdString,
 			venueName: venue,
 			eventeid: eventeid,
-			venueemail: rest.venueemail,
-			venuewebsite: rest.venuewebsite,
-			venueburgee: rest.venueburgee,
+			// venueemail: rest.venueemail,
+			// venuewebsite: rest.venuewebsite,
+			// venueburgee: rest.venueburgee,
 			rest
 		}
 	} // getEvent()
@@ -261,5 +264,14 @@ export default class Blw {
 	}
 } // Blw
 
+export interface IBlw {
+	data: any
+	file: File
+	getEvent: () => Event
+	getComps: () => Comp[]
+	getRaces: (uniqueIdString: string) => Race[]
+	getResults: (raceId: string | null) => Result[]
+	getScoring: () => any
+}
 // export
 export type BLW = typeof Blw
