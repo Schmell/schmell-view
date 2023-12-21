@@ -39,7 +39,8 @@ export function addOrdinalsuffix(i: number) {
 
 export function getHref(website: string | null) {
 	if (!website) return null
-	return website && website.startsWith('http://') ? website : `http://${website}`
+	if (isUrl(website)) website
+	return `http://${website}`
 }
 
 export const serializeNonPOJOs = (value: object | null) => {

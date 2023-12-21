@@ -8,19 +8,12 @@
 	import type { PageData } from './$types'
 	import { goto } from '$app/navigation'
 	import { enhance } from '$app/forms'
+	import { getHref } from '$lib/utils'
 
 	export let data: PageData
 	$: ({ event, user } = data)
 
 	let showRaces: boolean = true
-
-	function getHref(website: string | null) {
-		if (!website) return null
-		return (website && website.startsWith('http://')) || website.startsWith('https://')
-			? website
-			: `http://${website}`
-	}
-
 	//
 </script>
 
