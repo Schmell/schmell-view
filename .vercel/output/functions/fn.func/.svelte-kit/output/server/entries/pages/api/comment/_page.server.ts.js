@@ -1,5 +1,4 @@
 import { f as fail } from "../../../../chunks/index.js";
-import { p as prismaError } from "../../../../chunks/prisma-errors.js";
 import "../../../../chunks/debug.js";
 import { p as prisma } from "../../../../chunks/prisma.js";
 const actions = {
@@ -19,7 +18,6 @@ const actions = {
       try {
         return await prisma.comment.upsert({ ...data });
       } catch (error) {
-        prismaError(error);
         console.log("error: ", error);
       }
     }

@@ -1,9 +1,25 @@
-import { O as OrganizationSchema } from "../../../../../chunks/InputJsonValueSchema.js";
 import { p as prisma } from "../../../../../chunks/prisma.js";
 import { c as capitalizeFirstLetter } from "../../../../../chunks/index3.js";
 import { Prisma } from "@prisma/client";
 import { f as fail } from "../../../../../chunks/index.js";
 import { s as superValidate } from "../../../../../chunks/superValidate.js";
+import { z } from "zod";
+const OrganizationSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().nullish(),
+  tag: z.string().nullish(),
+  website: z.string().nullish(),
+  email: z.string().nullish(),
+  /**
+   * .url
+   */
+  logo: z.string().nullish(),
+  titleImage: z.string().nullish(),
+  ownerId: z.string().nullish(),
+  createdAt: z.date().nullish(),
+  updatedAt: z.date().nullish()
+});
 const load = async ({ params, url }) => {
   if (params.orgId === "new") {
     const org2 = { name: "New Organization" };

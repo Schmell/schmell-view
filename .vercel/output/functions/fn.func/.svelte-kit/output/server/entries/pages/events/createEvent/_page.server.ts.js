@@ -1,7 +1,6 @@
 import { B as Blw, P as Populate } from "../../../../chunks/index5.js";
 import { p as prisma } from "../../../../chunks/prisma.js";
 import csv from "csvtojson";
-import { p as prismaError } from "../../../../chunks/prisma-errors.js";
 import "../../../../chunks/index.js";
 import "../../../../chunks/debug.js";
 import { r as redirect } from "../../../../chunks/server.js";
@@ -17,7 +16,6 @@ const load = async ({ locals }) => {
         select: { name: true, id: true }
       });
     } catch (error) {
-      prismaError(error);
       console.log("error: ", error);
     }
   }

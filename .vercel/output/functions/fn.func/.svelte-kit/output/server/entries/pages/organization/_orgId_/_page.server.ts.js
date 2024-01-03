@@ -1,4 +1,3 @@
-import { p as prismaError } from "../../../../chunks/prisma-errors.js";
 import { l as luciaErrors } from "../../../../chunks/lucia-errors.js";
 import { p as prisma } from "../../../../chunks/prisma.js";
 import { f as fail } from "../../../../chunks/index.js";
@@ -56,7 +55,6 @@ const load = async ({ params, url }) => {
       });
     } catch (error) {
       luciaErrors(error);
-      prismaError(error);
       console.log("error: ", error);
       throw fail(500, { messgage: "Unknown Error occured" });
     }

@@ -1,4 +1,3 @@
-import { p as prismaError } from "../../../../chunks/prisma-errors.js";
 import "../../../../chunks/index.js";
 import "../../../../chunks/debug.js";
 const load = async ({ url, locals }) => {
@@ -14,7 +13,6 @@ const load = async ({ url, locals }) => {
         select: { name: true, id: true }
       });
     } catch (error) {
-      prismaError(error);
       console.log("error: ", error);
     }
   }
@@ -25,7 +23,6 @@ const load = async ({ url, locals }) => {
         select: { name: true }
       });
     } catch (error) {
-      prismaError(error);
       console.log("duplicate page error: ", error);
     }
   }

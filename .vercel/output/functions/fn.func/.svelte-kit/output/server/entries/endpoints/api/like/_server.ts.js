@@ -1,5 +1,4 @@
 import { r as redirect, f as fail, e as error } from "../../../../chunks/index.js";
-import { p as prismaError } from "../../../../chunks/prisma-errors.js";
 import "../../../../chunks/debug.js";
 import { p as prisma } from "../../../../chunks/prisma.js";
 const GET = async ({ url, locals }) => {
@@ -25,7 +24,6 @@ const GET = async ({ url, locals }) => {
           });
           break;
         } catch (error2) {
-          prismaError(error2);
           console.log("error: ", error2);
         }
       case "event":
@@ -40,7 +38,6 @@ const GET = async ({ url, locals }) => {
           });
           break;
         } catch (error2) {
-          prismaError(error2);
           console.log("error: ", error2);
         }
       case "comment":
@@ -55,7 +52,6 @@ const GET = async ({ url, locals }) => {
           });
           break;
         } catch (error2) {
-          prismaError(error2);
           console.log("error: ", error2);
         }
       case "venue":
@@ -70,7 +66,6 @@ const GET = async ({ url, locals }) => {
           });
           break;
         } catch (error2) {
-          prismaError(error2);
           console.log("error: ", error2);
         }
       case "organization":
@@ -85,7 +80,6 @@ const GET = async ({ url, locals }) => {
           });
           break;
         } catch (error2) {
-          prismaError(error2);
           console.log("error: ", error2);
         }
       default:
@@ -100,7 +94,6 @@ const GET = async ({ url, locals }) => {
         where: { id: unlike }
       });
     } catch (error2) {
-      prismaError(error2);
       console.log("error: ", error2);
     }
   }

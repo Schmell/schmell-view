@@ -1,7 +1,6 @@
 import { r as redirect, f as fail } from "../../chunks/index.js";
 import { l as loadFlash } from "../../chunks/server.js";
 import { a as auth } from "../../chunks/lucia.js";
-import { p as prismaError } from "../../chunks/prisma-errors.js";
 import "../../chunks/debug.js";
 import { p as prisma } from "../../chunks/prisma.js";
 const load = loadFlash(async (event) => {
@@ -33,7 +32,6 @@ const load = loadFlash(async (event) => {
         }
       });
     } catch (error) {
-      prismaError(error);
       console.log("error: ", error);
       throw fail(400, { message: "Fail query on User Events" });
     }
@@ -49,7 +47,6 @@ const load = loadFlash(async (event) => {
         }
       });
     } catch (error) {
-      prismaError(error);
       console.log("error: ", error);
       throw fail(400, { message: "Fail query on User Likes" });
     }
@@ -68,7 +65,6 @@ const load = loadFlash(async (event) => {
         }
       });
     } catch (error) {
-      prismaError(error);
       console.log("error: ", error);
       throw fail(400, { message: "Fail query on User Likes" });
     }
@@ -87,7 +83,6 @@ const load = loadFlash(async (event) => {
         }
       });
     } catch (error) {
-      prismaError(error);
       console.log("error: ", error);
       throw fail(400, { message: "Fail query on User Following" });
     }
@@ -116,7 +111,6 @@ const load = loadFlash(async (event) => {
         }
       });
     } catch (error) {
-      prismaError(error);
       console.log("error: ", error);
       throw fail(400, { message: "Fail query on User Likes" });
     }

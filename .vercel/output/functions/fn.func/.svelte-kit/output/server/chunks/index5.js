@@ -43,6 +43,8 @@ class Blw {
       return item[0] === "rdisc" && item[3] === raceId;
     });
     results.forEach((result) => {
+      if (result[2] === "0")
+        return;
       const resultRow = {
         raceCompId: `${result[3]}-${result[2]}`,
         compId: `${result[2]}-${this.data.cuid}`,
@@ -220,7 +222,6 @@ async function Populate({ blw, userId, orgId }) {
     };
     const { venueemail, venuewebsite, venueburgee } = event.rest;
     const eventObj = {
-      // ...rest,
       ...event,
       resultColumns,
       Publisher: {
@@ -248,43 +249,18 @@ async function Populate({ blw, userId, orgId }) {
       create: eventObj
     };
   }
-  let racesArray = [];
-  function racesCreate() {
-    const compList = blw.getComps().map((comp) => {
-      return { compId: comp.compId };
-    });
-    return blw.getRaces(uniqueIdString).map((race) => {
-      const { rank, ...rest } = race;
-      racesArray.push({ raceId: race.raceId, uniqueRaceString: race.uniqueRaceString });
-      return {
-        where: { uniqueRaceString: race.uniqueRaceString },
-        update: { rank: Number(rank), ...rest },
-        create: {
-          rank: Number(rank),
-          ...rest,
-          Comps: {
-            connect: compList
-          },
-          Event: {
-            connect: { uniqueIdString }
-          },
-          Publisher: {
-            connect: { id: userId }
-          }
-        }
-      };
-    });
-  }
+  let compsArray = [];
   function compsCreate() {
     return blw.getComps().map((comp) => {
+      compsArray.push({ compId: comp.compId });
       return {
         // where: { uniqueCompId: comp.uniqueCompId },
         where: { compId: comp.compId },
         update: {
+          // uniqueCompId: comp.uniqueCompId,
           club: comp.club,
           boat: comp.boat,
           skipper: comp.helmname,
-          // uniqueCompId: comp.uniqueCompId,
           fleet: comp.fleet,
           division: comp.division,
           rank: comp.rank,
@@ -297,12 +273,12 @@ async function Populate({ blw, userId, orgId }) {
           }
         },
         create: {
+          // uniqueCompId: comp.uniqueCompId,
           compId: comp.compId,
           club: comp.club,
           boat: comp.boat,
           sailno: comp.sailno,
           skipper: comp.helmname,
-          // uniqueCompId: comp.uniqueCompId,
           fleet: comp.fleet,
           division: comp.division,
           rank: comp.rank,
@@ -312,6 +288,30 @@ async function Populate({ blw, userId, orgId }) {
           rest: comp,
           Events: {
             connect: [{ uniqueIdString }]
+          },
+          Publisher: {
+            connect: { id: userId }
+          }
+        }
+      };
+    });
+  }
+  let racesArray = [];
+  function racesCreate() {
+    return blw.getRaces(uniqueIdString).map((race) => {
+      const { rank, ...rest } = race;
+      racesArray.push({ raceId: race.raceId, uniqueRaceString: race.uniqueRaceString });
+      return {
+        where: { uniqueRaceString: race.uniqueRaceString },
+        update: { rank: Number(rank), ...rest },
+        create: {
+          rank: Number(rank),
+          ...rest,
+          Comps: {
+            connect: compsArray
+          },
+          Event: {
+            connect: { uniqueIdString }
           },
           Publisher: {
             connect: { id: userId }

@@ -1,23 +1,16 @@
 import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute, e as escape } from "../../../../chunks/ssr.js";
 import { p as page } from "../../../../chunks/stores.js";
 import { P as Page } from "../../../../chunks/Page.js";
-import "clsx";
-/* empty css                                                         */import { C as Comments } from "../../../../chunks/comments.js";
-import { L as Like_follow } from "../../../../chunks/like-follow.js";
+import { g as getHref } from "../../../../chunks/index3.js";
+/* empty css                                                         */import { L as Like_follow } from "../../../../chunks/like-follow.js";
+import { C as Comments } from "../../../../chunks/comments.js";
 import { I as Icon } from "../../../../chunks/Icon.js";
-import { s as superForm } from "../../../../chunks/index4.js";
 const Page_1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let org;
   let user;
   let $page, $$unsubscribe_page;
   $$unsubscribe_page = subscribe(page, (value) => $page = value);
   let { data } = $$props;
-  const getHref = (org2) => {
-    if (!org2)
-      return null;
-    return org2?.website && org2.website.startsWith("http://") ? org2.website : `http://${org2?.website}`;
-  };
-  superForm(data.commentForm);
   if ($$props.data === void 0 && $$bindings.data && data !== void 0)
     $$bindings.data(data);
   ({ org, user } = data);
@@ -37,7 +30,7 @@ const Page_1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
         },
         {},
         {}
-      )}</div></div> <div class="pt-8 pb-4 px-8"><div class="uppercase tracking-wide text-2xl text-accent font-semibold"><!-- HTML_TAG_START -->${org.name}<!-- HTML_TAG_END --></div> <a href="${"mailto:" + escape(org.email, true)}" class="block mt-1 text-lg leading-tight font-medium text-base-content hover:underline">${validate_component(Icon, "Icon").$$render(
+      )}</div></div> <div class="pt-8 pb-4 px-8"><div class="uppercase tracking-wide text-2xl text-accent font-semibold"><!-- HTML_TAG_START -->${org.name}<!-- HTML_TAG_END --></div> ${org.email ? `<a href="${"mailto:" + escape(org.email, true)}" class="block mt-1 text-lg leading-tight font-medium text-base-content hover:underline">${validate_component(Icon, "Icon").$$render(
         $$result,
         {
           icon: "mdi:email-outline",
@@ -45,7 +38,7 @@ const Page_1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
         },
         {},
         {}
-      )} ${escape(org.email)}</a> <p class="mt-2 p-4"><!-- HTML_TAG_START -->${org.description ? org.description : "No description provided"}<!-- HTML_TAG_END --></p> <a${add_attribute("href", getHref(org), 0)} class="text-secondary">${validate_component(Icon, "Icon").$$render($$result, { icon: "mdi:link", class: "inline" }, {}, {})} ${escape(org.website)}</a></div></div> <div class="px-4 flex flex-col"><a href="/">${validate_component(Icon, "Icon").$$render(
+      )} ${escape(org.email)}</a>` : ``} <p class="mt-2 p-4"><!-- HTML_TAG_START -->${org.description ? org.description : " "}<!-- HTML_TAG_END --></p> ${org.website ? `<a${add_attribute("href", getHref(org.website), 0)} class="text-secondary">${validate_component(Icon, "Icon").$$render($$result, { icon: "mdi:link", class: "inline" }, {}, {})} ${escape(org.website)}</a>` : ``}</div></div> <div class="px-4 flex flex-col"><a href="/">${validate_component(Icon, "Icon").$$render(
         $$result,
         {
           icon: "clarity:organization-line",
@@ -80,7 +73,7 @@ const Page_1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
         },
         {},
         {}
-      )}</a></div>` : ``}</div></div>`}  ${validate_component(Comments, "Comments").$$render(
+      )}</a></div>` : ``}</div></div>`} ${validate_component(Comments, "Comments").$$render(
         $$result,
         {
           item: org,

@@ -10,7 +10,7 @@ return {
 	assets: new Set(["favicon.png","Kevlyar-Mylar-300x219.jpg","swlogo66.png"]),
 	mimeTypes: {".png":"image/png",".jpg":"image/jpeg"},
 	_: {
-		client: {"start":"_app/immutable/entry/start.9ec6f03c.js","app":"_app/immutable/entry/app.a0d0f6de.js","imports":["_app/immutable/entry/start.9ec6f03c.js","_app/immutable/chunks/scheduler.60fdcb34.js","_app/immutable/chunks/singletons.6f054266.js","_app/immutable/chunks/paths.10ba7172.js","_app/immutable/chunks/parse.7d180a0f.js","_app/immutable/chunks/control.f2d6eca3.js","_app/immutable/entry/app.a0d0f6de.js","_app/immutable/chunks/scheduler.60fdcb34.js","_app/immutable/chunks/index.c7b4b125.js"],"stylesheets":[],"fonts":[]},
+		client: {"start":"_app/immutable/entry/start.fec194df.js","app":"_app/immutable/entry/app.0e8ae0f1.js","imports":["_app/immutable/entry/start.fec194df.js","_app/immutable/chunks/scheduler.60fdcb34.js","_app/immutable/chunks/singletons.ad6f0023.js","_app/immutable/chunks/paths.b72c4b6f.js","_app/immutable/chunks/parse.7d180a0f.js","_app/immutable/chunks/control.f2d6eca3.js","_app/immutable/entry/app.0e8ae0f1.js","_app/immutable/chunks/scheduler.60fdcb34.js","_app/immutable/chunks/index.c7b4b125.js"],"stylesheets":[],"fonts":[]},
 		nodes: [
 			__memo(() => import('../output/server/nodes/0.js')),
 			__memo(() => import('../output/server/nodes/1.js')),
@@ -49,7 +49,8 @@ return {
 			__memo(() => import('../output/server/nodes/35.js')),
 			__memo(() => import('../output/server/nodes/36.js')),
 			__memo(() => import('../output/server/nodes/37.js')),
-			__memo(() => import('../output/server/nodes/38.js'))
+			__memo(() => import('../output/server/nodes/38.js')),
+			__memo(() => import('../output/server/nodes/39.js'))
 		],
 		routes: [
 			{
@@ -214,178 +215,185 @@ return {
 				endpoint: null
 			},
 			{
+				id: "/blob",
+				pattern: /^\/blob\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 13 },
+				endpoint: null
+			},
+			{
 				id: "/comps/comp/[compId]",
 				pattern: /^\/comps\/comp\/([^/]+?)\/?$/,
 				params: [{"name":"compId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 13 },
+				page: { layouts: [0,], errors: [1,], leaf: 14 },
 				endpoint: null
 			},
 			{
 				id: "/comps/comp/[compId]/edit",
 				pattern: /^\/comps\/comp\/([^/]+?)\/edit\/?$/,
 				params: [{"name":"compId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 14 },
+				page: { layouts: [0,], errors: [1,], leaf: 15 },
 				endpoint: null
 			},
 			{
 				id: "/comps/comp/[compId]/merge",
 				pattern: /^\/comps\/comp\/([^/]+?)\/merge\/?$/,
 				params: [{"name":"compId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 15 },
+				page: { layouts: [0,], errors: [1,], leaf: 16 },
 				endpoint: null
 			},
 			{
 				id: "/comps/[eventId]",
 				pattern: /^\/comps\/([^/]+?)\/?$/,
 				params: [{"name":"eventId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 16 },
+				page: { layouts: [0,], errors: [1,], leaf: 17 },
 				endpoint: null
 			},
 			{
 				id: "/events",
 				pattern: /^\/events\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 17 },
+				page: { layouts: [0,], errors: [1,], leaf: 18 },
 				endpoint: null
 			},
 			{
 				id: "/events/createEvent",
 				pattern: /^\/events\/createEvent\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 18 },
+				page: { layouts: [0,], errors: [1,], leaf: 19 },
 				endpoint: null
 			},
 			{
 				id: "/events/[eventId]",
 				pattern: /^\/events\/([^/]+?)\/?$/,
 				params: [{"name":"eventId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 19 },
+				page: { layouts: [0,], errors: [1,], leaf: 20 },
 				endpoint: null
 			},
 			{
 				id: "/events/[eventId]/edit",
 				pattern: /^\/events\/([^/]+?)\/edit\/?$/,
 				params: [{"name":"eventId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,,], errors: [1,2,], leaf: 20 },
+				page: { layouts: [0,,], errors: [1,2,], leaf: 21 },
 				endpoint: null
 			},
 			{
 				id: "/import",
 				pattern: /^\/import\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 21 },
+				page: { layouts: [0,], errors: [1,], leaf: 22 },
 				endpoint: null
 			},
 			{
 				id: "/import/update",
 				pattern: /^\/import\/update\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 22 },
+				page: { layouts: [0,], errors: [1,], leaf: 23 },
 				endpoint: null
 			},
 			{
 				id: "/organization",
 				pattern: /^\/organization\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 23 },
+				page: { layouts: [0,], errors: [1,], leaf: 24 },
 				endpoint: null
 			},
 			{
 				id: "/organization/[orgId]",
 				pattern: /^\/organization\/([^/]+?)\/?$/,
 				params: [{"name":"orgId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 24 },
+				page: { layouts: [0,], errors: [1,], leaf: 25 },
 				endpoint: null
 			},
 			{
 				id: "/organization/[orgId]/edit",
 				pattern: /^\/organization\/([^/]+?)\/edit\/?$/,
 				params: [{"name":"orgId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 25 },
+				page: { layouts: [0,], errors: [1,], leaf: 26 },
 				endpoint: null
 			},
 			{
 				id: "/policy",
 				pattern: /^\/policy\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 26 },
+				page: { layouts: [0,], errors: [1,], leaf: 27 },
 				endpoint: null
 			},
 			{
 				id: "/races",
 				pattern: /^\/races\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 27 },
+				page: { layouts: [0,], errors: [1,], leaf: 28 },
 				endpoint: null
 			},
 			{
 				id: "/races/[eventId]",
 				pattern: /^\/races\/([^/]+?)\/?$/,
 				params: [{"name":"eventId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 28 },
+				page: { layouts: [0,], errors: [1,], leaf: 29 },
 				endpoint: null
 			},
 			{
 				id: "/results/[raceId]",
 				pattern: /^\/results\/([^/]+?)\/?$/,
 				params: [{"name":"raceId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 29 },
+				page: { layouts: [0,], errors: [1,], leaf: 30 },
 				endpoint: null
 			},
 			{
 				id: "/series",
 				pattern: /^\/series\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 30 },
+				page: { layouts: [0,], errors: [1,], leaf: 31 },
 				endpoint: null
 			},
 			{
 				id: "/series/[seriesId]",
 				pattern: /^\/series\/([^/]+?)\/?$/,
 				params: [{"name":"seriesId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 31 },
+				page: { layouts: [0,], errors: [1,], leaf: 32 },
 				endpoint: null
 			},
 			{
 				id: "/series/[seriesId]/edit",
 				pattern: /^\/series\/([^/]+?)\/edit\/?$/,
 				params: [{"name":"seriesId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 32 },
+				page: { layouts: [0,], errors: [1,], leaf: 33 },
 				endpoint: null
 			},
 			{
 				id: "/terms",
 				pattern: /^\/terms\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 33 },
+				page: { layouts: [0,], errors: [1,], leaf: 34 },
 				endpoint: null
 			},
 			{
 				id: "/venue",
 				pattern: /^\/venue\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 34 },
+				page: { layouts: [0,], errors: [1,], leaf: 35 },
 				endpoint: null
 			},
 			{
 				id: "/venue/[venueId]",
 				pattern: /^\/venue\/([^/]+?)\/?$/,
 				params: [{"name":"venueId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 35 },
+				page: { layouts: [0,], errors: [1,], leaf: 36 },
 				endpoint: null
 			},
 			{
 				id: "/venue/[venueId]/edit",
 				pattern: /^\/venue\/([^/]+?)\/edit\/?$/,
 				params: [{"name":"venueId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 36 },
+				page: { layouts: [0,], errors: [1,], leaf: 37 },
 				endpoint: null
 			},
 			{
 				id: "/venue/[venueId]/merge",
 				pattern: /^\/venue\/([^/]+?)\/merge\/?$/,
 				params: [{"name":"venueId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 37 },
+				page: { layouts: [0,], errors: [1,], leaf: 38 },
 				endpoint: null
 			}
 		],

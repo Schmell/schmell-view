@@ -1,5 +1,4 @@
 import { r as redirect, f as fail } from "../../../../chunks/index.js";
-import { p as prismaError } from "../../../../chunks/prisma-errors.js";
 import "../../../../chunks/debug.js";
 import { p as prisma } from "../../../../chunks/prisma.js";
 const GET = async ({ url, locals }) => {
@@ -24,7 +23,6 @@ const GET = async ({ url, locals }) => {
             }
           });
         } catch (error) {
-          prismaError(error);
           throw fail(500, { message: `Series follow error: ${error}` });
         }
       case "event":
@@ -38,7 +36,6 @@ const GET = async ({ url, locals }) => {
             }
           });
         } catch (error) {
-          prismaError(error);
           throw fail(500, { message: `Event follow error: ${error}` });
         }
       case "comment":
@@ -52,7 +49,6 @@ const GET = async ({ url, locals }) => {
             }
           });
         } catch (error) {
-          prismaError(error);
           throw fail(500, { message: `Comment follow error: ${error}` });
         }
       case "venue":
@@ -66,7 +62,6 @@ const GET = async ({ url, locals }) => {
             }
           });
         } catch (error) {
-          prismaError(error);
           throw fail(500, { message: `Venue follow error: ${error}` });
         }
       case "organization":
@@ -80,7 +75,6 @@ const GET = async ({ url, locals }) => {
             }
           });
         } catch (error) {
-          prismaError(error);
           throw fail(500, { message: `Organization follow error: ${error}` });
         }
       default:
@@ -95,7 +89,6 @@ const GET = async ({ url, locals }) => {
         where: { id: unfollow }
       });
     } catch (error) {
-      prismaError(error);
       throw fail(500, { message: "Unlike fail" });
     }
   }

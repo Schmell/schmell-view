@@ -1,7 +1,6 @@
 import { p as prisma } from "../../../../chunks/prisma.js";
 import { f as fail } from "../../../../chunks/index.js";
 import { s as superValidate } from "../../../../chunks/superValidate.js";
-import { p as prismaError } from "../../../../chunks/prisma-errors.js";
 import { l as luciaErrors } from "../../../../chunks/lucia-errors.js";
 import { z } from "zod";
 const load = async ({ params, url }) => {
@@ -58,7 +57,6 @@ const load = async ({ params, url }) => {
       });
     } catch (error2) {
       luciaErrors(error2);
-      prismaError(error2);
       console.log("error: ", error2);
       throw fail(500, { messgage: "Unknown Error occured" });
     }

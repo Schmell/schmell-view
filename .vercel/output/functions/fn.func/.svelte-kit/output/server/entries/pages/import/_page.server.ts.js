@@ -2,7 +2,6 @@ import { z } from "zod";
 import csv from "csvtojson";
 import { p as prisma } from "../../../chunks/prisma.js";
 import { B as Blw, P as Populate } from "../../../chunks/index5.js";
-import { p as prismaError } from "../../../chunks/prisma-errors.js";
 import "../../../chunks/index.js";
 import "../../../chunks/debug.js";
 import { r as redirect } from "../../../chunks/server.js";
@@ -22,7 +21,6 @@ const load = async (event) => {
         select: { name: true, id: true }
       });
     } catch (error) {
-      prismaError(error);
       console.log("error: ", error);
     }
   }
