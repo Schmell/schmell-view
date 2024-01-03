@@ -1,25 +1,24 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import { Page } from '$components/layout'
-	import Comments from '$lib/newComment/comments.svelte'
 	import LikeFollow from '$lib/like/like-follow.svelte'
+	import Comments from '$lib/newComment/comments.svelte'
+	import { getHref } from '$lib/utils'
 	import Icon from '@iconify/svelte'
-	import type { Organization } from '@prisma/client'
-	import { superForm } from 'sveltekit-superforms/client'
 	import type { PageData } from './$types'
 
 	export let data: PageData
 
 	$: ({ org, user } = data)
 
-	const getHref = (org: Organization | undefined) => {
-		if (!org) return null
-		return org?.website && org.website.startsWith('http://')
-			? org.website
-			: `http://${org?.website}`
-	}
+	// const getHref = (org: Organization | undefined) => {
+	// 	if (!org) return null
+	// 	return org?.website && org.website.startsWith('http://')
+	// 		? org.website
+	// 		: `http://${org?.website}`
+	// }
 
-	const commentFormObj = superForm(data.commentForm)
+	// const commentFormObj = superForm(data.commentForm)
 </script>
 
 <Page title={org?.name}>
@@ -49,20 +48,24 @@
 					<div class="uppercase tracking-wide text-2xl text-accent font-semibold">
 						{@html org.name}
 					</div>
-					<a
-						href="mailto:{org.email}"
-						class="block mt-1 text-lg leading-tight font-medium text-base-content hover:underline"
-					>
-						<Icon icon="mdi:email-outline" class="inline" />
-						{org.email}
-					</a>
+					{#if org.email}
+						<a
+							href="mailto:{org.email}"
+							class="block mt-1 text-lg leading-tight font-medium text-base-content hover:underline"
+						>
+							<Icon icon="mdi:email-outline" class="inline" />
+							{org.email}
+						</a>
+					{/if}
 					<p class="mt-2 p-4">
-						{@html org.description ? org.description : 'No description provided'}
+						{@html org.description ? org.description : ' '}
 					</p>
-					<a href={getHref(org)} class="text-secondary">
-						<Icon icon="mdi:link" class="inline" />
-						{org.website}
-					</a>
+					{#if org.website}
+						<a href={getHref(org.website)} class="text-secondary">
+							<Icon icon="mdi:link" class="inline" />
+							{org.website}
+						</a>
+					{/if}
 				</div>
 			</div>
 			<div class="px-4 flex flex-col">
@@ -104,7 +107,7 @@
 			</div>
 		</div>
 	{/if}
-	<!-- <Comments item={org} type="organization" {user} formObj={commentFormObj} /> -->
+
 	<Comments
 		item={org}
 		type="organization"

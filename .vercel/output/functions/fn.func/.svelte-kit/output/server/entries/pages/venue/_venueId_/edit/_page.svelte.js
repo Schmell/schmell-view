@@ -31,6 +31,7 @@ const Page_1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     validators: venueSchema,
     onUpdated() {
       const from = $page.url.searchParams.get("from");
+      $page.url.searchParams.delete("editContact");
       $page.url.searchParams.delete("from");
       goto(from + $page.url.search, { replaceState: true });
     },

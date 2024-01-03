@@ -16,7 +16,9 @@ function from(url) {
 function getHref(website) {
   if (!website)
     return null;
-  return website && website.startsWith("http://") ? website : `http://${website}`;
+  if (isUrl(website))
+    ;
+  return `http://${website}`;
 }
 const themes = [
   "dark",

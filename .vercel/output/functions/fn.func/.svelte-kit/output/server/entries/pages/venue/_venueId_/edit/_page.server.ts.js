@@ -169,13 +169,16 @@ const actions = {
     const form = await superValidate(request, contactSchema);
     if (!form.valid)
       return { form };
-    const { id, ...rest } = form.data;
     try {
       await prisma.contact.upsert({
         where: { id: form.data.id || "" },
-        update: { ...rest },
-        create: { ...rest, Venue: { connect: { id: params.venueId } } }
+        update: { ...form.data },
+        create: {
+          ...form.data,
+          Venue: { connect: { id: params.venueId } }
+        }
       });
+      return { form };
     } catch (error) {
       return { form };
     }

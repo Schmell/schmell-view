@@ -1,16 +1,11 @@
 import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute, e as escape, x as is_promise, n as noop, k as each } from "../../../../chunks/ssr.js";
 import { p as page } from "../../../../chunks/stores.js";
 import { P as Page } from "../../../../chunks/Page.js";
-import { i as isUrl } from "../../../../chunks/index3.js";
+import { i as isUrl, g as getHref } from "../../../../chunks/index3.js";
 /* empty css                                                         */import { L as Like_follow } from "../../../../chunks/like-follow.js";
 import { C as Comments } from "../../../../chunks/comments.js";
 import { I as Icon } from "../../../../chunks/Icon.js";
 import "devalue";
-function getHref(website) {
-  if (!website)
-    return null;
-  return website && website.startsWith("http://") || website.startsWith("https://") ? website : `http://${website}`;
-}
 const Page_1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let event;
   let user;

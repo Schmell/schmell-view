@@ -64,6 +64,8 @@ export default class Blw {
 		results.forEach((result) => {
 			// Results in blw file have no prefix to speak of (just an r)
 			// So we need to find each row individually
+			if (result[2] === '0') return
+
 			const resultRow = {
 				raceCompId: `${result[3]}-${result[2]}`,
 				compId: `${result[2]}-${this.data.cuid}`,

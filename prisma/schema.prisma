@@ -28,10 +28,15 @@ generator zod {
   // prismaClientPath                 = "./path/to/prisma/client" // default is client output path
 }
 
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+//   // directUrl = env("DATABASE_URL")
+// }
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  // directUrl = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model Series {

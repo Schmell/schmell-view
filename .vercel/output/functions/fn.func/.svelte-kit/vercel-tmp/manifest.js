@@ -10,7 +10,7 @@ return {
 	assets: new Set(["favicon.png","Kevlyar-Mylar-300x219.jpg","swlogo66.png"]),
 	mimeTypes: {".png":"image/png",".jpg":"image/jpeg"},
 	_: {
-		client: {"start":"_app/immutable/entry/start.cda475fe.js","app":"_app/immutable/entry/app.31156514.js","imports":["_app/immutable/entry/start.cda475fe.js","_app/immutable/chunks/scheduler.60fdcb34.js","_app/immutable/chunks/singletons.f8a34b6d.js","_app/immutable/chunks/paths.9f848c40.js","_app/immutable/chunks/parse.7d180a0f.js","_app/immutable/chunks/control.f2d6eca3.js","_app/immutable/entry/app.31156514.js","_app/immutable/chunks/scheduler.60fdcb34.js","_app/immutable/chunks/index.c7b4b125.js"],"stylesheets":[],"fonts":[]},
+		client: {"start":"_app/immutable/entry/start.9ec6f03c.js","app":"_app/immutable/entry/app.a0d0f6de.js","imports":["_app/immutable/entry/start.9ec6f03c.js","_app/immutable/chunks/scheduler.60fdcb34.js","_app/immutable/chunks/singletons.6f054266.js","_app/immutable/chunks/paths.10ba7172.js","_app/immutable/chunks/parse.7d180a0f.js","_app/immutable/chunks/control.f2d6eca3.js","_app/immutable/entry/app.a0d0f6de.js","_app/immutable/chunks/scheduler.60fdcb34.js","_app/immutable/chunks/index.c7b4b125.js"],"stylesheets":[],"fonts":[]},
 		nodes: [
 			__memo(() => import('../output/server/nodes/0.js')),
 			__memo(() => import('../output/server/nodes/1.js')),

@@ -1,9 +1,9 @@
-import { OrganizationSchema } from '$lib/schemas/generated/zod'
-import { prisma } from '$lib/server/prisma'
+import { prisma } from '$lib/server/prisma.js'
 import { capitalizeFirstLetter } from '$lib/utils'
 import { Prisma } from '@prisma/client'
-import { fail, redirect } from '@sveltejs/kit'
+import { fail } from '@sveltejs/kit'
 import { superValidate } from 'sveltekit-superforms/server'
+import { OrganizationSchema } from './orgSchema'
 
 export const load = async ({ params, url }) => {
 	if (params.orgId === 'new') {
@@ -50,9 +50,10 @@ export const actions = {
 					}
 				}
 			})
+			// console.log( q );
+			// console.log('q: ', q)
 			//
 		} catch (error: any) {
-			//
 			if (error instanceof Prisma.PrismaClientKnownRequestError) {
 				console.log('prisma known error: ', form)
 				// Unique constraint violation

@@ -46,11 +46,10 @@ export async function Populate({ blw, userId, orgId }) {
 			nett: true,
 			total: false
 		}
-		//
+
 		const { venueemail, venuewebsite, venueburgee } = event.rest as any
 
 		const eventObj = {
-			// ...rest,
 			...event,
 			resultColumns,
 
@@ -73,6 +72,7 @@ export async function Populate({ blw, userId, orgId }) {
 				}
 			}
 		}
+
 		return {
 			where: { uniqueIdString: uniqueIdString },
 			update: {},
@@ -80,50 +80,22 @@ export async function Populate({ blw, userId, orgId }) {
 		}
 	}
 
-	let racesArray: { raceId: string; uniqueRaceString: string }[] = []
-
-	function racesCreate() {
-		const compList = blw.getComps().map((comp) => {
-			// This is where we can join comps over multiple events
-			return { compId: comp.compId }
-			// return { uniqueCompId: comp.uniqueCompId }
-		})
-
-		return blw.getRaces(uniqueIdString).map((race) => {
-			const { rank, ...rest } = race
-			racesArray.push({ raceId: race.raceId, uniqueRaceString: race.uniqueRaceString })
-			return {
-				where: { uniqueRaceString: race.uniqueRaceString },
-				update: { rank: Number(rank), ...rest },
-				create: {
-					rank: Number(rank),
-					...rest,
-					Comps: {
-						connect: compList
-					},
-					Event: {
-						connect: { uniqueIdString: uniqueIdString }
-					},
-					Publisher: {
-						connect: { id: userId }
-					}
-				}
-			}
-		})
-	}
+	let compsArray: { compId: string }[] = []
 
 	function compsCreate() {
 		return blw.getComps().map((comp) => {
+			// Need this array for races
+			compsArray.push({ compId: comp.compId })
 			// Comps need to get a uniqueId so we can re-use comps which allow for
 			// Users to attach there profile to and also will let people follow
 			return {
 				// where: { uniqueCompId: comp.uniqueCompId },
 				where: { compId: comp.compId },
 				update: {
+					// uniqueCompId: comp.uniqueCompId,
 					club: comp.club,
 					boat: comp.boat,
 					skipper: comp.helmname,
-					// uniqueCompId: comp.uniqueCompId,
 					fleet: comp.fleet,
 					division: comp.division,
 					rank: comp.rank,
@@ -137,12 +109,12 @@ export async function Populate({ blw, userId, orgId }) {
 				},
 
 				create: {
+					// uniqueCompId: comp.uniqueCompId,
 					compId: comp.compId,
 					club: comp.club,
 					boat: comp.boat,
 					sailno: comp.sailno,
 					skipper: comp.helmname,
-					// uniqueCompId: comp.uniqueCompId,
 					fleet: comp.fleet,
 					division: comp.division,
 					rank: comp.rank,
@@ -152,6 +124,34 @@ export async function Populate({ blw, userId, orgId }) {
 					rest: comp,
 					Events: {
 						connect: [{ uniqueIdString: uniqueIdString }]
+					},
+					Publisher: {
+						connect: { id: userId }
+					}
+				}
+			}
+		})
+	}
+
+	let racesArray: { raceId: string; uniqueRaceString: string }[] = []
+
+	function racesCreate() {
+		//
+		return blw.getRaces(uniqueIdString).map((race) => {
+			const { rank, ...rest } = race
+			// Need this array for results
+			racesArray.push({ raceId: race.raceId, uniqueRaceString: race.uniqueRaceString })
+			return {
+				where: { uniqueRaceString: race.uniqueRaceString },
+				update: { rank: Number(rank), ...rest },
+				create: {
+					rank: Number(rank),
+					...rest,
+					Comps: {
+						connect: compsArray
+					},
+					Event: {
+						connect: { uniqueIdString: uniqueIdString }
 					},
 					Publisher: {
 						connect: { id: userId }
