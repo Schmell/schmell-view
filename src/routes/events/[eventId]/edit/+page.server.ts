@@ -32,6 +32,7 @@ export const load = async ({ params, locals, url }) => {
 			form: await superValidate({ name: 'new' }, eventSchema)
 		}
 	}
+
 	return {
 		venues: await getVenues(),
 		form: await superValidate(await getEvent(), eventSchema)

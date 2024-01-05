@@ -164,21 +164,22 @@ export async function Populate({ blw, userId, orgId }) {
 	function resultsCreate() {
 		return racesArray.map((race) => {
 			return blw.getResults(race.raceId).map((result) => {
+				console.log(result)
 				return {
 					resultId: result.resultId,
 					raceCompId: result.raceCompId,
 					fleet: result.fleet,
-					start: result.start,
-					finish: result.finish,
 					points: result.points,
 					position: result.position,
-					resultType: result.resultType,
-					code: result.code,
-					discard: result.discard,
-					elasped: result.elasped,
+					start: result.start,
+					finish: result.finish,
+					elapsed: result.elapsed,
 					corrected: result.corrected,
 					elapsedWin: result.elapsedWin,
 					ratingWin: result.ratingWin,
+					resultType: result.resultType,
+					code: result.code,
+					discard: result.discard,
 
 					Publisher: {
 						connect: { id: userId }

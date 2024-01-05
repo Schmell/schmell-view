@@ -149,7 +149,7 @@
 			<Check label="Position" name="resultColumns.position" {formObj} />
 			<Check label="Finish" name="resultColumns.finish" {formObj} />
 			<Check label="Corrected" name="resultColumns.corrected" {formObj} />
-			<Check label="Elapsed" name="elapsed" {formObj} />
+			<Check label="Elapsed" name="resultColumns.elapsed" {formObj} />
 		</div>
 	</fieldset>
 

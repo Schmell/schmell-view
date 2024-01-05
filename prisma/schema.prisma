@@ -171,7 +171,7 @@ model Result {
   start          String?
   finish         String?
   corrected      String?
-  elasped        String?
+  elapsed        String?
   elapsedWin     String?
   ratingWin      String?
   raceRating     String?

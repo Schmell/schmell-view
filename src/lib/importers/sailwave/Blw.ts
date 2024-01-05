@@ -37,7 +37,11 @@ export default class Blw {
 			})
 
 			compRows.forEach((item: any) => {
-				const newName = item[0].replace('comp', '')
+				let newName = item[0].replace('comp', '')
+				// for older files
+				if (newName === 'tot') newName = 'total'
+				if (newName === 'pts') newName = 'nett'
+				if (newName === 'pos') newName = 'rank'
 				competitor[newName] = item[1] ?? ''
 			})
 

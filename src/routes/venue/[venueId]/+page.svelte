@@ -5,6 +5,7 @@
 	import Comments from '$lib/newComment/comments.svelte'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
+	import type { Address } from '@prisma/client'
 
 	export let data: PageData
 	$: ({ venue, user } = data)
@@ -23,6 +24,14 @@
 		)
 			return imageString
 		return ''
+	}
+
+	function getMapImage(address: Address) {
+		const concatedAddress = [...Object.values(address)].join(' ')
+		const encodedAddress = encodeURIComponent(concatedAddress)
+		const apikey = 'AIzaSyDPg9g2OV2M9JKm9KqydqRvgWFFtb914J8'
+
+		return `https://maps.googleapis.com/maps/api/staticmap?zoom=14&size=600x200&markers=color:blue%7C${encodedAddress}&key=${apikey}`
 	}
 
 	// const commentFormObj = superForm(data.commentForm)
@@ -93,52 +102,59 @@
 		</div>
 	</div>
 
-	<div class="divider" />
-
-	<div class="flex gap-2 w-full max-w-md justify-between relative">
+	<div class="flex gap-2 w-full mt-4 max-w-md justify-between relative">
 		<div class="w-full">
-			<div class="text-sm grid grid-cols-2 gap-2">
-				<div>
-					{#each venue.Addresses as address}
-						<div class="text-lg font-semibold">{address.label}</div>
-						<div class="pl-2 pr-4 pb-4">
-							{#if address.po}
-								<div>PO Box: {address.po}</div>
-							{/if}
-							<div>{address.street},</div>
-							<span>{address.city},</span>
-							<span>{address.state},</span>
-							<span>{address.country},</span>
-							<span>{address.code}</span>
-						</div>
-					{/each}
-				</div>
-
-				<div>
-					<!-- Need to link the email from sailwave -->
-					{#each venue.Contacts as contact}
-						<div class="text-lg font-semibold">{contact.label}</div>
-						<ul class="pl-2">
-							{#if contact.email}
-								<li>
-									<a href="mailto:{contact.email}" class="flex gap-2 items-center">
-										<Icon icon="mdi:email" />
-										{contact.email}
-									</a>
-								</li>
-							{/if}
-							{#if contact.phone}
-								<li>
-									<a href="tel:{contact.phone}" class="flex gap-2 items-center">
-										<Icon icon="mdi:phone" />
-										{contact.phone}
-									</a>
-								</li>
-							{/if}
-						</ul>
-					{/each}
-				</div>
+			<!-- <div class="text-sm grid grid-cols-2 gap-2"> -->
+			<div class="mb-4">
+				<h3 class="m-0">Contacts:</h3>
+				<div class="divider mt-0" />
+				<!-- Need to link the email from sailwave -->
+				{#each venue.Contacts as contact}
+					<div class="text-lg font-semibold">{contact.label}</div>
+					<ul class="pl-2">
+						{#if contact.email}
+							<li>
+								<a href="mailto:{contact.email}" class="flex gap-2 items-center">
+									<Icon icon="mdi:email" />
+									{contact.email}
+								</a>
+							</li>
+						{/if}
+						{#if contact.phone}
+							<li>
+								<a href="tel:{contact.phone}" class="flex gap-2 items-center">
+									<Icon icon="mdi:phone" />
+									{contact.phone}
+								</a>
+							</li>
+						{/if}
+					</ul>
+				{/each}
 			</div>
+			<div>
+				{#each venue.Addresses as address}
+					<div class="card card-compact w-full max-w-md bg-base-100 shadow-xl mb-8">
+						<div class="card-body">
+							<h2 class="card-title">{address.label}</h2>
+							<div class="pl-2 pr-4 pb-4">
+								{#if address.po}
+									<div>PO Box: {address.po}</div>
+								{/if}
+								<div>{address.street},</div>
+								<span>{address.city},</span>
+								<span>{address.state},</span>
+								<span>{address.country},</span>
+								<span>{address.code}</span>
+							</div>
+						</div>
+						<figure>
+							<img alt="map" src={getMapImage(address)} />
+						</figure>
+					</div>
+				{/each}
+			</div>
+
+			<!-- </div> -->
 		</div>
 	</div>
 

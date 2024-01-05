@@ -45,7 +45,7 @@
 		}).toPlainDateTime()
 	}
 
-	function calculateElapsed(start, finish, elapsed) {
+	function calculateElapsed(start: string, finish: string, elapsed: string) {
 		// console.log(start, finish, elapsed)
 		if (elapsed) return elapsed
 		if (!start || !finish) return null
@@ -55,17 +55,17 @@
 		const startArray = start.split(':')
 
 		const startTime = raceDate.with({
-			hour: startArray[0],
-			minute: startArray[1],
-			second: startArray[2]
+			hour: Number(startArray[0]),
+			minute: Number(startArray[1]),
+			second: Number(startArray[2])
 		})
 
 		const finishArray = finish.split(':')
 
 		const finishTime = raceDate.with({
-			hour: finishArray[0],
-			minute: finishArray[1],
-			second: finishArray[2]
+			hour: Number(finishArray[0]),
+			minute: Number(finishArray[1]),
+			second: Number(finishArray[2])
 		})
 
 		const elapsedTime = startTime.until(finishTime)
@@ -73,10 +73,23 @@
 		// Somtimes people will enter the results incorrectly ie: 12hr vs 24hr
 		if (elapsedTime.total({ unit: 'minute' }) < 0) return 'ERROR'
 
-		return Math.round(elapsedTime.total({ unit: 'minute' }) * 100) / 100
+		const rounded = Math.round(elapsedTime.total({ unit: 'minute' }) * 100) / 100
+
+		function toHoursAndMinutes(totalMinutes) {
+			const hours = Math.floor(totalMinutes / 60)
+			const minutes = Math.floor(totalMinutes % 60)
+			return `${hours}.${minutes} Hrs`
+		}
+
+		if (rounded > 60) {
+			return toHoursAndMinutes(rounded)
+		}
+
+		return `${rounded} min`
 	} // calculateElapsed
 
 	let resultRows = results.map((result) => {
+		console.log(result.start, result.elapsed, result.Comp.boat)
 		const elapsedTime = calculateElapsed(result.start, result.finish, result.elapsed)
 
 		return {
@@ -360,60 +373,52 @@
 													method="post"
 													use:enhance
 													class="text-xs font-normal"
-													on:change={({ target }) => {
-														// @ts-ignore
-														const form = target?.form
-														const formObj = Object.fromEntries(new FormData(form))
+													on:change={({ currentTarget }) => {
+														const formObj = Object.fromEntries(new FormData(currentTarget))
 														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
-														// handleClick()
 													}}
 												>
-													<div class="join">
-														<label class="label">
-															<span class="label-text">Rank</span>
-															<input
-																checked={isVisible('rank')}
-																class="join-item checkbox checkbox-xs"
-																type="checkbox"
-																name="rank"
-																aria-label="Overall Event Ranking"
-															/>
-														</label>
+													<label class="label">
+														<span class="label-text">Rank</span>
+														<input
+															checked={isVisible('rank')}
+															class="join-item checkbox checkbox-xs"
+															type="checkbox"
+															name="rank"
+															aria-label="Overall Event Ranking"
+														/>
+													</label>
 
-														<label class="label">
-															<span class="label-text">Nett</span>
-															<input
-																checked={isVisible('nett')}
-																class="join-item checkbox checkbox-xs"
-																type="checkbox"
-																name="nett"
-																aria-label="Nett Overall Score"
-															/>
-														</label>
+													<label class="label">
+														<span class="label-text">Nett</span>
+														<input
+															checked={isVisible('nett')}
+															class="join-item checkbox checkbox-xs"
+															type="checkbox"
+															name="nett"
+															aria-label="Nett Overall Score"
+														/>
+													</label>
 
-														<label class="label">
-															<span class="label-text">Total</span>
-															<input
-																checked={isVisible('total')}
-																class="join-item checkbox checkbox-xs"
-																type="checkbox"
-																name="total"
-																aria-label="Overall total before drops"
-															/>
-														</label>
-													</div>
+													<label class="label">
+														<span class="label-text">Total</span>
+														<input
+															checked={isVisible('total')}
+															class="join-item checkbox checkbox-xs"
+															type="checkbox"
+															name="total"
+															aria-label="Overall total before drops"
+														/>
+													</label>
 												</form>
 											{:else if header.column.id === 'Name'}
 												<form
 													method="post"
 													use:enhance
 													class="text-xs font-normal"
-													on:change={({ target }) => {
-														// @ts-ignore
-														const form = target?.form
-														const formObj = Object.fromEntries(new FormData(form))
+													on:change={({ currentTarget }) => {
+														const formObj = Object.fromEntries(new FormData(currentTarget))
 														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
-														// handleClick()
 													}}
 												>
 													<label class="label">
@@ -455,8 +460,7 @@
 													use:enhance
 													class="text-xs font-normal"
 													on:change={({ currentTarget }) => {
-														const form = currentTarget.form
-														const formObj = Object.fromEntries(new FormData(form))
+														const formObj = Object.fromEntries(new FormData(currentTarget))
 														setGroupView(header.column, Object.getOwnPropertyNames(formObj))
 													}}
 												>

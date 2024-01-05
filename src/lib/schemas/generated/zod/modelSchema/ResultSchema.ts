@@ -31,7 +31,7 @@ export const ResultSchema = z.object({
   start: z.string().nullish(),
   finish: z.string().nullish(),
   corrected: z.string().nullish(),
-  elasped: z.string().nullish(),
+  elapsed: z.string().nullish(),
   elapsedWin: z.string().nullish(),
   ratingWin: z.string().nullish(),
   raceRating: z.string().nullish(),
