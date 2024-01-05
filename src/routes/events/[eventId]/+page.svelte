@@ -17,6 +17,10 @@
 	//
 </script>
 
+<svelte:head>
+	<title>{event?.name ?? 'No Event'} - Schmell View</title>
+</svelte:head>
+
 {#if data}
 	<Page title={event?.name}>
 		<div

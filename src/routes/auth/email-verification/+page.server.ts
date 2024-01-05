@@ -6,11 +6,11 @@ import type { Actions, PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async (event) => {
 	const session = await event.locals.auth.validate()
-	// if (!session)
-	// 	throw redirect(302, '/auth/login', { type: 'error', message: 'Not Authorised' }, event)
+
 	if (session?.user.emailVerified) {
 		throw redirect(302, '/')
 	}
+
 	return {}
 }
 

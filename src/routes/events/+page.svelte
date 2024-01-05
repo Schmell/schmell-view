@@ -44,6 +44,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>All Events - Schmell View</title>
+</svelte:head>
+
 <Page title={data.title ?? 'All Events'}>
 	<div slot="trailing">
 		<a class="br-primary" href="/events/createEvent">

@@ -2,7 +2,6 @@
 	import { superForm } from 'sveltekit-superforms/client'
 	import * as flashModule from 'sveltekit-flash-message/client'
 	import Icon from '@iconify/svelte'
-
 	import { Form, Input, Button } from '$components/form/index.js'
 	import { Page } from '$components/layout'
 
@@ -17,16 +16,14 @@
 				message.set({ type: 'error', message: errorMessage })
 			}
 		},
-
 		syncFlashMessage: true
 	})
-
-	//
 </script>
 
 <svelte:head>
-	<title>Login - Svelte-way</title>
+	<title>Login - Schmell View</title>
 </svelte:head>
+
 <Page title="Login">
 	<p class="m-0">Don't have an account? <a href="/auth/register"> Register </a></p>
 	<Form {formObj}>

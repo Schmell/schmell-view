@@ -8,12 +8,21 @@ import { Prisma } from '@prisma/client'
 import { capitalizeFirstLetter } from '$lib/utils'
 import { LuciaError } from 'lucia'
 
-export const load: PageServerLoad = async ({ locals }) => {
-	const session = await locals.auth.validate()
+export const load: PageServerLoad = async (event) => {
+	const session = await event.locals.auth.validate()
 	if (session) {
-		if (!session.user.emailVerified) throw redirect(302, '/email-verification')
-		throw redirect(302, '/')
+		if (!session.user.emailVerified) {
+			throw redirect(
+				302,
+				'/email-verification',
+				{ type: 'error', message: 'Email is not verified' },
+				event
+			)
+		}
+		// need to change this to dashboard as home page cannot be a login page
+		throw redirect(302, '/dashboard')
 	}
+
 	const form = await superValidate(emailLoginSchema)
 	return { form }
 }

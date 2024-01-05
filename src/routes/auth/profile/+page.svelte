@@ -1,29 +1,33 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import { Page } from '$components/layout/index.js';
-	import { Input, Button, Form } from '$components/form/index.js';
-	import { superForm } from 'sveltekit-superforms/client';
-	import * as flashModule from 'sveltekit-flash-message/client';
+	import type { PageData } from './$types'
+	import { Page } from '$components/layout/index.js'
+	import { Input, Button, Form } from '$components/form/index.js'
+	import { superForm } from 'sveltekit-superforms/client'
+	import * as flashModule from 'sveltekit-flash-message/client'
 
 	// export let form
-	export let data: PageData;
+	export let data: PageData
 
 	const formObj = superForm(data.form, {
 		autoFocusOnError: true,
 		flashMessage: {
 			module: flashModule,
 			onError: ({ result, message }) => {
-				const errorMessage = result.error.message;
-				message.set({ type: 'error', message: errorMessage });
+				const errorMessage = result.error.message
+				message.set({ type: 'error', message: errorMessage })
 			}
 		},
 
 		syncFlashMessage: true
-	});
+	})
 
 	// console.log('data: ', data);
-	$: ({ user } = data);
+	$: ({ user } = data)
 </script>
+
+<svelte:head>
+	<title>User Profile - Schmell View</title>
+</svelte:head>
 
 <Page title={user?.username}>
 	<hgroup>
