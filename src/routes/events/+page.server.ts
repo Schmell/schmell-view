@@ -11,7 +11,7 @@ export const load: PageServerLoad = async (event) => {
 		throw redirect(
 			302,
 			`/auth/login?from=${url.pathname}`,
-			{ type: 'error', message: 'Not Authorised' },
+			{ type: 'error', message: 'Not Evnet' },
 			event
 		)
 	}

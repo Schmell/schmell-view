@@ -84,8 +84,7 @@ export const actions = {
 		const { locals, request, params, url } = event
 		const session = locals.auth.validate()
 
-		if (!session)
-			throw redirect('/auth/login', { type: 'success', message: 'Not Authorised' }, event)
+		if (!session) throw redirect('/auth/login', { type: 'error', message: 'Not Authorised' }, event)
 
 		const formData = Object.fromEntries(await request.formData()) as Record<string, string>
 
@@ -160,7 +159,7 @@ export const actions = {
 	requestMerge: async ({ locals, request }) => {
 		const session = locals.auth.validate()
 		// @ts-ignore
-		if (!session) throw redirect('/auth/login', { type: 'success', message: 'Not Authorised' })
+		if (!session) throw redirect('/auth/login', { type: 'error', message: 'Not Authorised' })
 
 		const formData = Object.fromEntries(await request.formData())
 		console.log('formData: ', formData)

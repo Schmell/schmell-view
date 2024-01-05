@@ -7,6 +7,7 @@ import { message, setError, superValidate } from 'sveltekit-superforms/server'
 import { LuciaError } from 'lucia'
 import { emailRegisterSchema } from './emailRegisterSchema'
 import { Prisma } from '@prisma/client'
+import { prisma } from '$lib/server/prisma'
 import { capitalizeFirstLetter } from '$lib/utils'
 import { redirect } from 'sveltekit-flash-message/server'
 

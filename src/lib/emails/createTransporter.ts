@@ -1,15 +1,22 @@
 import * as nodemailer from 'nodemailer'
 import { google } from 'googleapis'
-import { USER_EMAIL, CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN } from '$env/static/private'
-import { error } from '@sveltejs/kit'
+import {
+	USER_EMAIL,
+	// CLIENT_ID,
+	// CLIENT_SECRET,
+	REFRESH_TOKEN,
+	GOOGLE_CLIENT_ID,
+	GOOGLE_CLIENT_SECRET
+} from '$env/static/private'
+import { error, fail } from '@sveltejs/kit'
 
 const OAuth2 = google.auth.OAuth2
 
 export const createTransporter = async () => {
 	try {
 		const oauth2Client = new OAuth2(
-			CLIENT_ID,
-			CLIENT_SECRET,
+			GOOGLE_CLIENT_ID,
+			GOOGLE_CLIENT_SECRET,
 			'https://developers.google.com/oauthplayground'
 		)
 
@@ -17,17 +24,19 @@ export const createTransporter = async () => {
 			refresh_token: REFRESH_TOKEN
 		})
 
+		// console.log(oauth2Client)
+
 		const accessToken = await new Promise((resolve, reject) => {
 			oauth2Client.getAccessToken((err, token) => {
 				if (err) {
-					console.log('*ERR: ', err.response?.data)
-
+					console.log('Get Access Token Error: ', err.response?.data)
 					reject()
 				}
-
 				resolve(token)
 			})
 		})
+
+		// console.log(accessToken)
 
 		const transporter = nodemailer.createTransport({
 			// not sure why im not getting proper types from nodemailer
@@ -37,15 +46,17 @@ export const createTransporter = async () => {
 				type: 'OAuth2',
 				user: USER_EMAIL,
 				accessToken,
-				clientId: CLIENT_ID,
-				clientSecret: CLIENT_SECRET,
+				clientId: GOOGLE_CLIENT_ID,
+				clientSecret: GOOGLE_CLIENT_SECRET,
 				refreshToken: REFRESH_TOKEN
 			}
 		})
 
+		// console.log(transporter)
+
 		return transporter
-	} catch (err: any) {
-		console.log('createTranspporter err: ', err)
-		throw error(500, 'transporter error')
+	} catch (error: any) {
+		console.log('createTransporter Error: ', error)
+		return fail(500, { message: 'transporter error' })
 	}
 }

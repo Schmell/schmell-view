@@ -1,6 +1,7 @@
 import type { PageServerLoad, Actions } from './$types'
 import { auth } from '$lib/server/lucia'
-import { fail, redirect } from '@sveltejs/kit'
+import { fail } from '@sveltejs/kit'
+import { redirect } from 'sveltekit-flash-message/server'
 import { message, setError, superValidate } from 'sveltekit-superforms/server'
 import { z } from 'zod'
 import { Prisma } from '@prisma/client'
@@ -23,21 +24,33 @@ const emailLoginSchema = z.object({
 })
 
 export const actions: Actions = {
-	default: async ({ request, locals }) => {
-		const form = await superValidate(request, emailLoginSchema)
+	default: async (event) => {
+		//
+		const form = await superValidate(event.request, emailLoginSchema)
 
 		if (!form.valid) fail(400, { form })
 
 		try {
 			// find user by key // and validate password
 			const key = await auth.useKey('email', form.data.email.toLowerCase(), form.data.password)
+			const user = await auth.getUser(key.userId)
+			// console.log(user)
+
+			// I think that having an unapproved model
+			if (!user.emailVerified) {
+				throw redirect(
+					'/auth/emal-verification',
+					{ type: 'error', message: 'Email verification has not been recieved' },
+					event
+				)
+			}
 
 			const session = await auth.createSession({
 				userId: key.userId,
 				attributes: {}
 			})
 
-			locals.auth.setSession(session) // set session cookie
+			event.locals.auth.setSession(session) // set session cookie
 		} catch (e: any) {
 			if (e instanceof LuciaError) {
 				console.log('LuciaError: ', e)

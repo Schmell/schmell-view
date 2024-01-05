@@ -1,4 +1,3 @@
-// import { isUrl } from 'is-url'
 // // just use isurl
 // export async function checkForImage(imageString) {
 // 	// should be valid url, but maybe not after import
