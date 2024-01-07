@@ -3,8 +3,8 @@
 </script>
 
 <div class="sub-nav">
-	<div class="h-full items-center tooltip tooltip-bottom" data-tip={title}>
-		<div class="text-3xl font-semibold select-none line-clamp-1">{@html title}</div>
+	<div class="h-full tooltip tooltip-bottom" data-tip={title}>
+		<div class="text-3xl font-semibold select-none line-clamp-1">{title}</div>
 	</div>
 	<div class="mr-4"><slot name="trailing" /></div>
 </div>
@@ -13,16 +13,14 @@
 	.sub-nav {
 		@apply border-base-300 bg-base-100 shadow-md;
 		@apply text-primary;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		position: fixed;
-		z-index: 10;
-		padding-right: 2em;
+		@apply flex items-center justify-between;
+		@apply fixed z-10 pr-4;
+		/* position: fixed;
+		z-index: 10; */
+		/* padding-right: 2em; */
 		padding-top: 4.75em;
 		padding-bottom: 0.7em;
 		padding-left: 1em;
-		min-height: 8mem;
 		width: 99%;
 		border-width: 1px;
 		border-bottom-right-radius: 4em;

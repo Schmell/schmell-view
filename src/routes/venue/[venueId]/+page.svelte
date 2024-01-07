@@ -37,7 +37,7 @@
 	// const commentFormObj = superForm(data.commentForm)
 </script>
 
-<Page title={venue.name}>
+<Page title={venue.name.trim()}>
 	<div class="relative w-full">
 		{#if checkForImage(venue.burgee)}
 			<img
