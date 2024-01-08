@@ -164,7 +164,6 @@ export async function Populate({ blw, userId, orgId }) {
 	function resultsCreate() {
 		return racesArray.map((race) => {
 			return blw.getResults(race.raceId).map((result) => {
-				console.log(result)
 				return {
 					resultId: result.resultId,
 					raceCompId: result.raceCompId,
@@ -180,7 +179,6 @@ export async function Populate({ blw, userId, orgId }) {
 					resultType: result.resultType,
 					code: result.code,
 					discard: result.discard,
-
 					Publisher: {
 						connect: { id: userId }
 					},
@@ -250,7 +248,7 @@ export async function Populate({ blw, userId, orgId }) {
 						})
 					} catch (e: any) {
 						if (e instanceof Prisma.PrismaClientKnownRequestError) {
-							console.log(result)
+							// console.log(result)
 							console.log(e.message)
 						}
 						return fail(400, { message: ' Damn' })

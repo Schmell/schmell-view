@@ -6,7 +6,7 @@
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
 	import type { Address } from '@prisma/client'
-	import { GOOGLE_MAPSAPI_KEY } from '$env/static/private'
+	import { PUBLIC_GOOGLE_MAPSAPI_KEY } from '$env/static/public'
 
 	export let data: PageData
 	$: ({ venue, user } = data)
@@ -30,7 +30,7 @@
 	function getMapImage(address: Address) {
 		const concatedAddress = [...Object.values(address)].join(' ')
 		const encodedAddress = encodeURIComponent(concatedAddress)
-		const apikey = GOOGLE_MAPSAPI_KEY
+		const apikey = PUBLIC_GOOGLE_MAPSAPI_KEY
 
 		return `https://maps.googleapis.com/maps/api/staticmap?zoom=14&size=600x200&markers=color:blue%7C${encodedAddress}&key=${apikey}`
 	}

@@ -31,6 +31,14 @@
 				<h2 class="m-0 text-xl tracking-wide text-base-content font-semibold">{user.username}</h2>
 				<hr class="border border-accent" />
 				<div class="text-md text-base-content">{user.name}</div>
+				<div class="flex justify-end">
+					<div class="flex gap-1 items-center min-w-fit text-xs pr-2">
+						<Icon icon="mdi:thumb-up" />
+						{data.userStats?._count.Liked} /
+						<Icon icon="mdi:bell-ring" />
+						{data.userStats?._count.Followed}
+					</div>
+				</div>
 			</div>
 		</div>
 		{#if !organizations.length}
