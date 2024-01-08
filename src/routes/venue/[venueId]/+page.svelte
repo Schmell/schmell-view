@@ -6,6 +6,7 @@
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
 	import type { Address } from '@prisma/client'
+	import { GOOGLE_MAPSAPI_KEY } from '$env/static/private'
 
 	export let data: PageData
 	$: ({ venue, user } = data)
@@ -29,7 +30,7 @@
 	function getMapImage(address: Address) {
 		const concatedAddress = [...Object.values(address)].join(' ')
 		const encodedAddress = encodeURIComponent(concatedAddress)
-		const apikey = 'AIzaSyDPg9g2OV2M9JKm9KqydqRvgWFFtb914J8'
+		const apikey = GOOGLE_MAPSAPI_KEY
 
 		return `https://maps.googleapis.com/maps/api/staticmap?zoom=14&size=600x200&markers=color:blue%7C${encodedAddress}&key=${apikey}`
 	}
@@ -37,7 +38,16 @@
 	// const commentFormObj = superForm(data.commentForm)
 </script>
 
-<Page title={venue.name.trim()}>
+<svelte:head>
+	<title>{venue.name ? venue.name : 'Venue'} - Vite Sail</title>
+	<script>
+		window.initMap = function ready() {
+			app.$set({ ready: true })
+		}
+	</script>
+</svelte:head>
+
+<Page title={venue.name}>
 	<div class="relative w-full">
 		{#if checkForImage(venue.burgee)}
 			<img
@@ -148,13 +158,11 @@
 							</div>
 						</div>
 						<figure>
-							<img alt="map" src={getMapImage(address)} />
+							<img alt={address.label} src={getMapImage(address)} />
 						</figure>
 					</div>
 				{/each}
 			</div>
-
-			<!-- </div> -->
 		</div>
 	</div>
 

@@ -41,6 +41,7 @@ export const FollowSchema = z.object({
   type: z.string(),
   itemId: z.string().nullish(),
   userId: z.string(),
+  FollowedId: z.string().nullish(),
   commentId: z.string().nullish(),
   compId: z.string().nullish(),
   eventId: z.string().nullish(),
@@ -75,6 +76,7 @@ export type FollowRelations = {
   Race?: RaceWithRelations | null;
   Series?: SeriesWithRelations | null;
   User: UserWithRelations;
+  Followed?: UserWithRelations | null;
 };
 
 export type FollowWithRelations = z.infer<typeof FollowSchema> & FollowRelations
@@ -88,6 +90,7 @@ export const FollowWithRelationsSchema: z.ZodType<FollowWithRelations> = FollowS
   Race: z.lazy(() => RaceWithRelationsSchema).nullish(),
   Series: z.lazy(() => SeriesWithRelationsSchema).nullish(),
   User: z.lazy(() => UserWithRelationsSchema),
+  Followed: z.lazy(() => UserWithRelationsSchema).nullish(),
 }))
 
 /////////////////////////////////////////
@@ -103,6 +106,7 @@ export type FollowPartialRelations = {
   Race?: RacePartialWithRelations | null;
   Series?: SeriesPartialWithRelations | null;
   User?: UserPartialWithRelations;
+  Followed?: UserPartialWithRelations | null;
 };
 
 export type FollowPartialWithRelations = z.infer<typeof FollowPartialSchema> & FollowPartialRelations
@@ -116,6 +120,7 @@ export const FollowPartialWithRelationsSchema: z.ZodType<FollowPartialWithRelati
   Race: z.lazy(() => RacePartialWithRelationsSchema).nullish(),
   Series: z.lazy(() => SeriesPartialWithRelationsSchema).nullish(),
   User: z.lazy(() => UserPartialWithRelationsSchema),
+  Followed: z.lazy(() => UserPartialWithRelationsSchema).nullish(),
 })).partial()
 
 export type FollowWithPartialRelations = z.infer<typeof FollowSchema> & FollowPartialRelations
@@ -129,6 +134,7 @@ export const FollowWithPartialRelationsSchema: z.ZodType<FollowWithPartialRelati
   Race: z.lazy(() => RacePartialWithRelationsSchema).nullish(),
   Series: z.lazy(() => SeriesPartialWithRelationsSchema).nullish(),
   User: z.lazy(() => UserPartialWithRelationsSchema),
+  Followed: z.lazy(() => UserPartialWithRelationsSchema).nullish(),
 }).partial())
 
 export default FollowSchema;

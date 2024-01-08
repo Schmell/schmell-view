@@ -7,7 +7,8 @@
 	import { Accordion } from 'bits-ui'
 
 	export let data
-	$: ({ user, events, series, following, organizations, likes } = data)
+	$: ({ user, events, series, following, organizations, likes, userStats } = data)
+	$: console.log(userStats)
 </script>
 
 <Page title="Home">

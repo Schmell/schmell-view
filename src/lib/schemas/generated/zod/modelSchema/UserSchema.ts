@@ -94,15 +94,17 @@ export type UserRelations = {
   auth_key: KeyWithRelations[];
   UserSettings?: UserSettingsWithRelations | null;
   Series: SeriesWithRelations[];
-  Event: EventWithRelations[];
-  Race: RaceWithRelations[];
-  Comp: CompWithRelations[];
-  Result: ResultWithRelations[];
-  Organization: OrganizationWithRelations[];
-  Venue: VenueWithRelations[];
-  follow: FollowWithRelations[];
-  like: LikeWithRelations[];
-  Comment: CommentWithRelations[];
+  Events: EventWithRelations[];
+  Races: RaceWithRelations[];
+  Comps: CompWithRelations[];
+  Results: ResultWithRelations[];
+  Organizations: OrganizationWithRelations[];
+  Venues: VenueWithRelations[];
+  Follows: FollowWithRelations[];
+  Followed: FollowWithRelations[];
+  Likes: LikeWithRelations[];
+  Liked: LikeWithRelations[];
+  Comments: CommentWithRelations[];
   Address: AddressWithRelations[];
   Contact: ContactWithRelations[];
 };
@@ -114,15 +116,17 @@ export const UserWithRelationsSchema: z.ZodType<UserWithRelations> = UserSchema.
   auth_key: z.lazy(() => KeyWithRelationsSchema).array(),
   UserSettings: z.lazy(() => UserSettingsWithRelationsSchema).nullish(),
   Series: z.lazy(() => SeriesWithRelationsSchema).array(),
-  Event: z.lazy(() => EventWithRelationsSchema).array(),
-  Race: z.lazy(() => RaceWithRelationsSchema).array(),
-  Comp: z.lazy(() => CompWithRelationsSchema).array(),
-  Result: z.lazy(() => ResultWithRelationsSchema).array(),
-  Organization: z.lazy(() => OrganizationWithRelationsSchema).array(),
-  Venue: z.lazy(() => VenueWithRelationsSchema).array(),
-  follow: z.lazy(() => FollowWithRelationsSchema).array(),
-  like: z.lazy(() => LikeWithRelationsSchema).array(),
-  Comment: z.lazy(() => CommentWithRelationsSchema).array(),
+  Events: z.lazy(() => EventWithRelationsSchema).array(),
+  Races: z.lazy(() => RaceWithRelationsSchema).array(),
+  Comps: z.lazy(() => CompWithRelationsSchema).array(),
+  Results: z.lazy(() => ResultWithRelationsSchema).array(),
+  Organizations: z.lazy(() => OrganizationWithRelationsSchema).array(),
+  Venues: z.lazy(() => VenueWithRelationsSchema).array(),
+  Follows: z.lazy(() => FollowWithRelationsSchema).array(),
+  Followed: z.lazy(() => FollowWithRelationsSchema).array(),
+  Likes: z.lazy(() => LikeWithRelationsSchema).array(),
+  Liked: z.lazy(() => LikeWithRelationsSchema).array(),
+  Comments: z.lazy(() => CommentWithRelationsSchema).array(),
   Address: z.lazy(() => AddressWithRelationsSchema).array(),
   Contact: z.lazy(() => ContactWithRelationsSchema).array(),
 }))
@@ -136,15 +140,17 @@ export type UserPartialRelations = {
   auth_key?: KeyPartialWithRelations[];
   UserSettings?: UserSettingsPartialWithRelations | null;
   Series?: SeriesPartialWithRelations[];
-  Event?: EventPartialWithRelations[];
-  Race?: RacePartialWithRelations[];
-  Comp?: CompPartialWithRelations[];
-  Result?: ResultPartialWithRelations[];
-  Organization?: OrganizationPartialWithRelations[];
-  Venue?: VenuePartialWithRelations[];
-  follow?: FollowPartialWithRelations[];
-  like?: LikePartialWithRelations[];
-  Comment?: CommentPartialWithRelations[];
+  Events?: EventPartialWithRelations[];
+  Races?: RacePartialWithRelations[];
+  Comps?: CompPartialWithRelations[];
+  Results?: ResultPartialWithRelations[];
+  Organizations?: OrganizationPartialWithRelations[];
+  Venues?: VenuePartialWithRelations[];
+  Follows?: FollowPartialWithRelations[];
+  Followed?: FollowPartialWithRelations[];
+  Likes?: LikePartialWithRelations[];
+  Liked?: LikePartialWithRelations[];
+  Comments?: CommentPartialWithRelations[];
   Address?: AddressPartialWithRelations[];
   Contact?: ContactPartialWithRelations[];
 };
@@ -156,15 +162,17 @@ export const UserPartialWithRelationsSchema: z.ZodType<UserPartialWithRelations>
   auth_key: z.lazy(() => KeyPartialWithRelationsSchema).array(),
   UserSettings: z.lazy(() => UserSettingsPartialWithRelationsSchema).nullish(),
   Series: z.lazy(() => SeriesPartialWithRelationsSchema).array(),
-  Event: z.lazy(() => EventPartialWithRelationsSchema).array(),
-  Race: z.lazy(() => RacePartialWithRelationsSchema).array(),
-  Comp: z.lazy(() => CompPartialWithRelationsSchema).array(),
-  Result: z.lazy(() => ResultPartialWithRelationsSchema).array(),
-  Organization: z.lazy(() => OrganizationPartialWithRelationsSchema).array(),
-  Venue: z.lazy(() => VenuePartialWithRelationsSchema).array(),
-  follow: z.lazy(() => FollowPartialWithRelationsSchema).array(),
-  like: z.lazy(() => LikePartialWithRelationsSchema).array(),
-  Comment: z.lazy(() => CommentPartialWithRelationsSchema).array(),
+  Events: z.lazy(() => EventPartialWithRelationsSchema).array(),
+  Races: z.lazy(() => RacePartialWithRelationsSchema).array(),
+  Comps: z.lazy(() => CompPartialWithRelationsSchema).array(),
+  Results: z.lazy(() => ResultPartialWithRelationsSchema).array(),
+  Organizations: z.lazy(() => OrganizationPartialWithRelationsSchema).array(),
+  Venues: z.lazy(() => VenuePartialWithRelationsSchema).array(),
+  Follows: z.lazy(() => FollowPartialWithRelationsSchema).array(),
+  Followed: z.lazy(() => FollowPartialWithRelationsSchema).array(),
+  Likes: z.lazy(() => LikePartialWithRelationsSchema).array(),
+  Liked: z.lazy(() => LikePartialWithRelationsSchema).array(),
+  Comments: z.lazy(() => CommentPartialWithRelationsSchema).array(),
   Address: z.lazy(() => AddressPartialWithRelationsSchema).array(),
   Contact: z.lazy(() => ContactPartialWithRelationsSchema).array(),
 })).partial()
@@ -176,15 +184,17 @@ export const UserWithPartialRelationsSchema: z.ZodType<UserWithPartialRelations>
   auth_key: z.lazy(() => KeyPartialWithRelationsSchema).array(),
   UserSettings: z.lazy(() => UserSettingsPartialWithRelationsSchema).nullish(),
   Series: z.lazy(() => SeriesPartialWithRelationsSchema).array(),
-  Event: z.lazy(() => EventPartialWithRelationsSchema).array(),
-  Race: z.lazy(() => RacePartialWithRelationsSchema).array(),
-  Comp: z.lazy(() => CompPartialWithRelationsSchema).array(),
-  Result: z.lazy(() => ResultPartialWithRelationsSchema).array(),
-  Organization: z.lazy(() => OrganizationPartialWithRelationsSchema).array(),
-  Venue: z.lazy(() => VenuePartialWithRelationsSchema).array(),
-  follow: z.lazy(() => FollowPartialWithRelationsSchema).array(),
-  like: z.lazy(() => LikePartialWithRelationsSchema).array(),
-  Comment: z.lazy(() => CommentPartialWithRelationsSchema).array(),
+  Events: z.lazy(() => EventPartialWithRelationsSchema).array(),
+  Races: z.lazy(() => RacePartialWithRelationsSchema).array(),
+  Comps: z.lazy(() => CompPartialWithRelationsSchema).array(),
+  Results: z.lazy(() => ResultPartialWithRelationsSchema).array(),
+  Organizations: z.lazy(() => OrganizationPartialWithRelationsSchema).array(),
+  Venues: z.lazy(() => VenuePartialWithRelationsSchema).array(),
+  Follows: z.lazy(() => FollowPartialWithRelationsSchema).array(),
+  Followed: z.lazy(() => FollowPartialWithRelationsSchema).array(),
+  Likes: z.lazy(() => LikePartialWithRelationsSchema).array(),
+  Liked: z.lazy(() => LikePartialWithRelationsSchema).array(),
+  Comments: z.lazy(() => CommentPartialWithRelationsSchema).array(),
   Address: z.lazy(() => AddressPartialWithRelationsSchema).array(),
   Contact: z.lazy(() => ContactPartialWithRelationsSchema).array(),
 }).partial())

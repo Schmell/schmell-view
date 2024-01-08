@@ -2,8 +2,6 @@ import * as nodemailer from 'nodemailer'
 import { google } from 'googleapis'
 import {
 	USER_EMAIL,
-	// CLIENT_ID,
-	// CLIENT_SECRET,
 	REFRESH_TOKEN,
 	GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET

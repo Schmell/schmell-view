@@ -5,13 +5,10 @@
 	import { addOrdinalsuffix } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
-	// import { sendClaimCompEmail } from '$lib/server/email'
-	import { flashCookieOptions, setFlash } from 'sveltekit-flash-message/server'
-	import { updateFlash } from 'sveltekit-flash-message/client'
 
 	export let data: PageData
 	export let form
-	// $: console.log('form: ', form)
+
 	$: ({ comp, user } = data)
 
 	let my_modal_2
@@ -24,16 +21,7 @@
 		}
 		return `http://${uri}`
 	}
-
-	// async function sendClaimEmail() {
-	// 	const email = await sendClaimCompEmail({
-	// 		publisherEmail: comp?.Publisher?.email,
-	// 		requesterEmail: user?.email,
-	// 		toMergeId: comp?.id,
-	// 		userId: user?.userId,
-	// 		compName: comp?.boat
-	// 	})
-	// }
+	//
 </script>
 
 {#if comp}
@@ -136,8 +124,20 @@
 					<p class="py-6 px-2 text-lg shadow-lg border-r-4 border-accent rounded-lg">
 						{comp.description ?? 'No description provided'}
 					</p>
-					<div class="py-2 text-xs text-secondary flex justify-end">
-						{comp.createdAt?.toLocaleDateString()}
+					<div class="flex gap-2 items-center justify-end">
+						<div class="py-2 text-xs text-secondary flex justify-end">
+							{comp.createdAt?.toLocaleDateString()}
+						</div>
+						<div class="tooltip tooltip-left" data-tip="added by {user?.username}">
+							<a href="/user/{user?.userId}">
+								<img
+									alt={user?.username}
+									src={user?.avatar}
+									width="20"
+									class="avatar rounded-full"
+								/>
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -221,10 +221,10 @@
 															<span class="text-xs"> corrected time</span>
 														</div>
 													{/if}
-													{#if race.Results[0].elasped}
+													{#if race.Results[0].elapsed}
 														<div>
-															<span> {race.Results[0].elasped} </span>
-															<span class="text-xs"> elaped time</span>
+															<span> {race.Results[0].elapsed} </span>
+															<span class="text-xs"> elapsed time</span>
 														</div>
 													{/if}
 													{#if race.Results[0].elapsedWin}

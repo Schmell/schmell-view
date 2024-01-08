@@ -11,6 +11,17 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 	const session = await locals.auth.validate()
 	if (!session) throw redirect(302, `/auth/login?from=${url.pathname}`)
 
+	async function getUserStats() {
+		try {
+			return await prisma.user.findUnique({
+				where: { id: session?.user.userId },
+				include: {
+					_count: { select: { Followed: true, Liked: true } }
+				}
+			})
+		} catch (error) {}
+	}
+
 	async function getUserEvents() {
 		try {
 			return await prisma.event.findMany({
@@ -134,7 +145,8 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 		series: getUserSeries(),
 		events: getUserEvents(),
 		following: getUserFollowing(),
-		likes: getUserLikes()
+		likes: getUserLikes(),
+		userStats: getUserStats()
 	}
 })
 

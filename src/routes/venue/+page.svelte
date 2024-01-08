@@ -7,9 +7,11 @@
 	export let data: PageData
 
 	$: ({ user, venues } = data)
-	// $: console.log('venues: ', venues)
-	//
 </script>
+
+<svelte:head>
+	<title>Venues - Vite Sail</title>
+</svelte:head>
 
 <Page title="All Venues">
 	{#if venues}

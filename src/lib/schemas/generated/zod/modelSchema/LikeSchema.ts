@@ -9,12 +9,12 @@ import type { RaceWithRelations } from './RaceSchema'
 import type { RacePartialWithRelations } from './RaceSchema'
 import type { SeriesWithRelations } from './SeriesSchema'
 import type { SeriesPartialWithRelations } from './SeriesSchema'
-import type { UserWithRelations } from './UserSchema'
-import type { UserPartialWithRelations } from './UserSchema'
 import type { CommentWithRelations } from './CommentSchema'
 import type { CommentPartialWithRelations } from './CommentSchema'
 import type { VenueWithRelations } from './VenueSchema'
 import type { VenuePartialWithRelations } from './VenueSchema'
+import type { UserWithRelations } from './UserSchema'
+import type { UserPartialWithRelations } from './UserSchema'
 import { CompWithRelationsSchema } from './CompSchema'
 import { CompPartialWithRelationsSchema } from './CompSchema'
 import { EventWithRelationsSchema } from './EventSchema'
@@ -25,12 +25,12 @@ import { RaceWithRelationsSchema } from './RaceSchema'
 import { RacePartialWithRelationsSchema } from './RaceSchema'
 import { SeriesWithRelationsSchema } from './SeriesSchema'
 import { SeriesPartialWithRelationsSchema } from './SeriesSchema'
-import { UserWithRelationsSchema } from './UserSchema'
-import { UserPartialWithRelationsSchema } from './UserSchema'
 import { CommentWithRelationsSchema } from './CommentSchema'
 import { CommentPartialWithRelationsSchema } from './CommentSchema'
 import { VenueWithRelationsSchema } from './VenueSchema'
 import { VenuePartialWithRelationsSchema } from './VenueSchema'
+import { UserWithRelationsSchema } from './UserSchema'
+import { UserPartialWithRelationsSchema } from './UserSchema'
 
 /////////////////////////////////////////
 // LIKE SCHEMA
@@ -38,19 +38,19 @@ import { VenuePartialWithRelationsSchema } from './VenueSchema'
 
 export const LikeSchema = z.object({
   id: z.string(),
-  userId: z.string(),
   type: z.string(),
   itemId: z.string().nullish(),
-  seriesId: z.string().nullish(),
+  compId: z.string().nullish(),
   eventId: z.string().nullish(),
   organizationId: z.string().nullish(),
   raceId: z.string().nullish(),
-  compId: z.string().nullish(),
-  updatedAt: z.date(),
-  createdAt: z.date(),
-  eventCommentId: z.string().nullish(),
+  seriesId: z.string().nullish(),
   commentId: z.string().nullish(),
   venueId: z.string().nullish(),
+  userId: z.string(),
+  likedUserId: z.string().nullish(),
+  updatedAt: z.date(),
+  createdAt: z.date(),
 })
 
 export type Like = z.infer<typeof LikeSchema>
@@ -73,9 +73,10 @@ export type LikeRelations = {
   Organization?: OrganizationWithRelations | null;
   Race?: RaceWithRelations | null;
   Series?: SeriesWithRelations | null;
-  User: UserWithRelations;
   Comment?: CommentWithRelations | null;
   Venue?: VenueWithRelations | null;
+  User: UserWithRelations;
+  LikedUser?: UserWithRelations | null;
 };
 
 export type LikeWithRelations = z.infer<typeof LikeSchema> & LikeRelations
@@ -86,9 +87,10 @@ export const LikeWithRelationsSchema: z.ZodType<LikeWithRelations> = LikeSchema.
   Organization: z.lazy(() => OrganizationWithRelationsSchema).nullish(),
   Race: z.lazy(() => RaceWithRelationsSchema).nullish(),
   Series: z.lazy(() => SeriesWithRelationsSchema).nullish(),
-  User: z.lazy(() => UserWithRelationsSchema),
   Comment: z.lazy(() => CommentWithRelationsSchema).nullish(),
   Venue: z.lazy(() => VenueWithRelationsSchema).nullish(),
+  User: z.lazy(() => UserWithRelationsSchema),
+  LikedUser: z.lazy(() => UserWithRelationsSchema).nullish(),
 }))
 
 /////////////////////////////////////////
@@ -101,9 +103,10 @@ export type LikePartialRelations = {
   Organization?: OrganizationPartialWithRelations | null;
   Race?: RacePartialWithRelations | null;
   Series?: SeriesPartialWithRelations | null;
-  User?: UserPartialWithRelations;
   Comment?: CommentPartialWithRelations | null;
   Venue?: VenuePartialWithRelations | null;
+  User?: UserPartialWithRelations;
+  LikedUser?: UserPartialWithRelations | null;
 };
 
 export type LikePartialWithRelations = z.infer<typeof LikePartialSchema> & LikePartialRelations
@@ -114,9 +117,10 @@ export const LikePartialWithRelationsSchema: z.ZodType<LikePartialWithRelations>
   Organization: z.lazy(() => OrganizationPartialWithRelationsSchema).nullish(),
   Race: z.lazy(() => RacePartialWithRelationsSchema).nullish(),
   Series: z.lazy(() => SeriesPartialWithRelationsSchema).nullish(),
-  User: z.lazy(() => UserPartialWithRelationsSchema),
   Comment: z.lazy(() => CommentPartialWithRelationsSchema).nullish(),
   Venue: z.lazy(() => VenuePartialWithRelationsSchema).nullish(),
+  User: z.lazy(() => UserPartialWithRelationsSchema),
+  LikedUser: z.lazy(() => UserPartialWithRelationsSchema).nullish(),
 })).partial()
 
 export type LikeWithPartialRelations = z.infer<typeof LikeSchema> & LikePartialRelations
@@ -127,9 +131,10 @@ export const LikeWithPartialRelationsSchema: z.ZodType<LikeWithPartialRelations>
   Organization: z.lazy(() => OrganizationPartialWithRelationsSchema).nullish(),
   Race: z.lazy(() => RacePartialWithRelationsSchema).nullish(),
   Series: z.lazy(() => SeriesPartialWithRelationsSchema).nullish(),
-  User: z.lazy(() => UserPartialWithRelationsSchema),
   Comment: z.lazy(() => CommentPartialWithRelationsSchema).nullish(),
   Venue: z.lazy(() => VenuePartialWithRelationsSchema).nullish(),
+  User: z.lazy(() => UserPartialWithRelationsSchema),
+  LikedUser: z.lazy(() => UserPartialWithRelationsSchema).nullish(),
 }).partial())
 
 export default LikeSchema;
