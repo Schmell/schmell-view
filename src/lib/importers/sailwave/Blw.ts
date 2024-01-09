@@ -215,17 +215,17 @@ export default class Blw {
 			const property = item[0].replace('ser', '')
 			eventObj[property] = item[1]
 		})
+
 		// console.log('eventObj: ', eventObj)
 
 		const { event, eventwebsite, venue, eventeid, ...rest } = eventObj
-
-		// console.log('blw: ', this.file)
 
 		const uniqueIdString = this.file?.name.toLowerCase().trim().split(' ').join('_')
 		'-' + eventeid + '-' + event.toLowerCase().trim().split(' ').join('_')
 
 		const name = event.length > 1 ? event : this.file?.name
 		// console.log('uniqueIdString: ', uniqueIdString)
+		// console.log('blw: ', this.file)
 
 		return {
 			name,
@@ -233,9 +233,12 @@ export default class Blw {
 			uniqueIdString,
 			venueName: venue,
 			eventeid: eventeid,
-			// venueemail: rest.venueemail,
-			// venuewebsite: rest.venuewebsite,
-			// venueburgee: rest.venueburgee,
+			fileInfo: {
+				name: this.file?.name,
+				lastModified: this.file?.lastModified,
+				size: this.file?.size,
+				type: this.file?.type
+			},
 			rest
 		}
 	} // getEvent()

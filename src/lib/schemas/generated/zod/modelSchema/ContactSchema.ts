@@ -23,6 +23,7 @@ import { OrganizationPartialWithRelationsSchema } from './OrganizationSchema'
 export const ContactSchema = z.object({
   id: z.string(),
   label: z.string(),
+  default: z.boolean(),
   type: z.string().nullish(),
   email: z.string().nullish(),
   phone: z.string().nullish(),

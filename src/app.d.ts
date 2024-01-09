@@ -6,6 +6,7 @@ import type { PrismaClient } from '@prisma/client'
 declare global {
 	namespace App {
 		// interface Error {}
+		// interface Platform {}
 		interface Locals {
 			auth: import('lucia').AuthRequest
 			from: string
@@ -13,18 +14,9 @@ declare global {
 		interface PageData {
 			flash?: { type: 'success' | 'error'; message: string }
 		}
-		// interface Platform {}
 	}
-	var prisma: PrismaClient
 
-	// namespace svelte.JSX {
-	// 	interface HTMLAttributes<T> {
-	// 		click_outside: () => void
-	// 	}
-	// }
-	// interface HTMLAttributes<T> {
-	// 	click_outside: () => void
-	// }
+	var prisma: PrismaClient
 
 	namespace PrismaJson {
 		type compRest = {
@@ -71,6 +63,8 @@ declare global {
 
 		type fileInfo = {
 			lastModified: string
+			name: string
+			size: number
 		}
 	}
 }

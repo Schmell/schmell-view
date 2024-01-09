@@ -7,8 +7,11 @@
 	import { superForm } from 'sveltekit-superforms/client'
 	import type { PageData } from './$types'
 	import { eventSchema } from './eventSchema'
+	import { Dialog } from 'bits-ui'
 
 	export let data: PageData
+
+	let fileInfoModal
 
 	const formObj = superForm(data.form, {
 		taintedMessage: 'Finish filling out the form or you will loose your data?',
@@ -63,6 +66,7 @@
 			<input name="uniqueIdString" type="hidden" value={getUniqueIdString} />
 		{/if}
 		<!-- ///////////////////////////////////////////////////////////// -->
+
 		<div class="form-control">
 			<label class="label cursor-pointer">
 				<span class="label-text pr-4">Public</span>
@@ -86,6 +90,41 @@
 				/>
 			</label>
 		</div>
+		<button type="button" class="btn" on:click={() => fileInfoModal.showModal()}>
+			<Icon icon="mdi:card-search-outline" /> File info
+		</button>
+		<dialog id="fileInfoModal" bind:this={fileInfoModal} class="modal">
+			<div class="modal-box">
+				<div class="font-bold text-lg">File info</div>
+				<div class="divider m-0" />
+				{#if data.fileInfo}
+					<div class="pb-2">
+						<div class="text-xs">Name:</div>
+						<div class="pl-2">{data.fileInfo.name}</div>
+					</div>
+					{#if data.fileInfo.lastModified}
+						<div class="pb-2">
+							<div class="text-xs">Last Modified:</div>
+							<div class="pl-2">{new Date(data.fileInfo.lastModified).toDateString()}</div>
+						</div>
+					{/if}
+					{#if data.fileInfo.size}
+						<div class="pb-2">
+							<div class="text-xs">Size:</div>
+							<div class="pl-2">{data.fileInfo.size / 1000} Kb</div>
+						</div>
+					{/if}
+				{:else}
+					<div>No file info available</div>
+				{/if}
+
+				<div class="modal-action">
+					<form method="dialog">
+						<button class="btn">Close</button>
+					</form>
+				</div>
+			</div>
+		</dialog>
 	</div>
 
 	<Input name="name" {formObj} />

@@ -23,6 +23,7 @@ import { ContactPartialWithRelationsSchema } from './ContactSchema'
 export const AddressSchema = z.object({
   id: z.string(),
   label: z.string(),
+  default: z.boolean(),
   po: z.string().nullish(),
   street: z.string().nullish(),
   city: z.string().nullish(),

@@ -9,6 +9,12 @@ export async function CheckForDuplicates({ data, file }) {
 
 	const event = blw.getEvent()
 
+	function getUsid() {
+		const name = event.name.split(' ').join('_').toLowerCase()
+		const venue = event.venueName.split(' ').join('_').toLowerCase()
+		return `${name}-${event.eventeid}-${venue}`
+	}
+
 	const usid =
 		event.name.split(' ').join('_') +
 		'-' +
@@ -17,7 +23,7 @@ export async function CheckForDuplicates({ data, file }) {
 		event.venueName.split(' ').join('_')
 
 	return await prisma.event.findUnique({
-		where: { uniqueIdString: usid.toLowerCase() }
+		where: { uniqueIdString: getUsid() }
 	})
 }
 
@@ -29,7 +35,9 @@ type PopulateProps = {
 
 export async function Populate({ blw, userId, orgId }) {
 	////////////////////////////////////////////////////
+	// Need file info
 	const event = blw.getEvent()
+	console.log(event.fileInfo)
 	const { uniqueIdString } = event
 
 	function eventCreate() {
@@ -80,22 +88,21 @@ export async function Populate({ blw, userId, orgId }) {
 		}
 	}
 
-	let compsArray: { compId: string }[] = []
+	// Use the compsCreate call to getComps to make an array of Id's
+	// Need this array for createRaces // This seems to speed things up?
+	let compsIdArray: { compId: string }[] = []
 
 	function compsCreate() {
 		return blw.getComps().map((comp) => {
-			// Need this array for races
-			compsArray.push({ compId: comp.compId })
+			compsIdArray.push({ compId: comp.compId })
 			// Comps need to get a uniqueId so we can re-use comps which allow for
 			// Users to attach there profile to and also will let people follow
 			return {
-				// where: { uniqueCompId: comp.uniqueCompId },
 				where: { compId: comp.compId },
 				update: {
-					// uniqueCompId: comp.uniqueCompId,
 					club: comp.club,
 					boat: comp.boat,
-					skipper: comp.helmname,
+					skipper: comp.skipper,
 					fleet: comp.fleet,
 					division: comp.division,
 					rank: comp.rank,
@@ -114,7 +121,7 @@ export async function Populate({ blw, userId, orgId }) {
 					club: comp.club,
 					boat: comp.boat,
 					sailno: comp.sailno,
-					skipper: comp.helmname,
+					skipper: comp.skipper,
 					fleet: comp.fleet,
 					division: comp.division,
 					rank: comp.rank,
@@ -139,6 +146,7 @@ export async function Populate({ blw, userId, orgId }) {
 		//
 		return blw.getRaces(uniqueIdString).map((race) => {
 			const { rank, ...rest } = race
+			if (!race.raceId) return
 			// Need this array for results
 			racesArray.push({ raceId: race.raceId, uniqueRaceString: race.uniqueRaceString })
 			return {
@@ -148,7 +156,7 @@ export async function Populate({ blw, userId, orgId }) {
 					rank: Number(rank),
 					...rest,
 					Comps: {
-						connect: compsArray
+						connect: compsIdArray
 					},
 					Event: {
 						connect: { uniqueIdString: uniqueIdString }

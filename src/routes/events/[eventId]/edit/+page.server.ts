@@ -35,7 +35,8 @@ export const load = async ({ params, locals, url }) => {
 
 	return {
 		venues: await getVenues(),
-		form: await superValidate(await getEvent(), eventSchema)
+		form: await superValidate(await getEvent(), eventSchema),
+		fileInfo: await getEvent().then((e) => e?.fileInfo)
 	}
 }
 

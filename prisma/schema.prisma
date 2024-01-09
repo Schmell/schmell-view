@@ -239,7 +239,8 @@ model Venue {
 
 model Address {
   id             String        @id @unique @default(cuid())
-  label          String // @default("Mailing Address")
+  label          String        @default("Default Address")
+  default        Boolean       @default(false)
   po             String?
   street         String?
   city           String?
@@ -257,7 +258,8 @@ model Address {
 
 model Contact {
   id             String        @id @unique @default(cuid())
-  label          String
+  label          String        @default("Default Contact")
+  default        Boolean       @default(false)
   type           String?
   email          String?
   phone          String?

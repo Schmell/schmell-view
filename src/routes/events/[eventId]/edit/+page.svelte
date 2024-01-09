@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Page } from '$components/layout'
+	import { Dialog } from 'bits-ui'
 	import type { PageData } from './$types'
 	import EventEdit from './EventEdit.svelte'
 
