@@ -44,7 +44,7 @@
 			let fleetResults = getFleetResults(uf)
 			if (fleetResults) fleetsTables.push(fleetResults as any)
 		})
-
+		console.log(fleetsTables)
 		return fleetsTables
 	}
 </script>

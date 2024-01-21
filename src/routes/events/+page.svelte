@@ -8,18 +8,12 @@
 	import Icon from '@iconify/svelte'
 	import { createPagination } from '@melt-ui/svelte'
 	import type { PageData } from './$types'
-	import { eventStore } from '$lib/stores'
-	import { onMount } from 'svelte'
 
 	export let data: PageData
 
-	$: ({ user, events, awaited } = data)
+	$: ({ user, awaited } = data)
 	let pageSize = 10
-	// $: console.log($eventStore)
 
-	// onMount(() => {
-	// 	eventStore.set(events)
-	// })
 	// melt-ui pagination component
 	const {
 		elements: { root, pageTrigger, prevButton, nextButton },
@@ -111,7 +105,7 @@
 					</a>
 				</div>
 				<div slot="bottom-right">
-					{#if data.user?.userId === event?.publisherId}
+					{#if user?.userId === event?.publisherId}
 						<div class="flex items-center">
 							<div class="tooltip tooltip-top" data-tip="Edit Event">
 								<a

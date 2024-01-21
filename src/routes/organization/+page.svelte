@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { Page, ItemCard } from '$components/layout'
-	import { formatDateTime } from '$lib/utils/formatters'
+	import { page } from '$app/stores'
+	import { ItemCard, Page } from '$components/layout'
+	import { getHref } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
-	import { page } from '$app/stores'
-	import { getHref } from '$lib/utils'
 
 	export let data: PageData
 
 	$: ({ orgs, user } = data)
-	$: console.log('orgs: ', orgs)
 </script>
 
 <Page title="All Organizations">

@@ -57,8 +57,7 @@
 						{#if data.user?.userId === ser?.publisherId}
 							<div class="tooltip tooltip-top" data-tip="Edit Series">
 								<a
-									data-sveltekit-replacestate={true}
-									href="/series/{ser?.id}/edit?from={$page.url.pathname}
+  									href="/series/{ser?.id}/edit?from={$page.url.pathname}
 									&{$page.url.searchParams.toString()}"
 									class="btn btn-ghost p-1"
 								>

@@ -8,7 +8,7 @@
 
 	export let data
 	$: ({ user, events, series, following, organizations, likes, userStats } = data)
-	$: console.log(userStats)
+	// $: console.log(userStats)
 </script>
 
 <Page title="Home">
@@ -34,9 +34,9 @@
 				<div class="flex justify-end">
 					<div class="flex gap-1 items-center min-w-fit text-xs pr-2">
 						<Icon icon="mdi:thumb-up" />
-						{data.userStats?._count.Liked} /
+						{userStats?._count.Liked} /
 						<Icon icon="mdi:bell-ring" />
-						{data.userStats?._count.Followed}
+						{userStats?._count.Followed}
 					</div>
 				</div>
 			</div>

@@ -9,6 +9,7 @@
 		points?: string
 		rank?: string
 		boat?: string
+		compId?: string
 		skipper?: string
 		code?: string
 		finish?: string
@@ -21,10 +22,10 @@
 	export let info: CellContext<Result, any>
 	export let discard = false
 	export let useCode = false
+	export let useLink = false
 
 	function infoValue() {
 		if (useCode) {
-			// Not sure why i can't use ?? here
 			return info.getValue() ? info.getValue() : info.row.original.code
 		}
 		return info.getValue() ?? ''
@@ -37,6 +38,11 @@
 	}
 </script>
 
-<div class={cn('p-0 m-0 flex justify-center', className)} class:opacity-60={discarded()}>
+<a
+	href={useLink ? `/comps/comp/${info.cell.row.original.compId}` : ''}
+	class={cn('p-0 m-0 flex justify-center', className)}
+	class:opacity-60={discarded()}
+	class:cursor-text={!useLink}
+>
 	{discarded() ? `(${infoValue()})` : infoValue()}
-</div>
+</a>

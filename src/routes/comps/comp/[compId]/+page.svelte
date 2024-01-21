@@ -118,10 +118,11 @@
 								<span class="text-xs text-primary">Rating: </span>
 								<span>{comp.rating}</span>
 							</div>
+							
 						{/if}
 					</div>
 
-					<p class="py-6 px-2 text-lg shadow-lg border-r-4 border-accent rounded-lg">
+					<p class="py-6 px-2 text-lg shadow-lg border-r-4 border-accent rounded-lg ">
 						{comp.description ?? 'No description provided'}
 					</p>
 					<div class="flex gap-2 items-center justify-end">
@@ -158,103 +159,101 @@
 			<!-- ////////////////////////////////////////// -->
 			{#if showRaces}
 				<div>
-					{#await form?.compEvents}
+					<!-- {#await form?.compEvents}
 						<div class="mt-8 loading loading-spinner loading-md" />
-					{:then}
-						{#if form?.compEvents}
-							{#each form.compEvents.Events as event}
-								{#if event}
-									<h1
-										class="mx-3 mt-4 p-4 border-r-4 border-r-secondary bg-gradient-to-r from-base-100 to-base-200 rounded-lg shadow-xl"
-									>
-										<div class="flex justify-between items-center">
-											<div class="text-xl font-semibold">{event.name}</div>
-											{#if event.eventwebsite}
-												<a
-													href={getHref(event?.eventwebsite)}
-													target="_blank"
-													class="text-xs text-accent flex gap-1 items-center"
-												>
-													<Icon icon="mdi:open-in-new" />{event.eventwebsite}
-												</a>
-											{/if}
-										</div>
-									</h1>
-									<!-- <hr class="" /> -->
-									<div class="p-4">
-										{#each event.Races as race}
-											<div class=" mx-4 mb-4 border-l-4 border-accent shadow-xl rounded-lg">
-												<div
-													class="px-4 py-2 bg-accent-focus text-lg font-semibold w-full rounded-t-lg"
-												>
-													<h2 class="opacity-100">
-														{race.name}
-													</h2>
-												</div>
-												<div class="my-4 p-4 shadow-xl rounded-lg">
-													{#if race.Results[0].points || race.Results[0].code}
-														<div class="">
-															{#if race.Results[0].points}
-																<div class="text-xl">
-																	{addOrdinalsuffix(
-																		Number(race.Results[0].points) < 1
-																			? 1
-																			: Number(race.Results[0].points)
-																	)}
-																	<span class=" text-xs"> place</span>
-																</div>
-																<div>
-																	{race.Results[0].points}
-																	<span class="text-xs">points</span>
-																</div>
-															{:else if race.Results[0].code}
-																<span>{race.Results[0].code} </span>
-															{/if}
-														</div>
-													{:else}
-														<span>Did not Compete</span>
-														<span class="text-xs">(DNC)</span>
-													{/if}
-													{#if race.Results[0].corrected}
-														<div>
-															<span> {race.Results[0].corrected} </span>
-															<span class="text-xs"> corrected time</span>
-														</div>
-													{/if}
-													{#if race.Results[0].elapsed}
-														<div>
-															<span> {race.Results[0].elapsed} </span>
-															<span class="text-xs"> elapsed time</span>
-														</div>
-													{/if}
-													{#if race.Results[0].elapsedWin}
-														<div>
-															<span> {race.Results[0].elapsedWin} </span>
-															<span class="text-xs"> behind first place</span>
-														</div>
-													{/if}
-													{#if race.Results[0].ratingWin}
-														<div>
-															<span class="text-xs">Rating needed to win</span>
-															<span> {race.Results[0].ratingWin} </span>
-															<span class="text-xs">
-																(+{Math.round(
-																	Number(race.Results[0].ratingWin) - Number(comp.rating)
-																)})
-															</span>
-														</div>
-													{/if}
-													<div class="text-xs text-secondary flex justify-end">
-														<div>{race.date ?? ''}</div>
+					{:then events} -->
+					{#if form?.compEvents}
+						{#each form?.compEvents.Events as event}
+							{#if event}
+								<h1
+									class="mx-3 mt-4 p-4 border-r-4 border-r-secondary bg-gradient-to-r from-base-100 to-base-200 rounded-lg shadow-xl"
+								>
+									<div class="flex justify-between items-center">
+										<div class="text-xl font-semibold">{event.name}</div>
+										{#if event.eventwebsite}
+											<a
+												href={getHref(event?.eventwebsite)}
+												target="_blank"
+												class="text-xs text-accent flex gap-1 items-center"
+											>
+												<Icon icon="mdi:open-in-new" />{event.eventwebsite}
+											</a>
+										{/if}
+									</div>
+								</h1>
+								<!-- <hr class="" /> -->
+								<div class="p-4">
+									{#each event.Races as race}
+										<div class=" mx-4 mb-4 border-l-4 border-accent shadow-xl rounded-lg">
+											<div
+												class="px-4 py-2 bg-accent-focus text-lg font-semibold w-full rounded-t-md"
+											>
+												<a href="/results/{race.id}" class="text-accent-content">{race.name}</a>
+											</div>
+											<div class="my-4 p-4 shadow-xl rounded-lg">
+												{#if race.Results[0].points || race.Results[0].code}
+													<div class="">
+														{#if race.Results[0].points}
+															<div class="text-xl">
+																{addOrdinalsuffix(
+																	Number(race.Results[0].points) < 1
+																		? 1
+																		: Number(race.Results[0].points)
+																)}
+																<span class=" text-xs"> place</span>
+															</div>
+															<div>
+																{race.Results[0].points}
+																<span class="text-xs">points</span>
+															</div>
+														{:else if race.Results[0].code}
+															<span>{race.Results[0].code} </span>
+														{/if}
 													</div>
+												{:else}
+													<span>Did not Compete</span>
+													<span class="text-xs">(DNC)</span>
+												{/if}
+												{#if race.Results[0].corrected}
+													<div>
+														<span> {race.Results[0].corrected} </span>
+														<span class="text-xs"> corrected time</span>
+													</div>
+												{/if}
+												{#if race.Results[0].elapsed}
+													<div>
+														<span> {race.Results[0].elapsed} </span>
+														<span class="text-xs"> elapsed time</span>
+													</div>
+												{/if}
+												{#if race.Results[0].elapsedWin}
+													<div>
+														<span> {race.Results[0].elapsedWin} </span>
+														<span class="text-xs"> behind first place</span>
+													</div>
+												{/if}
+												{#if race.Results[0].ratingWin}
+													<div>
+														<span class="text-xs">Rating needed to win</span>
+														<span> {race.Results[0].ratingWin} </span>
+														<span class="text-xs">
+															(+{Math.round(
+																Number(race.Results[0].ratingWin) - Number(comp.rating)
+															)})
+														</span>
+													</div>
+												{/if}
+												<div class="text-xs text-secondary flex justify-end">
+													<div>{race.date ?? ''}</div>
 												</div>
 											</div>
-										{/each}
-									</div>
-								{/if}
-							{/each}
-						{/if}
-					{/await}
+										</div>
+									{/each}
+								</div>
+							{/if}
+						{/each}
+					{/if}
+					<!-- 	{/await} -->
 				</div>
 			{/if}
 

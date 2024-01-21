@@ -141,10 +141,9 @@ export const load = (async ({ params, url }) => {
 	return {
 		deleteCommentForm,
 		commentForm,
-		event: getEvent(),
+		event: await getEvent(),
 		comments: await getComments(),
 		await: {
-			// commentsAndCount: getCommentsAndCount(),
 			races: getRaces()
 		}
 	}

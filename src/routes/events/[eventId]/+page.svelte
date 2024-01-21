@@ -28,11 +28,18 @@
 		>
 			<div class="md:flex">
 				<div class="md:shrink-0 flex relative">
-					{#if !event.public}
+					<!-- {#if !event.public}
 						<div class="badge badge-error absolute right-2 top-2 shadow-md">Private</div>
-						<!-- {:else}
-						<div class="badge badge-success absolute right-2 top-2 shadow-md">Public</div> -->
-					{/if}
+					{:else}
+						<div class="badge badge-success absolute right-6 -bottom-3 shadow-md">Public</div>
+					{/if} -->
+					<div class="flex absolute top-2 right-2">
+						{#if event.complete}
+							<div class="badge badge-success shadow-lg">complete</div>
+						{:else}
+							<div class="badge badge-warning shadow-lg w-36">In progress</div>
+						{/if}
+					</div>
 					{#if isUrl(event.Venue?.burgee)}
 						<img
 							class="absolute z-10 left-2 top-2 rounded-full shadow-xl"
@@ -43,14 +50,14 @@
 					{/if}
 					<img
 						class="h-48 w-full object-cover md:h-full md:w-48 rounded-br-full"
+						alt="Title for {event?.name}"
 						src={event?.titleImage
 							? event?.titleImage
 							: event.Organization?.titleImage
 							? event.Organization.titleImage
-							: 'https://picsum.photos/200/400'}
-						alt="Title for {event?.name}"
+							: 'https://picsum.photos/id/147/200/400'}
 					/>
-					<div class="absolute w-full flex justify-end bottom-0 right-4 p-2">
+					<div class="absolute w-full flex justify-end bottom-2 right-2 p-2">
 						<div>
 							<!-- Likes and follows -->
 							<LikeFollow item={event} userId={user?.userId} type="event" />
@@ -68,14 +75,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="pt-2 px-8 w-full">
-					<div class="flex justify-end">
-						{#if event.complete}
-							<div class="badge badge-success shadow-md">complete</div>
-						{:else}
-							<div class="badge badge-warning shadow-md w-36">In progress</div>
-						{/if}
-					</div>
+				<div class="pt-4 px-8 w-full">
 					<div class="flex justify-between w-full">
 						<div class="uppercase tracking-wide text-xl text-accent font-semibold line-clamp-1">
 							{@html event?.name}
@@ -122,6 +122,13 @@
 								</div>
 							</a>
 						{/if}
+						<div class="flex justify-end pb-2 pr-3">
+							{#if !event.public}
+								<div class="badge badge-error absolute right-2 top-2 shadow-md">Private</div>
+							{:else}
+								<div class="badge badge-success shadow-md">Public</div>
+							{/if}
+						</div>
 						<!-- Likes and follows -->
 						<div class="flex justify-end text-sm">
 							<span class="pr-1 flex items-center text-xs">

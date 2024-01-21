@@ -1,5 +1,4 @@
 import { prisma } from '$lib/server/prisma'
-import { fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 
 export const load = (async ({ params }) => {
@@ -13,8 +12,9 @@ export const load = (async ({ params }) => {
 			console.log('error: ', error)
 		}
 	}
+	
 	return {
-		comp: getComp()
+		comp: await getComp()
 	}
 }) satisfies PageServerLoad
 
@@ -26,7 +26,10 @@ export const actions = {
 					where: { id: params.compId },
 					select: {
 						Events: {
-							include: {
+							select: {
+								id: true,
+								name: true,
+								eventwebsite: true,
 								Races: {
 									orderBy: { name: 'asc' },
 									include: {
@@ -44,7 +47,7 @@ export const actions = {
 				}
 			}
 		}
-
+		// console.log(await getEvents())
 		return {
 			compEvents: await getEvents()
 		}

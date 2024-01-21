@@ -16,6 +16,6 @@ export const load = (async () => {
 		}
 	}
 	return {
-		series: getSeries()
+		series: await getSeries()
 	}
 }) satisfies PageServerLoad

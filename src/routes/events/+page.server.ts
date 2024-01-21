@@ -11,7 +11,7 @@ export const load: PageServerLoad = async (event) => {
 		throw redirect(
 			302,
 			`/auth/login?from=${url.pathname}`,
-			{ type: 'error', message: 'Not Evnet' },
+			{ type: 'error', message: 'Not Event' },
 			event
 		)
 	}
@@ -84,8 +84,8 @@ export const load: PageServerLoad = async (event) => {
 	// console.log('count: ', count)
 	return {
 		title,
-		events: getEvents(),
-		count: getEventsCount(),
+		events: await getEvents(),
+		count: await getEventsCount(),
 		awaited: {
 			events: getEvents()
 		}

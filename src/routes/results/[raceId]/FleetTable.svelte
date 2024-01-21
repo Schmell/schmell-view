@@ -24,8 +24,6 @@
 
 	let columnVisibility
 
-	// let cv = columnVisibiltyStore(getResultColumns())
-
 	const finishType = race.starts.map((start) => {
 		if (start.fleet[1] === fleetName || start.fleet[5] === fleetName) {
 			return start.finishType
@@ -89,7 +87,7 @@
 	} // calculateElapsed
 
 	let resultRows = results.map((result) => {
-		console.log(result.start, result.elapsed, result.Comp.boat)
+		// console.log(result.start, result.elapsed, result.Comp.boat)
 		const elapsedTime = calculateElapsed(result.start, result.finish, result.elapsed)
 
 		return {
@@ -107,16 +105,20 @@
 			corrected: result.corrected,
 			code: result.code,
 			fleet: result.Comp?.fleet ?? result.Comp?.division,
+			compId: result.Comp?.id,
 			boat: result.Comp?.boat,
-			skipper: result.Comp?.skipper ?? ''
+			skipper: result.Comp?.skipper ?? '',
+			rating: result.Comp.rating
 		}
 	}) // resultRows
 
 	type Result = {
 		points?: string
 		rank?: string
+		compId?: string
 		boat?: string
 		skipper?: string
+		rating?: string
 		code?: string
 		start?: string
 		finish?: string
@@ -135,7 +137,7 @@
 				{
 					accessorKey: 'boat',
 					header: 'Boat',
-					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
+					cell: (info) => flexRender(Cell, { info, useLink: true, class: 'justify-start' })
 				},
 				{
 					accessorKey: 'skipper',
@@ -145,6 +147,11 @@
 				{
 					accessorKey: 'sailno',
 					header: 'SailNo',
+					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
+				},
+				{
+					accessorKey: 'rating',
+					header: 'Rating',
 					cell: (info) => flexRender(Cell, { info, class: 'justify-start' })
 				}
 			]
@@ -262,6 +269,7 @@
 			points: true,
 			position: false,
 			skipper: false,
+			rating: false,
 			boat: true,
 			sailno: false,
 			elapsed: false,
@@ -322,12 +330,12 @@
 		return resCols[colString]
 	}
 
-	const handleClick = () => {
-		const elem = document.activeElement as HTMLInputElement
-		if (elem) {
-			elem?.blur()
-		}
-	}
+	// const handleClick = () => {
+	// 	const elem = document.activeElement as HTMLInputElement
+	// 	if (elem) {
+	// 		elem?.blur()
+	// 	}
+	// }
 
 	//
 </script>
@@ -357,9 +365,7 @@
 											class="link link-hover decoration-none flex items-center gap-2"
 										>
 											<svelte:component
-												this={notypecheck(
-													flexRender(header.column.columnDef.header, header.getContext())
-												)}
+												this={flexRender(header.column.columnDef.header, header.getContext())}
 											/>
 											<Icon icon="material-symbols:arrow-drop-down-circle-outline" />
 										</label>
@@ -451,6 +457,16 @@
 															type="checkbox"
 															name="sailno"
 															aria-label="Sail Number"
+														/>
+													</label>
+													<label class="label">
+														<span class="label-text">Rating</span>
+														<input
+															checked={isVisible('rating')}
+															class=" checkbox checkbox-xs"
+															type="checkbox"
+															name="rating"
+															aria-label="Rating"
 														/>
 													</label>
 												</form>
