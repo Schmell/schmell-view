@@ -105,8 +105,10 @@
 		<!-- Publisher -->
 		<div class="flex gap-2 items-center">
 			<div class="avatar">
-				<div class="w-8 rounded-full bg-base-content shadow-lg">
-					<img alt={venue.Publisher?.username} src={venue.Publisher?.avatar} />
+				<div class="w-8 rounded-full shadow-lg">
+					<a href="/user/{venue.Publisher?.id}">
+						<img alt={venue.Publisher?.username} src={venue.Publisher?.avatar} />
+					</a>
 				</div>
 			</div>
 		</div>

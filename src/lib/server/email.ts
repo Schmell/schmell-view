@@ -5,10 +5,17 @@ import { render } from 'svelte-email'
 import RequestMerge from '$lib/emailTemplates/requestMerge.svelte'
 import DenialEmail from '$lib/emailTemplates/denialEmail.svelte'
 import ClaimCompEmail from '$lib/emailTemplates/claimCompEmail.svelte'
+import { error } from '@sveltejs/kit'
+import type Mail from 'nodemailer/lib/mailer'
 
-async function sendEmail(emailOptions) {
-	let emailTransporter = await createTransporter()
-	await emailTransporter.sendMail(emailOptions)
+
+async function sendEmail(emailOptions: Mail.Options) {
+	const emailTransporter = await createTransporter()
+	return await emailTransporter.sendMail(emailOptions)
+}
+
+function emailCallback(event){
+console.log('email callback: ', event );
 }
 
 export async function sendClaimCompEmail({
@@ -38,13 +45,19 @@ export async function sendClaimCompEmail({
 		html: emailHtml
 	}
 
-	try {
-		sendEmail(options)
-		return { status: 'ok' }
-	} catch (error) {
-		console.log('send Merge request error: ', error)
-		return { status: 'error' }
-	}
+		const sent = await sendEmail(options)
+		// if(sent.rejected){
+		// 	error(500, {message: 'sent email rejected'})
+		// }
+		if (sent.accepted){
+			console.log( sent.response );
+			return {
+				status: 'ok',
+				response: sent.response
+			}
+		}
+		
+	
 }
 
 export async function sendDenialEmail({ type, publisherEmail, requesterEmail }) {
@@ -119,11 +132,20 @@ export async function sendEmailVerificationLink(email: string, token: string) {
 		html: `<p>Verify your account by clicking the link below</p> <a href=${url}>${url}</a>`
 	}
 
-	try {
-		sendEmail(message)
-	} catch (error) {
-		console.log('sendEmailVerificationLink error: ', error)
-	}
+		const sent  = await sendEmail(message)
+
+		// if(sent.rejected){
+		// 	// error(500, {message: 'sent email rejected'})
+		// 	console.log('sent.rejected: ', sent.response );
+		// }
+		// if (sent.accepted){
+		// 	console.log('sent.accepted: ',  sent.response );
+		// 	return {
+		// 		status: 'ok',
+		// 		response: sent.response
+		// 	}
+		// }
+
 
 	if (dev) console.log(`Your email verification link: ${url}`)
 }

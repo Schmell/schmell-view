@@ -16,13 +16,8 @@ export const load = (async () => {
 		}
 	}
 
-	async function getVenueCount() {
-		return prisma.venue.count()
-	}
-
 	return {
-		venueCount: getVenueCount(),
-		venues: getVenues()
+		venues: await getVenues()
 	}
 	//
 }) satisfies PageServerLoad

@@ -11,7 +11,7 @@ import { error, fail } from '@sveltejs/kit'
 const OAuth2 = google.auth.OAuth2
 
 export const createTransporter = async () => {
-	try {
+	// try {
 		const oauth2Client = new OAuth2(
 			GOOGLE_CLIENT_ID,
 			GOOGLE_CLIENT_SECRET,
@@ -34,8 +34,6 @@ export const createTransporter = async () => {
 			})
 		})
 
-		// console.log(accessToken)
-
 		const transporter = nodemailer.createTransport({
 			// not sure why im not getting proper types from nodemailer
 			// @ts-ignore
@@ -50,11 +48,6 @@ export const createTransporter = async () => {
 			}
 		})
 
-		// console.log(transporter)
-
 		return transporter
-	} catch (error: any) {
-		console.log('createTransporter Error: ', error)
-		return fail(500, { message: 'transporter error' })
-	}
+
 }

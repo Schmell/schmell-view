@@ -87,16 +87,10 @@
 				get instant updates on the app with real-time data delivered directyl to them.
 			</p>
 
-			<div class="flex justify-center space-x-2">
-				<a class="btn btn-filled" href="https://skeleton.dev/" target="_blank" rel="noreferrer">
-					Launch Documentation
-				</a>
+			<div class="m-4">
+				<a href="/policy" class="text-md font-semibold">View our pirvacy policy</a>
 			</div>
-			<div class="space-y-2">
-				<p>Try editing the following:</p>
-				<p><code>/src/routes/+layout.svelte</code></p>
-				<p><code>/src/routes/+page.svelte</code></p>
-			</div>
+			<!-- <a href="/pr"></a> -->
 		</div>
 	</div>
 </Page>

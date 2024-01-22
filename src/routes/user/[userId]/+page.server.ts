@@ -22,6 +22,6 @@ export const load = (async (event) => {
 		}
 	}
 	return {
-		selectedUser: getUser()
+		selectedUser: await getUser()
 	}
 }) satisfies PageServerLoad

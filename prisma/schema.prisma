@@ -32,11 +32,17 @@ generator zod {
 //   provider = "postgresql"
 //   url      = env("DATABASE_URL")
 //   // directUrl = env("DATABASE_URL")
+// } ?connect_timeout=0
+
+// datasource db {
+//   provider  = "postgresql"
+//   url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+//   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 // }
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  url       = env("POSTGRES_PRISMA_URL?connect_timeout=0&connect_limit=50") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 

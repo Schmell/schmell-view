@@ -1,20 +1,20 @@
-import { auth } from '$lib/server/lucia'
-import { fail } from '@sveltejs/kit'
-import { generateEmailVerificationToken } from '$lib/server/token'
 import { sendEmailVerificationLink } from '$lib/server/email'
-import type { PageServerLoad, Actions } from './$types'
-import { message, setError, superValidate } from 'sveltekit-superforms/server'
-import { LuciaError } from 'lucia'
-import { emailRegisterSchema } from './emailRegisterSchema'
-import { Prisma } from '@prisma/client'
+import { auth } from '$lib/server/lucia'
 import { prisma } from '$lib/server/prisma'
+import { generateEmailVerificationToken } from '$lib/server/token'
 import { capitalizeFirstLetter } from '$lib/utils'
+import { Prisma } from '@prisma/client'
+import { fail } from '@sveltejs/kit'
+import { LuciaError } from 'lucia'
 import { redirect } from 'sveltekit-flash-message/server'
+import { message, setError, superValidate } from 'sveltekit-superforms/server'
+import type { Actions, PageServerLoad } from './$types'
+import { emailRegisterSchema } from './emailRegisterSchema'
 
-export const load: PageServerLoad = async ({ locals }) => {
-	const session = await locals.auth.validate()
+export const load: PageServerLoad = async (event) => {
+	const session = await event.locals.auth.validate()
 	if (session) {
-		if (!session.user.emailVerified) throw redirect(302, '/email-verification')
+		if (!session.user.emailVerified) throw redirect('/email-verification', {type:'error', message:'Verify your email'}, event)
 		throw redirect(302, '/')
 	}
 	const form = await superValidate(emailRegisterSchema)

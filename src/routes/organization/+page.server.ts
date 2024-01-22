@@ -16,9 +16,9 @@ export const load = (async ({ locals }) => {
 		}
 	}
 
-	const orgs = await getOrgs()
+	
 
 	return {
-		orgs
+		orgs: await getOrgs()
 	}
 }) satisfies PageServerLoad
