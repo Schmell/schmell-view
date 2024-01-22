@@ -42,9 +42,11 @@ generator zod {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL?connect_timeout=0&connect_limit=50") // uses connection pooling
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
+
+// url       = env("POSTGRES_PRISMA_URL?connect_timeout=0&connect_limit=50") // uses connection pooling
 
 model Series {
   id             String        @id @unique @default(cuid())
