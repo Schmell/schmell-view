@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import { clickOutside } from '$lib/utils'
-	import toast, { Toaster } from 'svelte-french-toast'
+	// import toast, { Toaster } from 'svelte-french-toast'
 	import Icon from '@iconify/svelte'
 	import { slide } from 'svelte/transition'
 	import '../app.css'
@@ -25,27 +25,27 @@
 
 	// const flash = getFlash(page);
 
-	flash.subscribe(($flash) => {
-		if (!$flash) return
+	// flash.subscribe(($flash) => {
+	// 	if (!$flash) return
 
-		if ($flash.type == 'success') {
-			toast.success($flash.message, {
-				icon: '✅',
-				position: 'bottom-center',
-				className: 'mb-96 z-10 absolute'
-			})
-		}
+	// 	if ($flash.type == 'success') {
+	// 		toast.success($flash.message, {
+	// 			icon: '✅',
+	// 			position: 'bottom-center',
+	// 			className: 'mb-96 z-10 absolute'
+	// 		})
+	// 	}
 
-		if ($flash.type == 'error') {
-			toast.error($flash.message, {
-				icon: '❌'
-			})
-		}
-	})
+	// 	if ($flash.type == 'error') {
+	// 		toast.error($flash.message, {
+	// 			icon: '❌'
+	// 		})
+	// 	}
+	// })
 </script>
 
 <!-- <div> -->
-<div class="fixed top-0 z-20 w-full">
+<div class="fixed top-0 z-20 w-full max-w-lg">
 	<nav class="navbar border-base-300 text-secondary-content">
 		<button
 			on:click={() => {
