@@ -1,13 +1,13 @@
+import type { Event, Race, Result } from '$lib/schemas/generated/zod'
+import type { Comp } from '$lib/schemas/generated/zod/modelSchema/CompSchema'
 import { createId } from '@paralleldrive/cuid2'
 import { formatTime } from '../../utils/formatters'
-import type { Comp } from '$lib/schemas/generated/zod/modelSchema/CompSchema'
-import type { Event, Race, Result } from '$lib/schemas/generated/zod'
 
 export default class Blw {
 	data: any
-	file?: File
+	file: File
 
-	constructor(props: { data: any; file?: File }) {
+	constructor(props: { data: any; file: File }) {
 		this.data = props.data
 		this.file = props.file
 		this.data.cuid = createId()
@@ -65,9 +65,11 @@ export default class Blw {
 			return item[0] === 'rdisc' && item[3] === raceId
 		})
 
-		results.forEach((result) => {
+		results.forEach((result, idx) => {
 			// Results in blw file have no prefix to speak of (just an r)
 			// So we need to find each row individually
+			// Maybe should check for no results
+			// remove comps with id 0
 			if (result[2] === '0') return
 
 			const resultRow = {
@@ -97,7 +99,7 @@ export default class Blw {
 	} // getResults
 
 	resultHelp(resultTag: string, data: any[], result: any[] | number) {
-		let res = data.filter((item) => {
+		let res = this.data.filter((item) => {
 			return item[0] === resultTag && item[2] === result[2] && item[3] === result[3]
 		})
 
