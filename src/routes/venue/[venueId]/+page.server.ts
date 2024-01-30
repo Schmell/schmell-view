@@ -70,14 +70,11 @@ export const load = (async ({ params, url }) => {
 			prismaError(error)
 			console.log('error: ', error)
 			throw fail(500, { messgage: 'Unknown Error occured' })
-			// return fail(500, { messgage: 'Unknown Error occured' });
 		}
 	}
 
-	const commentForm = await superValidate(itemComment, commentSchema, { id: 'commentForm' })
-
 	return {
-		commentForm,
-		venue: getVenue()
+		commentForm: await superValidate(itemComment, commentSchema, { id: 'commentForm' }),
+		venue: await getVenue()
 	}
 }) satisfies PageServerLoad

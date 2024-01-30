@@ -8,15 +8,13 @@ export const load = (async ({ locals }) => {
 	const getOrgs = async () => {
 		try {
 			return await prisma.organization.findMany({
-				include: { Owner: { select: { id: true, username: true } } }
+				include: { Owner: { select: { id: true, username: true, avatar: true } } }
 			})
 		} catch (error) {
 			console.log('error: ', error)
 			throw fail(500, { message: 'oh crap' })
 		}
 	}
-
-	
 
 	return {
 		orgs: await getOrgs()

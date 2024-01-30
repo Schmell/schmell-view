@@ -32,6 +32,9 @@
 
 <Page title={$form.name === 'New Organization' ? 'Add a new Organization' : 'Edit Organization'}>
 	<Form {formObj}>
+		
+		<input type="hidden" name="id" value={$form.id}/>
+		
 		<Input name="name" {formObj} />
 		<Input name="logo" {formObj} />
 		<Textarea name="description" rows={3} {formObj} />

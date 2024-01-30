@@ -107,7 +107,8 @@
 			fleet: result.Comp?.fleet ?? result.Comp?.division,
 			compId: result.Comp?.id,
 			boat: result.Comp?.boat,
-			skipper: result.Comp?.skipper ?? '',
+			skipper: result.Comp?.skipper ?? result.Comp?.helmname,
+			sailno: result.Comp?.sailno,
 			rating: result.Comp.rating
 		}
 	}) // resultRows

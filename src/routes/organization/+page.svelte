@@ -4,6 +4,7 @@
 	import { getHref } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
+	import { Avatar } from 'bits-ui'
 
 	export let data: PageData
 
@@ -32,8 +33,9 @@
 					<Icon icon="clarity:pop-out-line" class="inline" /><span>{org.website}</span>
 				</a>
 				<div slot="top-right" class="text-xs">
-					<a href="/user/{org.Owner?.id}">
+					<a href="/user/{org.Owner?.id}" class="flex items-center justify-center gap-2">
 						@{org.Owner?.username}
+						<img class="avatar rounded-full" width="20" src={org.Owner?.avatar} alt={org.Owner?.id}/>
 					</a>
 				</div>
 

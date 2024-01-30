@@ -45,6 +45,6 @@ export const load = (async ({ locals, params, url }) => {
 	const commentForm = await superValidate(commentSchema, { id: 'commentForm' })
 	return {
 		commentForm,
-		series: getSeries()
+		series: await getSeries()
 	}
 }) satisfies PageServerLoad

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
 	import Page from '$lib/components/layout/Page.svelte'
 	import FollowButton from '$lib/follow/follow-button.svelte'
@@ -8,7 +9,6 @@
 
 	export let data
 	$: ({ user, events, series, following, organizations, likes, userStats } = data)
-	// $: console.log(userStats)
 </script>
 
 <Page title="Home">
@@ -116,7 +116,8 @@
 										<div class="flex justify-between items-end w-full px-4">
 											<div>
 												<div class="flex items-center text-xs gap-4">
-													<div>
+													<div class="flex items-center gap-2">
+														<Icon icon="clarity:organization-line" />
 														{event?.Organization?.name}
 													</div>
 													<div class="flex items-center gap-1">
@@ -375,7 +376,12 @@
 
 				<Accordion.Item value="likes" class="py-2 text-base-content">
 					<Accordion.Header class="p-2 border-b border-base-100 w-full flex items-start">
-						<Accordion.Trigger class="flex w-full justify-between">
+						<Accordion.Trigger
+							class="flex w-full justify-between"
+							on:click={() => {
+								goto('/dashboard?likes=1')
+							}}
+						>
 							<div>Likes</div>
 							<Icon icon="material-symbols:arrow-drop-down-circle-outline" />
 						</Accordion.Trigger>
@@ -505,7 +511,7 @@
 									<div
 										class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-warning w-full rounded-lg shadow-xl"
 									>
-										<a href="/venue/{like.Organization?.id}">
+										<a href="/organization/{like.Organization?.id}">
 											<div
 												class="capitalize w-full pl-2 font-bold rounded-t-xl bg-warning bg-opacity-10"
 											>
@@ -513,8 +519,9 @@
 											</div>
 										</a>
 										<div class="flex justify-between w-full pl-4">
-											<a href="/venue/{like.Organization?.id}">
-												<div>
+											<a href="/organization/{like.Organization?.id}">
+												<div class="flex items-center gap-2">
+													<Icon icon="clarity:organization-line" />
 													{like.Organization?.name}
 													<div class="text-xs opacity-40">
 														{like.createdAt.toLocaleDateString()}

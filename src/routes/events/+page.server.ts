@@ -82,13 +82,12 @@ export const load: PageServerLoad = async (event) => {
 
 	// const [events, count] = await getEvents()
 	// console.log('count: ', count)
+
 	return {
 		title,
 		events: await getEvents(),
 		count: await getEventsCount(),
-		awaited: {
-			events: getEvents()
-		}
+		awaited: {}
 	}
 }
 
@@ -105,6 +104,7 @@ export const actions = {
 	},
 
 	deleteEvent: async (event) => {
+		console.log('deleteEvent: ')
 		const { locals, url } = event
 		const session = locals.auth.validate()
 		if (!session) throw redirect(307, `/auth/login?from=${url.pathname}${url.search}`)

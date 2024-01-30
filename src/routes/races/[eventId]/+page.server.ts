@@ -29,7 +29,7 @@ export const load = (async ({ params }) => {
 	}
 
 	return {
-		event: getEvent()
+		event: await getEvent()
 		// race: getRace()
 	}
 }) satisfies PageServerLoad

@@ -33,10 +33,10 @@ export const actions = {
 		if (!form.valid) fail(400, { form })
 
 		try {
-			const { name, description, website, email, titleImage, logo } = form.data
-
+			const { id, name, description, website, email, titleImage, logo } = form.data
+			// name is not good for duplicates
 			await prisma.organization.upsert({
-				where: { name: name },
+				where: { id: id },
 				update: { name, description, website, email, titleImage, logo },
 				create: {
 					name,

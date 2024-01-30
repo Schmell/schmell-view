@@ -102,7 +102,8 @@ export async function Populate({ blw, userId, orgId }) {
 				update: {
 					club: comp.club,
 					boat: comp.boat,
-					skipper: comp.skipper,
+					skipper: comp.skipper === '' ? comp.skipper : comp.helmname,
+					sailno: comp.sailno,
 					fleet: comp.fleet,
 					division: comp.division,
 					rank: comp.rank,
@@ -121,7 +122,7 @@ export async function Populate({ blw, userId, orgId }) {
 					club: comp.club,
 					boat: comp.boat,
 					sailno: comp.sailno,
-					skipper: comp.skipper,
+					skipper: comp.skipper === '' ? comp.skipper : comp.helmname,
 					fleet: comp.fleet,
 					division: comp.division,
 					rank: comp.rank,

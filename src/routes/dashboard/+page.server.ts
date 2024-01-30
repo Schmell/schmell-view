@@ -112,27 +112,30 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 
 	async function getUserLikes() {
 		try {
-			return await prisma.like.findMany({
-				where: { userId: session?.user.userId },
-				orderBy: { createdAt: 'desc' },
-				include: {
-					Event: { include: { Likes: true } },
-					Organization: { include: { Likes: true } },
-					Comment: {
-						include: {
-							User: true,
-							Venue: true,
-							Organization: true,
-							Event: true,
-							Comp: true,
-							Likes: true
-						}
-					},
-					Venue: { include: { Likes: true } },
-					Comp: { include: { Likes: true } },
-					User: true
-				}
-			})
+			if (url.searchParams.get('likes')) {
+				return await prisma.like.findMany({
+					where: { userId: session?.user.userId },
+					orderBy: { createdAt: 'desc' },
+					include: {
+						Event: { include: { Likes: true } },
+						Organization: { include: { Likes: true } },
+						Comment: {
+							include: {
+								User: true,
+								Venue: true,
+								Organization: true,
+								Event: true,
+								Comp: true,
+								Likes: true
+							}
+						},
+						Venue: { include: { Likes: true } },
+						Comp: { include: { Likes: true } },
+						User: true
+					}
+				})
+			}
+			return []
 		} catch (error) {
 			prismaError(error)
 			console.log('error: ', error)
@@ -141,21 +144,27 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 	}
 
 	return {
-		organizations: getUserOrganizations(),
-		series: getUserSeries(),
-		events: getUserEvents(),
-		following: getUserFollowing(),
-		likes: getUserLikes(),
-		userStats: getUserStats()
+		organizations: await getUserOrganizations(),
+		series: await getUserSeries(),
+		events: await getUserEvents(),
+		following: await getUserFollowing(),
+		likes: await getUserLikes(),
+		userStats: await getUserStats()
 	}
 })
 
 export const actions: Actions = {
-	logout: async ({ locals }) => {
-		const session = await locals.auth.validate()
-		if (!session) return redirect(307, '/auth/login')
-		await auth.invalidateSession(session.sessionId) // invalidate session
-		locals.auth.setSession(null) // remove cookie
-		throw redirect(302, '/auth/login') // redirect to login page
+	// logout: async ({ locals }) => {
+	// 	const session = await locals.auth.validate()
+	// 	if (!session) return redirect(307, '/auth/login')
+	// 	await auth.invalidateSession(session.sessionId) // invalidate session
+	// 	locals.auth.setSession(null) // remove cookie
+	// 	throw redirect(302, '/auth/login') // redirect to login page
+	// },
+	getLikes: async (event) => {
+		const session = await event.locals.auth.validate()
+		// return {
+		// 	likes: await getUserLikes(session?.user.userId)
+		// }
 	}
 }

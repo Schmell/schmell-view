@@ -5,17 +5,16 @@ import { render } from 'svelte-email'
 import RequestMerge from '$lib/emailTemplates/requestMerge.svelte'
 import DenialEmail from '$lib/emailTemplates/denialEmail.svelte'
 import ClaimCompEmail from '$lib/emailTemplates/claimCompEmail.svelte'
-import { error } from '@sveltejs/kit'
+import { error, redirect } from '@sveltejs/kit'
 import type Mail from 'nodemailer/lib/mailer'
-
 
 async function sendEmail(emailOptions: Mail.Options) {
 	const emailTransporter = await createTransporter()
 	return await emailTransporter.sendMail(emailOptions)
 }
 
-function emailCallback(event){
-console.log('email callback: ', event );
+function emailCallback(event) {
+	console.log('email callback: ', event)
 }
 
 export async function sendClaimCompEmail({
@@ -25,8 +24,8 @@ export async function sendClaimCompEmail({
 	userId,
 	compName
 }) {
-	const allowUrl = `${CALLBACK_HOST}/comps/${toMergeId}/merge?allow=true&userId=${userId} `
-	const cancelUrl = `${CALLBACK_HOST}/comps/${toMergeId}/merge?allow=false&pe=${publisherEmail}&re=${requesterEmail}`
+	const allowUrl = `${CALLBACK_HOST}/comps/comp/${toMergeId}/merge?allow=true&userId=${userId} `
+	const cancelUrl = `${CALLBACK_HOST}/comps/comp/${toMergeId}/merge?allow=false&pe=${publisherEmail}&re=${requesterEmail}`
 
 	const emailHtml = render({
 		template: ClaimCompEmail,
@@ -45,19 +44,16 @@ export async function sendClaimCompEmail({
 		html: emailHtml
 	}
 
-		const sent = await sendEmail(options)
-		// if(sent.rejected){
-		// 	error(500, {message: 'sent email rejected'})
-		// }
-		if (sent.accepted){
-			console.log( sent.response );
-			return {
-				status: 'ok',
-				response: sent.response
-			}
-		}
-		
-	
+	const sent = await sendEmail(options)
+	// if(sent.rejected){
+	// 	error(500, {message: 'sent email rejected'})
+	// }
+	if (sent.accepted) {
+		// console.log('sendClaimCompEmail: ', sent.response)
+		// return redirect(302, `/comps/comp/${toMergeId}`)
+		return { status: true }
+	}
+	return { status: false }
 }
 
 export async function sendDenialEmail({ type, publisherEmail, requesterEmail }) {
@@ -132,20 +128,19 @@ export async function sendEmailVerificationLink(email: string, token: string) {
 		html: `<p>Verify your account by clicking the link below</p> <a href=${url}>${url}</a>`
 	}
 
-		const sent  = await sendEmail(message)
+	const sent = await sendEmail(message)
 
-		// if(sent.rejected){
-		// 	// error(500, {message: 'sent email rejected'})
-		// 	console.log('sent.rejected: ', sent.response );
-		// }
-		// if (sent.accepted){
-		// 	console.log('sent.accepted: ',  sent.response );
-		// 	return {
-		// 		status: 'ok',
-		// 		response: sent.response
-		// 	}
-		// }
-
+	// if(sent.rejected){
+	// 	// error(500, {message: 'sent email rejected'})
+	// 	console.log('sent.rejected: ', sent.response );
+	// }
+	// if (sent.accepted){
+	// 	console.log('sent.accepted: ',  sent.response );
+	// 	return {
+	// 		status: 'ok',
+	// 		response: sent.response
+	// 	}
+	// }
 
 	if (dev) console.log(`Your email verification link: ${url}`)
 }

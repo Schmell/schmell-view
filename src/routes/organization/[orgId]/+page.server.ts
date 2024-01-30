@@ -76,6 +76,6 @@ export const load = (async ({ params, url }) => {
 
 	return {
 		commentForm,
-		org: getOrg()
+		org: await getOrg()
 	}
 }) satisfies PageServerLoad

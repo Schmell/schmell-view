@@ -19,33 +19,9 @@
 	const toggleOpen = () => (open = !open)
 
 	const flash = getFlash(page)
-
-	// 	import { getFlash } from 'sveltekit-flash-message';
-	// import { page } from '$app/stores';
-
-	// const flash = getFlash(page);
-
-	// flash.subscribe(($flash) => {
-	// 	if (!$flash) return
-
-	// 	if ($flash.type == 'success') {
-	// 		toast.success($flash.message, {
-	// 			icon: '✅',
-	// 			position: 'bottom-center',
-	// 			className: 'mb-96 z-10 absolute'
-	// 		})
-	// 	}
-
-	// 	if ($flash.type == 'error') {
-	// 		toast.error($flash.message, {
-	// 			icon: '❌'
-	// 		})
-	// 	}
-	// })
 </script>
 
-<!-- <div> -->
-<div class="fixed top-0 z-20 w-full max-w-lg">
+<div class="fixed top-0 z-20 w-full">
 	<nav class="navbar border-base-300 text-secondary-content">
 		<button
 			on:click={() => {
@@ -151,6 +127,7 @@
 			</button>
 		</div>
 	{/if}
+
 	<div class="btm-nav text-base-content">
 		<!-- Home -->
 		<a href="/">
@@ -166,8 +143,6 @@
 		</button>
 	</div>
 </footer>
-
-<!-- </div> -->
 
 <style>
 	main {

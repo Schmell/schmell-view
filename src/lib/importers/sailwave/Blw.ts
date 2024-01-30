@@ -16,7 +16,7 @@ export default class Blw {
 	getComps() {
 		const compData: Comp[] = []
 
-		const compBoats = this.data.filter((item) => {
+		const compBoats = this.data.filter((item: string[]) => {
 			return item[0] === 'comphigh'
 		})
 
@@ -45,12 +45,6 @@ export default class Blw {
 				competitor[newName] = item[1] ?? ''
 			})
 
-			// competitor.uniqueCompId = ` ${competitor.sailNo ?? 0}_${competitor.boat ?? 'none'}_${
-			// 	competitor.helname ?? 'none'
-			// }_${competitor.club ?? 'none'} `
-
-			// console.log('competitor: ', competitor)
-
 			compData.push(competitor)
 		}) //each compBoats
 
@@ -58,38 +52,38 @@ export default class Blw {
 	} // getComps
 
 	getResults(raceId: string) {
-		// const data = await this.getFileData()
 		const resultsArr: any = []
 		// use rdisc to get an individuals result
-		const results = this.data.filter((item: any) => {
+		const results = this.data.filter((item: string[]) => {
 			return item[0] === 'rdisc' && item[3] === raceId
 		})
 
-		results.forEach((result, idx) => {
+		results.forEach((result: string[]) => {
 			// Results in blw file have no prefix to speak of (just an r)
 			// So we need to find each row individually
 			// Maybe should check for no results
 			// remove comps with id 0
 			if (result[2] === '0') return
 
+			// i think the secrect here is to function each to check for value
 			const resultRow = {
 				raceCompId: `${result[3]}-${result[2]}`,
 				compId: `${result[2]}-${this.data.cuid}`,
-				finish: this.resultHelp('rft', this.data, result) ?? '',
-				start: this.resultHelp('rst', this.data, result) ?? '',
-				points: this.resultHelp('rpts', this.data, result) ?? '',
-				position: this.resultHelp('rpos', this.data, result) ?? '',
-				discard: this.resultHelp('rdisc', this.data, result) ?? '',
-				corrected: this.resultHelp('rcor', this.data, result) ?? '',
-				resultType: this.resultHelp('rrestyp', this.data, result) ?? '',
-				code: this.resultHelp('rcod', this.data, result) ?? '',
-				elapsed: this.resultHelp('rele', this.data, result) ?? '',
-				supposedRating: this.resultHelp('srat', this.data, result) ?? '',
-				elapsedWin: this.resultHelp('rewin', this.data, result) ?? '',
-				ratingWin: this.resultHelp('rrwin', this.data, result) ?? '',
-				rrset: this.resultHelp('rrset', this.data, result) ?? '',
-				recordedPosition: this.resultHelp('rrecpos', this.data, result) ?? '',
-				raceRating: this.resultHelp('rrat', this.data, result) ?? ''
+				finish: this.resultHelp('rft', result) ?? '',
+				start: this.resultHelp('rst', result) ?? '',
+				points: this.resultHelp('rpts', result) ?? '',
+				position: this.resultHelp('rpos', result) ?? '',
+				discard: this.resultHelp('rdisc', result) ?? '',
+				corrected: this.resultHelp('rcor', result) ?? '',
+				resultType: this.resultHelp('rrestyp', result) ?? '',
+				code: this.resultHelp('rcod', result) ?? '',
+				elapsed: this.resultHelp('rele', result) ?? '',
+				supposedRating: this.resultHelp('srat', result) ?? '',
+				elapsedWin: this.resultHelp('rewin', result) ?? '',
+				ratingWin: this.resultHelp('rrwin', result) ?? '',
+				rrset: this.resultHelp('rrset', result) ?? '',
+				recordedPosition: this.resultHelp('rrecpos', result) ?? '',
+				raceRating: this.resultHelp('rrat', result) ?? ''
 			}
 
 			resultsArr.push(resultRow)
@@ -98,15 +92,16 @@ export default class Blw {
 		return resultsArr
 	} // getResults
 
-	resultHelp(resultTag: string, data: any[], result: any[] | number) {
-		let res = this.data.filter((item) => {
+	// i think this can be more efficient
+	resultHelp(resultTag: string, result: any[] | number) {
+		const res = this.data.filter((item: string[]) => {
 			return item[0] === resultTag && item[2] === result[2] && item[3] === result[3]
 		})
-
+		// hmmm. what does this actually check for?
 		if (res[0]) {
 			return res[0][1]
 		} else {
-			return ''
+			return null
 		}
 	}
 
@@ -218,16 +213,12 @@ export default class Blw {
 			eventObj[property] = item[1]
 		})
 
-		// console.log('eventObj: ', eventObj)
-
 		const { event, eventwebsite, venue, eventeid, ...rest } = eventObj
 
 		const uniqueIdString = this.file?.name.toLowerCase().trim().split(' ').join('_')
 		'-' + eventeid + '-' + event.toLowerCase().trim().split(' ').join('_')
 
 		const name = event.length > 1 ? event : this.file?.name
-		// console.log('uniqueIdString: ', uniqueIdString)
-		// console.log('blw: ', this.file)
 
 		return {
 			name,
