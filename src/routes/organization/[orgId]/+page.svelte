@@ -2,7 +2,7 @@
 	import { page } from '$app/stores'
 	import { Page } from '$components/layout'
 	import LikeFollow from '$lib/like/like-follow.svelte'
-	import Comments from '$lib/newComment/comments.svelte'
+	import Comments from '$lib/comments/comments.svelte'
 	import { getHref } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
@@ -108,11 +108,5 @@
 		</div>
 	{/if}
 
-	<Comments
-		item={org}
-		type="organization"
-		user={data.user}
-		commentForm={data.commentForm}
-		comments={org?.Comments}
-	/>
+	<Comments item={org} type="organization" userId={data.user?.userId} />
 </Page>

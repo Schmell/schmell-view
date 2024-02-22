@@ -1,21 +1,19 @@
 import { luciaErrors, prismaError } from '$lib/error-handling'
 import { prisma } from '$lib/server/prisma'
-import { fail, redirect } from '@sveltejs/kit'
-import { superValidate } from 'sveltekit-superforms/server'
-import { z } from 'zod'
+import { fail } from '@sveltejs/kit'
+import { redirect } from 'sveltekit-flash-message/server'
 import type { PageServerLoad } from './$types'
-import type { Prisma } from '@prisma/client'
 
-const commentSchema = z.object({
-	comment: z.string().max(256).nullish(),
-	type: z.string(),
-	eventComentId: z.string(),
-	id: z.string().optional()
-})
+// const commentSchema = z.object({
+// 	comment: z.string().max(256).nullish(),
+// 	type: z.string(),
+// 	eventComentId: z.string(),
+// 	id: z.string().optional()
+// })
 
-const deletCommentSchema = z.object({
-	id: z.string()
-})
+// const deleteCommentSchema = z.object({
+// 	id: z.string()
+// })
 
 export const load = (async ({ params, url }) => {
 	async function getEvent() {
@@ -49,42 +47,12 @@ export const load = (async ({ params, url }) => {
 		}
 	} // getEvent()
 
-	function getRaces() {
+	async function getRaces() {
 		try {
 			return prisma.race.findMany({
 				where: { eventId: params.eventId },
 				orderBy: { rank: 'asc' }
 			})
-		} catch (error) {
-			console.log('error: ', error)
-			return []
-		}
-	}
-
-	function getCommentsAndCount() {
-		try {
-			return prisma.$transaction([
-				prisma.comment.findMany({
-					where: { eventId: params.eventId },
-					orderBy: { createdAt: 'desc' },
-					select: {
-						comment: true,
-						id: true,
-						type: true,
-						User: { select: { id: true, username: true, avatar: true } },
-						Likes: true,
-						Follow: true,
-						_count: true
-					},
-					skip: 0,
-					take: 4
-				}),
-
-				prisma.comment.count({
-					where: { eventId: params.eventId }
-				})
-			])
-			//
 		} catch (error) {
 			console.log('error: ', error)
 			return []
@@ -116,31 +84,29 @@ export const load = (async ({ params, url }) => {
 	}
 
 	// edit comment
-	let eventComment = {}
-	const editCommentId = url.searchParams.get('editComment')
+	// let eventComment = {}
+	// const editCommentId = url.searchParams.get('editComment')
 
-	if (editCommentId) {
-		try {
-			eventComment = await prisma.comment.findFirstOrThrow({
-				where: { id: editCommentId }
-			})
-		} catch (error) {
-			luciaErrors(error)
-			prismaError(error)
-			console.log('error: ', error)
-			throw fail(500, { messgage: 'Unknown Error occured' })
-		}
-	}
+	// if (editCommentId) {
+	// 	try {
+	// 		eventComment = await prisma.comment.findFirstOrThrow({
+	// 			where: { id: editCommentId }
+	// 		})
+	// 	} catch (error) {
+	// 		luciaErrors(error)
+	// 		prismaError(error)
+	// 		console.log('error: ', error)
+	// 		throw fail(500, { messgage: 'Unknown Error occured' })
+	// 	}
+	// }
 
-	const commentForm = await superValidate(eventComment, commentSchema, { id: 'commentForm' })
+	// const commentForm = await superValidate(eventComment, commentSchema, { id: 'commentForm' })
 
-	const deleteCommentForm = await superValidate(eventComment, deletCommentSchema, {
-		id: 'deleteComment'
-	})
+	// const deleteCommentForm = await superValidate(eventComment, deleteCommentSchema, {
+	// 	id: 'deleteComment'
+	// })
 
 	return {
-		deleteCommentForm,
-		commentForm,
 		event: await getEvent(),
 		comments: await getComments(),
 		await: {
@@ -150,16 +116,20 @@ export const load = (async ({ params, url }) => {
 }) satisfies PageServerLoad
 
 export const actions = {
-	deleteEvent: async ({ locals, url }) => {
-		const session = locals.auth.validate()
-		if (!session) throw redirect(307, `/auth/login?from=${url.pathname}${url.search}`)
+	deleteEvent: async (event) => {
+		const { locals, url } = event
+		// const session = locals.auth.validate()
+		if (!locals.auth.validate())
+			throw redirect(
+				`/auth/login?from=${url.pathname}${url.search}`,
+				{ type: 'error', message: 'Not Authorized' },
+				event
+			)
 
-		const itemId = url.searchParams.get('itemId') ?? ''
+		const itemId = url.searchParams.get('itemId')
 
-		try {
+		if (itemId) {
 			await prisma.event.delete({ where: { id: itemId } })
-		} catch (error) {
-			console.log('error: ', error)
 		}
 	}
 }

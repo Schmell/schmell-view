@@ -1,43 +1,44 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
+import { redirect } from 'sveltekit-flash-message/server'
 
-export const GET: RequestHandler = async ({ url, locals }) => {
-	const take = url.searchParams.get('take')
-	const whereType = url.searchParams.get('whereType')
-	const whereId = url.searchParams.get('whereId')
-	const cursor = url.searchParams.get('cursor')
+export const GET: RequestHandler = async (event) => {
+	const { url, locals } = event
+	// auth check
+	const session = await locals.auth.validate()
+	if (!session) redirect(302, '/auth/login', { type: 'success', message: 'Not Autorized' }, event)
+
+	// console.log(url)
+	const { whereType, whereId, take, cursor } = Object.fromEntries(url.searchParams)
 
 	function getWhere() {
-		if (whereType && whereId) {
-			const where = {}
-			where[whereType] = whereId
-			return where
-		}
-		return {}
+		const where = {}
+		if (whereType && whereId) where[whereType] = whereId
+		return where
 	}
 
 	async function getComments() {
-		try {
-			return await prisma.comment.findMany({
-				where: getWhere(),
-				skip: 0,
-				take: Number(take),
-				orderBy: { createdAt: 'desc' },
-				cursor: {
-					id: cursor ?? ''
-				},
-				select: {
-					comment: true,
-					id: true,
-					type: true,
-					User: { select: { id: true, username: true, avatar: true } },
-					Likes: true,
-					Follow: true,
-					_count: true
-				}
-			})
-		} catch (error) {}
+		return await prisma.comment.findMany({
+			where: getWhere(),
+			skip: 0,
+			take: Number(take) ?? 4,
+			orderBy: { createdAt: 'desc' },
+			// cursor: {
+			// 	id: cursor ?? null
+			// },
+			select: {
+				comment: true,
+				id: true,
+				type: true,
+				User: { select: { id: true, username: true, avatar: true } },
+				Likes: true,
+				Follow: true,
+				_count: true
+			}
+		})
 	}
-
-	return json(await getComments())
+	const comments = await getComments()
+	return json(comments)
 }
+
+export const POST = () => {}

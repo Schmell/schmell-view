@@ -5,14 +5,12 @@ import csv from 'csvtojson'
 import type { Actions, PageServerLoad } from './$types'
 import { prismaError } from '$lib/error-handling'
 import { redirect } from 'sveltekit-flash-message/server'
+import { dev } from '$app/environment'
 
-export const load = (async ({ locals }) => {
-	const session = await locals.auth.validate()
+export const load = (async (event) => {
+	const session = await event.locals.auth.validate()
 
-	// If not logged in redirect
-	if (!session) {
-		throw redirect(302, '/')
-	}
+	if (!session) throw redirect(302, '/', { type: 'error', message: 'Un-authorized' }, event)
 
 	async function getOrgs() {
 		try {
@@ -20,13 +18,14 @@ export const load = (async ({ locals }) => {
 				where: { ownerId: session?.user.userId },
 				select: { name: true, id: true }
 			})
-			//
 		} catch (error) {
 			prismaError(error)
-			console.log('error: ', error)
+			if (dev) console.log('error: ', error)
 		}
 	}
+
 	return {
+		title: 'Create Event',
 		orgs: await getOrgs()
 	}
 }) satisfies PageServerLoad
@@ -86,7 +85,7 @@ export const actions: Actions = {
 		const { org, file }: any = formData
 		const csvArray = await csv({ noheader: true, output: 'csv' }).fromString(await file.text())
 
-		const blw = new Blw({ data: csvArray })
+		const blw = new Blw({ data: csvArray, file })
 
 		await Populate({
 			blw,

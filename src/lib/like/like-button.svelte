@@ -3,7 +3,9 @@
 	import { cn } from '$lib/utils'
 	// import { cn } from '$lib/utils'
 	import Icon from '@iconify/svelte'
+	import type { Like } from '@prisma/client'
 	import { error, fail } from '@sveltejs/kit'
+	import { createQuery } from '@tanstack/svelte-query'
 
 	let _class: string | undefined = undefined
 	export { _class as class }
@@ -45,20 +47,29 @@
 
 	async function like(type: string, item, unlike = false) {
 		try {
-			likeLoading = true
-			likeAction = await fetch(
-				`/api/like?likeType=${type}&itemId=${item.id}${
-					unlike ? `&unlike=${getUserLikedId(item)}` : ''
-				}`,
+			// likeLoading = true
+			// likeAction = await fetch(
+			// 	`/api/like?likeType=${type}&itemId=${item.id}${
+			// 		unlike ? `&unlike=${getUserLikedId(item)}` : ''
+			// 	}`,
 
-				{
-					method: 'GET',
-					headers: {
-						'content-type': 'application/json'
-					}
-				}
-			)
-			likeLoading = false
+			// 	{
+			// 		method: 'GET',
+			// 		headers: {
+			// 			'content-type': 'application/json'
+			// 		}
+			// 	}
+			// )
+			// likeLoading = false
+			const query = createQuery<Like>({
+				queryKey: ['like'],
+				queryFn: async () =>
+					await fetch(
+						`/api/like?likeType=${type}&itemId=${item.id}${
+							unlike ? `&unlike=${getUserLikedId(item)}` : ''
+						}`
+					).then((r) => r.json())
+			})
 		} catch (error) {
 			console.log('error: ', error)
 
@@ -69,6 +80,7 @@
 
 {#if checkForUserLike(item)}
 	<button
+		aria-label="like button"
 		on:click={() => {
 			// third prop is unlike
 			like(type, item, getUserLikedId(item))
@@ -83,6 +95,7 @@
 {:else}
 	<!-- can't like your own comment -->
 	<button
+		aria-label="like button"
 		disabled={userId === item.User?.id || userId === item.publisherId}
 		on:click={() => {
 			like(type, item, false)

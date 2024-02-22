@@ -1,19 +1,19 @@
 <script script lang="ts">
+	import { enhance } from '$app/forms'
+	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
 	import { Page } from '$components/layout'
 	import LikeFollow from '$lib/like/like-follow.svelte'
-	import Comments from '$lib/newComment/comments.svelte'
-	import { isUrl } from '$lib/utils'
+	import Comments from '$lib/comments/comments.svelte'
+	import { getHref, isUrl } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
-	import { goto } from '$app/navigation'
-	import { enhance } from '$app/forms'
-	import { getHref } from '$lib/utils'
 
 	export let data: PageData
 	$: ({ event, user } = data)
+	$: userId = user?.userId
 
-	let showRaces: boolean = true
+	let showRaces = false
 	//
 </script>
 
@@ -28,11 +28,6 @@
 		>
 			<div class="md:flex">
 				<div class="md:shrink-0 flex relative">
-					<!-- {#if !event.public}
-						<div class="badge badge-error absolute right-2 top-2 shadow-md">Private</div>
-					{:else}
-						<div class="badge badge-success absolute right-6 -bottom-3 shadow-md">Public</div>
-					{/if} -->
 					<div class="flex absolute top-2 right-2">
 						{#if event.complete}
 							<div class="badge badge-success shadow-lg">complete</div>
@@ -60,7 +55,7 @@
 					<div class="absolute w-full flex justify-end bottom-2 right-2 p-2">
 						<div>
 							<!-- Likes and follows -->
-							<LikeFollow item={event} userId={user?.userId} type="event" />
+							<LikeFollow item={event} {userId} type="event" />
 							<div class="flex justify-end text-sm">
 								<span class="pr-1 flex items-center text-xs">
 									{event._count.Likes}
@@ -169,11 +164,9 @@
 
 					{#if data.user?.userId === event?.publisherId}
 						<div class="tooltip tooltip-top" data-tip="Edit Event">
-							<!-- href="/events/{event?.id}/edit?from={$page.url.pathname}" -->
 							<button
 								on:click={() => {
 									goto(`/events/${event?.id}/edit?from=${$page.url.pathname}`, {
-										// replaceState: true,
 										state: { info: 'this is info' }
 									})
 								}}
@@ -226,15 +219,9 @@
 					{/each}
 				{/await}
 			{/if}
-			<div class="p-4 pb-12">
-				<Comments
-					type="event"
-					item={event}
-					comments={data.comments}
-					{user}
-					commentForm={data.commentForm}
-				/>
-			</div>
+		</div>
+		<div class="max-w-xl m-auto flex justify-center">
+			<Comments type="event" item={event} {userId} />
 		</div>
 	</Page>
 {/if}

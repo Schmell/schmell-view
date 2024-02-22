@@ -67,6 +67,7 @@
 
 {#if checkForUserFollow(item)}
 	<button
+		aria-label="follow"
 		on:click={() => {
 			follow(type, item, getUserFollowedId(item))
 		}}
@@ -77,6 +78,7 @@
 	<!-- can't follow your own stuff -->
 	<!-- -->
 	<button
+		aria-label="follow"
 		disabled={userId === item.User?.id || userId === item.publisherId}
 		on:click={() => {
 			follow(type, item, false)

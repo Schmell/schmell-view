@@ -4,23 +4,17 @@ import { prisma } from '$lib/server/prisma'
 // import { invalidateAll } from '$app/navigation'
 
 export const actions = {
-	comment: async ({ locals, request, getClientAddress }) => {
-		// console.log('request: ', request)
-		// console.log('getClientAddress: ', getClientAddress())
+	comment: async ({ locals, request }) => {
+		// //
 		const session = await locals.auth.validate()
-		if (!session) throw fail(401, { message: 'Not authorised to comment' })
+		// if (!session) throw fail(401, { message: 'Not authorised to comment' })
 
 		const formObj = Object.fromEntries(await request.formData()) as Record<string, string>
 		const { id, type, itemId, comment } = formObj
 
-		if (comment.length >= 2) {
-			await createComment()
-		} else {
-			return null
-		}
-
+		createComment()
 		async function createComment() {
-			const data = generateUpsert(id)
+			const data = generateUpsert()
 			try {
 				return await prisma.comment.upsert({ ...data })
 			} catch (error) {
@@ -29,8 +23,8 @@ export const actions = {
 			}
 		}
 
-		function generateUpsert(id: string | null): any {
-			let commentType
+		function generateUpsert(): any {
+			let commentType: { type: string; [key: string]: any } = { type: '' }
 
 			switch (type) {
 				case 'event':

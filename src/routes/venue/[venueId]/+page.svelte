@@ -2,7 +2,7 @@
 	import { page } from '$app/stores'
 	import Page from '$lib/components/layout/Page.svelte'
 	import LikeFollow from '$lib/like/like-follow.svelte'
-	import Comments from '$lib/newComment/comments.svelte'
+	import Comments from '$lib/comments/comments.svelte'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
 	import type { Address } from '@prisma/client'
@@ -183,11 +183,5 @@
 		{/if}
 	</div>
 	<!-- <Comments item={venue} type="venue" user={data.user} formObj={commentFormObj} /> -->
-	<Comments
-		item={venue}
-		type="venue"
-		user={data.user}
-		commentForm={data.commentForm}
-		comments={venue.Comments}
-	/>
+	<Comments item={venue} type="venue" userId={data.user?.userId} />
 </Page>

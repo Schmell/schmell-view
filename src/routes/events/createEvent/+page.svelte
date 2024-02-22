@@ -39,6 +39,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Create Event</title>
+</svelte:head>
+
 <Page title="Create Event">
 	{#if showImport}
 		<div>

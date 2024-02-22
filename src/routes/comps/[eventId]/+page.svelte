@@ -76,6 +76,17 @@
 							</div>
 						</div>
 					{/if}
+					{#if comp.sailno}
+						<div>
+							<div class="text-xs opacity-70">Sail No:</div>
+							<div class="pl-2">
+								{comp.sailno}
+							</div>
+						</div>
+					{/if}
+					<!-- <div>
+						{JSON.stringify(comp.rest)}
+					</div> -->
 				</div>
 
 				<div slot="bottom-left" class="p-2 text-xs text-base-content">

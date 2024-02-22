@@ -4,6 +4,10 @@
 	console.log(data)
 </script>
 
+<svelte:head>
+	<title>Welcome</title>
+</svelte:head>
+
 <Page title="Home">
 	<div>
 		<div class="space-y-4">

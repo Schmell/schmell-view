@@ -12,24 +12,15 @@
 
 	export let data: PageData
 
-	// type ausType =  {
-	// 	action: string
-	// 	severity?: 'high' | 'low'
-	// }
 	let areYouSure = {
 		open: false,
 		action: '',
 		severity: 'high'
 	}
 
-	// hey you guys
-	let openAYSDialog = false
-
 	// this could probably be a util
 	function getFromString() {
 		return `from=${$page.url.pathname}&${$page.url.searchParams.toString()}`
-		// href="/events/{event?.id}/edit?from={$page.url.pathname}
-		// 							&{$page.url.searchParams.toString()}"
 	}
 
 	$: ({ user } = data)

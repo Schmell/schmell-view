@@ -3,6 +3,7 @@
 	import { cn } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import { error, fail } from '@sveltejs/kit'
+	import { createMutation } from '@tanstack/svelte-query'
 
 	let _class: string | undefined = undefined
 	export { _class as class }
@@ -61,6 +62,20 @@
 			throw fail(400, { message: 'add like error' })
 		}
 	}
+
+	async function createLikeApi() {
+		await fetch(`/api/like`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ type, userId, itemId: item.id, unlike: getUserLikedId(item) })
+		}).then((res) => res.json())
+	}
+	const createLike = createMutation({
+		mutationFn: createLikeApi,
+		onMutate: async () => {},
+		onSuccess: async () => {},
+		onSettled: async () => {}
+	})
 </script>
 
 <div

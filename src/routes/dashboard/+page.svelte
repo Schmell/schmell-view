@@ -11,6 +11,10 @@
 	$: ({ user, events, series, following, organizations, likes, userStats } = data)
 </script>
 
+<svelte:head>
+	<title>Dashboard - Vite Sail</title>
+</svelte:head>
+
 <Page title="Home">
 	{#if !user}
 		<h1>No user found</h1>
