@@ -1,5 +1,6 @@
 export { TransactionIsolationLevelSchema } from './TransactionIsolationLevelSchema';
 export { SeriesScalarFieldEnumSchema } from './SeriesScalarFieldEnumSchema';
+export { RelationLoadStrategySchema } from './RelationLoadStrategySchema';
 export { EventScalarFieldEnumSchema } from './EventScalarFieldEnumSchema';
 export { RaceScalarFieldEnumSchema } from './RaceScalarFieldEnumSchema';
 export { CompScalarFieldEnumSchema } from './CompScalarFieldEnumSchema';

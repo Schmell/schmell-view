@@ -9,8 +9,11 @@
 	import { createPagination } from '@melt-ui/svelte'
 	import type { PageData } from './$types'
 	import AreYouSure from '$lib/areYouSure/areYouSure.svelte'
+	import Like from '$lib/like/like.svelte'
+	import { createQuery } from '@tanstack/svelte-query'
 
 	export let data: PageData
+	$: ({ events } = data)
 
 	let areYouSure = {
 		open: false,
@@ -24,7 +27,17 @@
 	}
 
 	$: ({ user } = data)
+
 	let pageSize = 10
+
+	// const likey = createQuery({
+	// 	queryFn: async () => data.awaited.events,
+	// 	queryKey: ['heynow'],
+	// 	initialData: events
+	// })
+	// if ($likey) {
+	// 	console.log($likey.data.)
+	// }
 
 	// melt-ui pagination component
 	const {
@@ -97,6 +110,7 @@
 		<!--  -->
 		<ItemCard title={event.name} href="/events/{event.id}{$page.url.search}">
 			<div slot="top-right" class="text-xs flex gap-2">
+				<!-- <Like item={event} type="event" userId={user?.userId} /> -->
 				<LikeCount userId={user?.userId} item={event} type="event" />
 			</div>
 

@@ -12,7 +12,6 @@ export const POST: RequestHandler = async (event) => {
 	const session = await locals.auth.validate()
 
 	const { id, type, itemId, comment } = await request.json()
-	console.log(comment)
 	async function createComment() {
 		const data = generateUpsert()
 		try {

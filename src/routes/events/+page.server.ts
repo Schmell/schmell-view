@@ -87,7 +87,7 @@ export const load: PageServerLoad = async (event) => {
 		title,
 		events: await getEvents(),
 		count: await getEventsCount(),
-		awaited: {}
+		awaited: { events: await getEvents() }
 	}
 }
 

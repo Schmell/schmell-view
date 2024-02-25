@@ -3,9 +3,22 @@
 	import type { CommentPartialWithRelations } from '$lib/schemas/generated/zod'
 	import { formatDateTime } from '$lib/utils/formatters'
 	import Icon from '@iconify/svelte'
+	import type { Like, User } from '@prisma/client'
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query'
 
-	export let item: CommentPartialWithRelations
+	// just define whats needed and allow all
+	type Item = {
+		id: string
+		comment: string
+		Likes: Like[]
+		User: User
+		createdAt: Date
+		userId: string
+		publisherId: string
+		_count: string
+		[key: string]: any
+	}
+	export let item: Item
 	export let userId = ''
 
 	let commentMenu: HTMLDetailsElement

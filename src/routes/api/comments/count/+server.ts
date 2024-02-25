@@ -1,8 +1,7 @@
 import { json, type RequestHandler } from '@sveltejs/kit'
 
 export const GET: RequestHandler = async (event) => {
-	const { request, url, params, locals } = event
-	const { type, id, take, cursor } = Object.fromEntries(url.searchParams)
+	const { type, id } = Object.fromEntries(event.url.searchParams)
 
 	function getWhere() {
 		const where = {}

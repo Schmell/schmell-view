@@ -2,11 +2,11 @@ import { auth } from '$lib/server/lucia'
 import type { Handle } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 
-import { createContext } from '$lib/trpc/context'
-import { router } from '$lib/trpc/router'
-import { createTRPCHandle } from 'trpc-sveltekit'
+// import { createContext } from '$lib/trpc/context'
+// import { router } from '$lib/trpc/router'
+// import { createTRPCHandle } from 'trpc-sveltekit'
 
-export const trpc: Handle = createTRPCHandle({ router, createContext })
+// export const trpc: Handle = createTRPCHandle({ router, createContext })
 
 export const luciaHandle: Handle = async ({ event, resolve }) => {
 	// we can pass `event` because we used the SvelteKit middleware
@@ -26,7 +26,7 @@ export const themeHandle: Handle = async ({ resolve, event }) => {
 		theme = newTheme
 	}
 
-	if (theme) {
+	if (theme || cookieTheme) {
 		return await resolve(event, {
 			transformPageChunk: ({ html }) => html.replace('data-theme=""', `data-theme="${theme}"`)
 		})
@@ -35,4 +35,4 @@ export const themeHandle: Handle = async ({ resolve, event }) => {
 	return resolve(event)
 }
 
-export const handle: Handle = sequence(luciaHandle, themeHandle, trpc)
+export const handle: Handle = sequence(luciaHandle, themeHandle)

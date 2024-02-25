@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation'
 	import { cn } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import { error, fail } from '@sveltejs/kit'
-	import { createMutation } from '@tanstack/svelte-query'
+	import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
 
 	let _class: string | undefined = undefined
 	export { _class as class }
@@ -15,99 +14,112 @@
 	}
 
 	export let item
-
+	// $: console.log(item)
 	export let type: string
 
 	let likeAction: Response | undefined
 
-	$: if (likeAction?.ok) {
-		invalidateAll()
-	}
+	const client = useQueryClient()
+
+	// $: if (likeAction?.ok) {
+	// 	invalidateAll()
+	// }
 
 	function getUserLikedId(item) {
 		const liked = item.Likes.find((like) => {
 			const liked = like.userId === userId
 			if (liked) return like
 		})
-
-		return liked.id
+		if (liked) return liked.id
+		return false
 	}
 
 	function checkForUserLike(item) {
+		// console.log(item.Likes)
 		if (!item.Likes) return false
 		if (item.Likes.some((like) => like.userId === userId)) {
 			return true
 		}
-
-		return false
 	}
 
-	async function like(type: string, item, unlike = false) {
-		try {
-			likeAction = await fetch(
-				`/api/like?likeType=${type}&itemId=${item.id}${
-					unlike ? `&unlike=${getUserLikedId(item)}` : ''
-				}`,
-
-				{
-					method: 'GET',
-					headers: {
-						'content-type': 'application/json'
-					}
-				}
-			)
-		} catch (error) {
-			console.log('error: ', error)
-
-			throw fail(400, { message: 'add like error' })
-		}
+	async function getLikeApi() {
+		// console.log('getLikeApi')
+		const endpoint = '/api/newlike'
+		return await fetch(`${endpoint}?&type=${type}&id=${item.id}&userId=${userId}`).then((r) =>
+			r.json()
+		)
 	}
+	const getLike = createQuery({
+		queryFn: getLikeApi,
+		queryKey: ['like', item.id],
+		initialData: item.Likes
+	})
+	// if ($getLike.isSuccess) {
+	// 	console.log($getLike.data.id)
+	// }
 
-	async function createLikeApi() {
-		await fetch(`/api/like`, {
+	// console.log()
+
+	async function createLikeApi(unlikeId) {
+		// console.log(unlikeId)
+		return await fetch('/api/newlike', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ type, userId, itemId: item.id, unlike: getUserLikedId(item) })
+			body: JSON.stringify({ type, userId, itemId: item.id, unlikeId })
 		}).then((res) => res.json())
 	}
 	const createLike = createMutation({
 		mutationFn: createLikeApi,
-		onMutate: async () => {},
+		onMutate: async (api) => {
+			// need to have a query that we can cancel
+			// client.cancelQueries({ queryKey: ['like', item.id] })
+			client.cancelQueries({ queryKey: ['like'] })
+		},
 		onSuccess: async () => {},
-		onSettled: async () => {}
+		onSettled: async () => {
+			await client.invalidateQueries({ queryKey: ['like'] })
+		}
 	})
+	// if ($getLike.isSuccess) {
+	// 	console.log($getLike.data.id)
+	// 	console.log($getLike.data)
+	// }
+	// console.log(checkForUserLike(item))
 </script>
 
 <div
 	class={cn('flex items-center gap-2 px-2 rounded-full', _class)}
-	class:bg-accent={checkForUserLike(item)}
-	class:bg-base-100={!checkForUserLike(item)}
+	class:bg-accent={$getLike.data?.id}
+	class:bg-base-100={!$getLike.data?.id}
 >
-	{#if checkForUserLike(item)}
+	{#if $getLike.data?.id}
+		<!-- This is the already liked state -->
 		<button
 			on:click={() => {
-				// third prop is unlike
-				like(type, item, getUserLikedId(item))
+				$createLike.mutate(false)
 			}}
 		>
 			<Icon class="text-base-100" icon="mdi:thumb-up" />
 		</button>
-	{:else}
-		<!-- can't like your own comment -->
+	{/if}
+	{#if $getLike.isPending}
+		<button
+			on:click={() => {
+				$createLike.mutate(false)
+			}}
+		>
+			<Icon class="text-base-100 animate-ping" icon="mdi:thumb-up" />
+		</button>
+	{/if}
+	{#if !$getLike.data?.id}
 		<button
 			disabled={userId === item.User?.id || userId === item.publisherId}
-			on:click={() => {
-				like(type, item, false)
+			on:click={(e) => {
+				$createLike.mutate(item.id)
 			}}
 		>
 			<Icon icon="mdi:thumb-up-outline" />
 		</button>
 	{/if}
-
-	<!-- <div
-		class="border-l-2 border-base-200 pl-2 cursor-default"
-		class:text-base-100={checkForUserLike(item)}
-	>
-		{item._count ? item._count.Likes : 0}
-	</div> -->
 </div>
+<!-- <pre>{JSON.stringify($getLike.data)}</pre> -->
