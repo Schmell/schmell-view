@@ -1,125 +1,97 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation'
+	import { page } from '$app/stores'
 	import { cn } from '$lib/utils'
 	import Icon from '@iconify/svelte'
+	import type { Like } from '@prisma/client'
 	import { error, fail } from '@sveltejs/kit'
-	import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
+	import { createMutation, useQueryClient } from '@tanstack/svelte-query'
+	import { getFlash } from 'sveltekit-flash-message/client'
 
-	let _class: string | undefined = undefined
-	export { _class as class }
-
-	export let userId: string | undefined
-
-	if (!userId) {
-		throw error(400, 'Invalid userId in like component')
+	type Item = {
+		id: string
+		type: string
+		Likes: Partial<Like>[]
+		publisherId?: string | null
+		_count: any
+		[key: string]: any
 	}
 
-	export let item
-	// $: console.log(item)
+	let _class: string | undefined = undefined
+	export { className as class }
+	export let item: Item
 	export let type: string
 
-	let likeAction: Response | undefined
+	if (!$page.data.user) throw error(400, 'Invalid userId in like component')
+	let userId = $page.data.user.id
+	let likedByUser = false
 
 	const client = useQueryClient()
 
-	// $: if (likeAction?.ok) {
-	// 	invalidateAll()
-	// }
-
-	function getUserLikedId(item) {
-		const liked = item.Likes.find((like) => {
-			const liked = like.userId === userId
-			if (liked) return like
-		})
-		if (liked) return liked.id
-		return false
+	const flash = getFlash(page)
+	function showMessage(message) {
+		$flash = message
 	}
 
-	function checkForUserLike(item) {
-		// console.log(item.Likes)
-		if (!item.Likes) return false
-		if (item.Likes.some((like) => like.userId === userId)) {
-			return true
-		}
+	/**
+	 * Find the Like id for the liked item
+	 * @param {Like[]} likes An array of likes
+	 * @param {string} userId a string id of the current user
+	 * @returns {string} Either empty string or id of a Like
+	 */
+	function getUserLikeId(likes: Partial<Like>[], userId: string) {
+		const liked = likes.find((like) => like.userId === userId)
+		if (!liked) return ''
+		return liked.id
 	}
 
-	async function getLikeApi() {
-		// console.log('getLikeApi')
-		const endpoint = '/api/newlike'
-		return await fetch(`${endpoint}?&type=${type}&id=${item.id}&userId=${userId}`).then((r) =>
-			r.json()
-		)
-	}
-	const getLike = createQuery({
-		queryFn: getLikeApi,
-		queryKey: ['like', item.id],
-		initialData: item.Likes
-	})
-	// if ($getLike.isSuccess) {
-	// 	console.log($getLike.data.id)
-	// }
+	$: likedByUser = item.Likes.some((like) => like.userId === userId)
 
-	// console.log()
-
-	async function createLikeApi(unlikeId) {
-		// console.log(unlikeId)
-		return await fetch('/api/newlike', {
+	async function likeApi(unlikeId: any) {
+		return await fetch(`/api/like`, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ type, userId, itemId: item.id, unlikeId })
+			headers: { 'content-type': 'application/json' },
+			body: JSON.stringify({ itemId: item.id, userId, type, unlikeId })
 		}).then((res) => res.json())
 	}
-	const createLike = createMutation({
-		mutationFn: createLikeApi,
-		onMutate: async (api) => {
-			// need to have a query that we can cancel
-			// client.cancelQueries({ queryKey: ['like', item.id] })
-			client.cancelQueries({ queryKey: ['like'] })
+	const likeMutate = createMutation({
+		mutationFn: likeApi,
+		onSuccess: async () => {
+			if (item.type === 'comment') {
+				await client.invalidateQueries({ queryKey: ['comments'] })
+			} else {
+				await invalidateAll()
+			}
 		},
-		onSuccess: async () => {},
-		onSettled: async () => {
-			await client.invalidateQueries({ queryKey: ['like'] })
+		onError: () => {
+			showMessage({ type: 'error', message: 'API error' })
+			throw fail(400, { message: 'add like error' })
 		}
 	})
-	// if ($getLike.isSuccess) {
-	// 	console.log($getLike.data.id)
-	// 	console.log($getLike.data)
-	// }
-	// console.log(checkForUserLike(item))
 </script>
 
-<div
-	class={cn('flex items-center gap-2 px-2 rounded-full', _class)}
-	class:bg-accent={$getLike.data?.id}
-	class:bg-base-100={!$getLike.data?.id}
->
-	{#if $getLike.data?.id}
-		<!-- This is the already liked state -->
+<div class={cn('text-base-content', _class)}>
+	{#if likedByUser}
 		<button
-			on:click={() => {
-				$createLike.mutate(false)
-			}}
+			disabled={$likeMutate.isPending}
+			on:click={() => $likeMutate.mutate(getUserLikeId(item.Likes, userId))}
 		>
-			<Icon class="text-base-100" icon="mdi:thumb-up" />
+			{#if !$likeMutate.isPending}
+				<Icon class="" icon="mdi:thumb-up" />
+			{:else}
+				<Icon class="opacity-25 animate-pulse" icon="mdi:thumb-up" />
+			{/if}
 		</button>
-	{/if}
-	{#if $getLike.isPending}
-		<button
-			on:click={() => {
-				$createLike.mutate(false)
-			}}
-		>
-			<Icon class="text-base-100 animate-ping" icon="mdi:thumb-up" />
-		</button>
-	{/if}
-	{#if !$getLike.data?.id}
+	{:else}
 		<button
 			disabled={userId === item.User?.id || userId === item.publisherId}
-			on:click={(e) => {
-				$createLike.mutate(item.id)
-			}}
+			on:click={() => $likeMutate.mutate('')}
 		>
-			<Icon icon="mdi:thumb-up-outline" />
+			{#if $likeMutate.isPending}
+				<Icon class="opacity-25 animate-pulse" icon="mdi:thumb-up-outline" />
+			{:else}
+				<Icon icon="mdi:thumb-up-outline" />
+			{/if}
 		</button>
 	{/if}
 </div>
-<!-- <pre>{JSON.stringify($getLike.data)}</pre> -->

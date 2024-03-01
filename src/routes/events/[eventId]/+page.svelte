@@ -3,11 +3,15 @@
 	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
 	import { Page } from '$components/layout'
-	import LikeFollow from '$lib/like/like-follow.svelte'
 	import Comments from '$lib/comments/comments.svelte'
+	import LikeFollow from '$lib/like/like-follow.svelte'
+	// import Like from '$lib/like/like.svelte'
 	import { getHref, isUrl } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import type { PageData } from './$types'
+	import LikeComponent from '$lib/like/like-component.svelte'
+	import LikeButton from '$lib/like/like-button.svelte'
+	import Count from '$lib/like/count.svelte'
 
 	export let data: PageData
 	$: ({ event, user } = data)
@@ -54,8 +58,11 @@
 					/>
 					<div class="absolute w-full flex justify-end bottom-2 right-2 p-2">
 						<div>
-							<!-- Likes and follows -->
-							<LikeFollow item={event} {userId} type="event" />
+							<div class="text-xs">
+								<Count item={event} type="event" />
+							</div>
+
+							<LikeFollow item={event} type="event" />
 							<div class="flex justify-end text-sm">
 								<span class="pr-1 flex items-center text-xs">
 									{event._count.Likes}
@@ -141,12 +148,7 @@
 			</div>
 
 			<div class="px-4 pb-4 flex justify-between items-center">
-				<button
-					class="btn btn-ghost btn-xs"
-					on:click={() => {
-						showRaces = !showRaces
-					}}
-				>
+				<button class="btn btn-ghost btn-xs" on:click={() => (showRaces = !showRaces)}>
 					{showRaces ? '^ Hide Races' : '⌄ Show Races'}
 				</button>
 				<div>

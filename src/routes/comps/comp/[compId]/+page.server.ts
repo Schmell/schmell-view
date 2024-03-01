@@ -12,7 +12,7 @@ export const load = (async ({ params }) => {
 			console.log('error: ', error)
 		}
 	}
-	
+
 	return {
 		comp: await getComp()
 	}
@@ -51,5 +51,6 @@ export const actions = {
 		return {
 			compEvents: await getEvents()
 		}
-	}
+	},
+	claim: async () => {}
 } satisfies Actions

@@ -1,89 +1,97 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation'
+	import { page } from '$app/stores'
 	import { cn } from '$lib/utils'
 	import Icon from '@iconify/svelte'
-	import { error, fail } from '@sveltejs/kit'
+	import type { Follow } from '@prisma/client'
+	import { error, fail, json } from '@sveltejs/kit'
+	import { createMutation } from '@tanstack/svelte-query'
+	import { getFlash } from 'sveltekit-flash-message/client'
 
 	let _class: string | undefined = undefined
 	export { _class as class }
 
+	type Item = {
+		id: string
+		Follows: Partial<Follow>[]
+		publisherId?: string | null
+		_count: any
+		[key: string]: any
+	}
+
+	export let item: Item
 	export let type: string
-	export let item
-	export let userId: string | undefined
+	let userId: string
+	$: userId = $page.data.user.id
 
-	if (!userId) {
-		throw error(400, 'Invalid userId in like component')
+	$: {
+		if (!userId) {
+			throw error(400, 'Invalid userId in follow component')
+		}
 	}
 
-	let followAction: Response | undefined
-
-	$: if (followAction?.ok) {
-		invalidateAll()
+	const flash = getFlash(page)
+	function showMessage(message) {
+		$flash = message
 	}
 
-	function getUserFollowedId(item) {
-		console.log('item: ', item)
-		const followed = item.Follows.find((follow) => {
-			const followed = follow.userId === userId
-			if (follow) return followed
+	function getUserFollowedId(follows: Partial<Follow>[]) {
+		const followed = follows.find((follow) => {
+			return follow.userId === userId
 		})
-		// console.log('followed: ', followed)
-		return followed.id
+		return followed?.id
 	}
 
-	function checkForUserFollow(item) {
-		// console.log('item: ', item)
-		if (!item.Follows) return false
-		if (item.Follows.some((follow) => follow.userId === userId)) {
-			return true
+	$: followedId = getUserFollowedId(item.Follows)
+
+	$: followedByUser = item.Follows.some((follow) => follow.userId === userId) ?? false
+
+	async function followApi(unfollowId?: string) {
+		if (unfollowId === undefined) return json({ error: 'API error - no unfollow id provided' })
+		return await fetch(`/api/follow`, {
+			method: 'POST',
+			headers: { 'content-type': 'application/json' },
+			body: JSON.stringify({
+				itemId: item.id,
+				type,
+				unfollowId
+			})
+		})
+	}
+
+	const follow = createMutation({
+		mutationFn: followApi,
+		onSuccess: async () => {
+			await invalidateAll()
+		},
+		onError: () => {
+			showMessage({ type: 'error', message: 'API error' })
+			throw fail(400, { message: 'add like error' })
 		}
-
-		return false
-	}
-
-	async function follow(type: string, item, unfollow = false) {
-		try {
-			followAction = await fetch(
-				`/api/follow?followType=${type}&itemId=${item.id}${
-					unfollow ? `&unfollow=${getUserFollowedId(item)}` : ''
-				}`,
-
-				{
-					method: 'GET',
-					headers: {
-						'content-type': 'application/json'
-					}
-				}
-			)
-		} catch (error) {
-			console.log('error: ', error)
-
-			throw fail(400, { message: 'add follow error' })
-		}
-	}
-
-	// $: console.log(checkForUserFollow(item))
+	})
 </script>
 
-{#if checkForUserFollow(item)}
-	<button
-		aria-label="follow"
-		on:click={() => {
-			follow(type, item, getUserFollowedId(item))
-		}}
-	>
-		<Icon class={cn('text-base-content', _class)} icon="mdi:bell-ring" />
+{#if followedByUser}
+	<button aria-label="follow" on:click={() => $follow.mutate(followedId)}>
+		{#if $follow.isPending}
+			<Icon class={cn('opacity-25 animate-pulse text-base-content', _class)} icon="mdi:bell-ring" />
+		{:else}
+			<Icon class={cn('text-base-content', _class)} icon="mdi:bell-ring" />
+		{/if}
 	</button>
 {:else}
-	<!-- can't follow your own stuff -->
-	<!-- -->
 	<button
 		aria-label="follow"
 		disabled={userId === item.User?.id || userId === item.publisherId}
-		on:click={() => {
-			follow(type, item, false)
-		}}
+		on:click={() => $follow.mutate('')}
 	>
-		<Icon class={cn('text-base-content', _class)} icon="mdi:bell-badge-outline" />
+		{#if $follow.isPending}
+			<Icon
+				class={cn('opacity-25 animate-pulse text-base-content', _class)}
+				icon="mdi:bell-badge-outline"
+			/>
+		{:else}
+			<Icon class={cn('text-base-content', _class)} icon="mdi:bell-badge-outline" />
+		{/if}
 	</button>
 {/if}

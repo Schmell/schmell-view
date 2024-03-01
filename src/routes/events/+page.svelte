@@ -9,11 +9,8 @@
 	import { createPagination } from '@melt-ui/svelte'
 	import type { PageData } from './$types'
 	import AreYouSure from '$lib/areYouSure/areYouSure.svelte'
-	import Like from '$lib/like/like.svelte'
-	import { createQuery } from '@tanstack/svelte-query'
 
 	export let data: PageData
-	$: ({ events } = data)
 
 	let areYouSure = {
 		open: false,
@@ -110,8 +107,7 @@
 		<!--  -->
 		<ItemCard title={event.name} href="/events/{event.id}{$page.url.search}">
 			<div slot="top-right" class="text-xs flex gap-2">
-				<!-- <Like item={event} type="event" userId={user?.userId} /> -->
-				<LikeCount userId={user?.userId} item={event} type="event" />
+				<LikeCount item={event} type="event" />
 			</div>
 
 			<div class:opacity-60={!event.description}>

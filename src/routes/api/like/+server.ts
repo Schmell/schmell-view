@@ -1,117 +1,60 @@
 import { prisma } from '$lib/server/prisma'
-import { json, redirect } from '@sveltejs/kit'
-import { setFlash } from 'sveltekit-flash-message/server'
+import { delay } from '$lib/utils'
+import { json, type RequestHandler } from '@sveltejs/kit'
+import { redirect, setFlash } from 'sveltekit-flash-message/server'
 
-// export const GET: RequestHandler = async ({ url, locals, cookies }) => {
-// 	const session = await locals.auth.validate()
-// 	if (!session) throw redirect(307, `/auth/login?from=/results/${url.pathname}`)
-
-// 	const { itemId, type, unlikeId } = Object.fromEntries(url.searchParams)
-
-// 	if (!type || !itemId) {
-// 		setFlash({ type: 'error', message: 'Please enter text.' }, cookies)
-// 		throw fail(500, { message: 'like/server.ts: API error' })
-// 	}
-
-// 	function getLikeData(): any {
-// 		switch (type) {
-// 			case 'series':
-// 				return {
-// 					type: 'series',
-// 					itemId: itemId,
-// 					Series: { connect: { id: itemId } },
-// 					User: { connect: { id: session?.user.userId } }
-// 				}
-
-// 			case 'event':
-// 				return {
-// 					type: 'event',
-// 					itemId: itemId,
-// 					Event: { connect: { id: itemId } },
-// 					User: { connect: { id: session?.user.userId } }
-// 				}
-
-// 			case 'comment':
-// 				return {
-// 					type: 'comment',
-// 					itemId: itemId,
-// 					Comment: { connect: { id: itemId! } },
-// 					User: { connect: { id: session?.user.userId } }
-// 				}
-
-// 			case 'venue':
-// 				return {
-// 					type: 'venue',
-// 					itemId: itemId!,
-// 					Venue: { connect: { id: itemId! } },
-// 					User: { connect: { id: session!.user!.userId } }
-// 				}
-
-// 			case 'organization':
-// 				return {
-// 					type: 'organization',
-// 					itemId: itemId!,
-// 					Organization: { connect: { id: itemId! } },
-// 					User: { connect: { id: session!.user!.userId } }
-// 				}
-
-// 			// default:
-// 			// 	console.log(`No likeType matched`, likeType)
-// 		}
-// 	}
-
-// 	async function like() {
-// 		try {
-// 			if (getLikeData()) {
-// 				return await prisma.like.create({
-// 					data: { ...getLikeData() }
-// 				})
-// 			}
-// 		} catch (error) {
-// 			return { error: 'like/server.ts' }
-// 		}
-// 	}
-
-// 	async function unLike() {
-// 		try {
-// 			// console.log(unlikeId)
-// 			return await prisma.like.delete({
-// 				where: { id: unlikeId }
-// 			})
-// 		} catch (error: any) {
-// 			// prismaError(error)
-// 			console.log('error: ', error.meta)
-// 			return { error: 'something went wraong' }
-// 		}
-// 	}
-
-// 	if (unlikeId !== 'false') {
-// 		return json(await unLike())
-// 	} else {
-// 		return json(await like())
-// 	}
-// }
-
-export const POST = async (event) => {
-	const { request, url, locals, cookies } = event
+export const GET: RequestHandler = async ({ url, locals, cookies }) => {
 	const session = await locals.auth.validate()
-	if (!session) throw redirect(307, `/auth/login?from=/results/${url.pathname}`)
+	if (!session)
+		throw redirect(
+			`/auth/login?from=/results/${url.pathname}`,
+			{ type: 'error', message: 'Not authorized' },
+			cookies
+		)
 
-	const { itemId, type, unlikeId } = await request.json()
+	const { itemId, type } = Object.fromEntries(url.searchParams)
 
 	if (!type || !itemId) {
 		setFlash({ type: 'error', message: 'Input error - like/server.ts' }, cookies)
 		return json({ error: 'like/server.ts - No itemId or type' })
 	}
 
-	function getLikeData(): any {
+	async function getLikes() {
+		return await prisma.like.findMany({ where: { [type + 'Id']: itemId } })
+	}
+
+	return json(await getLikes())
+}
+
+/////////////////////////////////////////////////////////////////////////
+export const POST: RequestHandler = async ({ request, url, locals, cookies }) => {
+	const session = await locals.auth.validate()
+	if (!session) throw redirect(307, `/auth/login?from=/results/${url.pathname}`)
+
+	let userId: string
+	if (session) userId = session.user.userId
+
+	type requestParams = {
+		itemId: string
+		type: string
+		unlikeId?: string
+	}
+
+	const { itemId, type, unlikeId }: requestParams = await request.json()
+
+	if (!type || !itemId) {
+		setFlash({ type: 'error', message: 'Input error - like/server.ts' }, cookies)
+		return json({ error: 'like/server.ts - No itemId or type' })
+	}
+
+	function getLikeData() {
 		switch (type) {
 			case 'series':
 				return {
 					type: 'series',
 					itemId: itemId,
 					Series: { connect: { id: itemId } },
-					User: { connect: { id: session?.user.userId } }
+					User: { connect: { id: userId } }
 				}
 
 			case 'event':
@@ -119,7 +62,7 @@ export const POST = async (event) => {
 					type: 'event',
 					itemId: itemId,
 					Event: { connect: { id: itemId } },
-					User: { connect: { id: session?.user.userId } }
+					User: { connect: { id: userId } }
 				}
 
 			case 'comment':
@@ -127,7 +70,7 @@ export const POST = async (event) => {
 					type: 'comment',
 					itemId: itemId,
 					Comment: { connect: { id: itemId! } },
-					User: { connect: { id: session?.user.userId } }
+					User: { connect: { id: userId } }
 				}
 
 			case 'venue':
@@ -135,7 +78,7 @@ export const POST = async (event) => {
 					type: 'venue',
 					itemId: itemId!,
 					Venue: { connect: { id: itemId! } },
-					User: { connect: { id: session!.user!.userId } }
+					User: { connect: { id: userId } }
 				}
 
 			case 'organization':
@@ -143,34 +86,33 @@ export const POST = async (event) => {
 					type: 'organization',
 					itemId: itemId!,
 					Organization: { connect: { id: itemId! } },
-					User: { connect: { id: session!.user!.userId } }
+					User: { connect: { id: userId } }
 				}
 
-			// default:
-			// 	console.log(`No likeType matched`, likeType)
+			default:
+				return {
+					type: '',
+					itemId: null,
+					User: { connect: { id: userId } }
+				}
 		}
 	}
 
 	async function like() {
+		// May have to check for liking more than once
 		try {
-			if (getLikeData()) {
-				return await prisma.like.create({
-					data: { ...getLikeData() }
-				})
-			}
+			await delay(1000)
+			return await prisma.like.create({ data: getLikeData() })
 		} catch (error: any) {
 			return { error: 'like/-like()' }
 		}
 	}
 
-	async function unLike(unlikeId) {
+	async function unLike(unlikeId: string) {
 		try {
-			return await prisma.like.delete({
-				where: { id: unlikeId }
-			})
+			await delay(1000)
+			return await prisma.like.delete({ where: { id: unlikeId } })
 		} catch (error: any) {
-			// prismaError(error)
-			console.log('error like/-unLike(): ', error)
 			return { error: 'like/-unLike()' }
 		}
 	}

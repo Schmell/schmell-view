@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation'
+	import { page } from '$app/stores'
 	import { cn } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import { error, fail } from '@sveltejs/kit'
@@ -7,16 +8,11 @@
 	let _class: string | undefined = undefined
 	export { _class as class }
 
-	export let userId: string | undefined
-
-	if (!userId) {
-		throw error(400, 'Invalid userId in like component')
-	}
+	// export let userId: string | undefined
+	let userId
+	$: userId = $page.data.user.id
 
 	export let item
-	$: console.log('item: ', item)
-
-	export let type: string
 
 	let followAction: Response | undefined
 
@@ -24,12 +20,11 @@
 		invalidateAll()
 	}
 
-	function getUserFollowedId(item) {
+	function getUserFollowedId() {
 		const followed = item.follow.find((follow) => {
 			const followed = follow.userId === userId
 			if (follow) return followed
 		})
-
 		return followed.id
 	}
 
@@ -42,20 +37,12 @@
 		return false
 	}
 
-	async function follow(type: string, item, unfollow = false) {
+	async function follow(unfollow = false) {
 		try {
-			followAction = await fetch(
-				`/api/like?likeType=${type}&itemId=${item.id}${
-					unfollow ? `&unfollow=${getUserFollowedId(item)}` : ''
-				}`,
-
-				{
-					method: 'GET',
-					headers: {
-						'content-type': 'application/json'
-					}
-				}
-			)
+			followAction = await fetch(`/api/follow?type=${item.type}&itemId=${item.id}${unfollow}`, {
+				method: 'GET',
+				headers: { 'content-type': 'application/json' }
+			})
 		} catch (error) {
 			console.log('error: ', error)
 
@@ -64,16 +51,17 @@
 	}
 </script>
 
-<div
+<!-- <div
 	class={cn('flex items-center gap-2 px-2 rounded-full', _class)}
 	class:bg-accent={checkForUserFollow(item)}
 	class:bg-base-100={!checkForUserFollow(item)}
->
+> -->
+<div class={cn('tex-base-content', _class)}>
 	{#if checkForUserFollow(item)}
 		<button
 			on:click={() => {
 				// third prop is unlike
-				follow(type, item, getUserFollowedId(item))
+				follow(getUserFollowedId())
 			}}
 		>
 			<Icon class="text-base-100" icon="mdi:thumb-up" />
@@ -83,17 +71,18 @@
 		<button
 			disabled={userId === item.User?.id || userId === item.publisherId}
 			on:click={() => {
-				follow(type, item, false)
+				follow()
 			}}
 		>
 			<Icon icon="material-symbols:bookmark-add-outline-rounded" />
 		</button>
 	{/if}
+</div>
 
-	<div
+<!-- <div
 		class="border-l-2 border-base-200 pl-2 cursor-default"
 		class:text-base-100={checkForUserFollow(item)}
 	>
 		{item._count ? item._count.Follows : 0}
-	</div>
-</div>
+	</div> -->
+<!-- </div> -->

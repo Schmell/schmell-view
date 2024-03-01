@@ -54,14 +54,27 @@ export function clickOutside(node) {
 			node.dispatchEvent(new CustomEvent('click_outside', node))
 		}
 	}
-
 	document.addEventListener('click', handleClick, true)
-
 	return {
 		destroy() {
 			document.removeEventListener('click', handleClick, true)
 		}
 	}
+}
+
+/**
+ * Add some delay to your async functions
+ *  @example
+ * // Wait for 1 second
+ * await delay(1000);
+ * @param {number} duration delay time in milliseconds
+ * @returns {Promise<void>} Promise<void>
+ *
+ */
+export async function delay(duration: number): Promise<void> {
+	return new Promise((resolve) => {
+		setTimeout(() => resolve(), duration)
+	})
 }
 
 export const themes = [

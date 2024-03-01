@@ -1,121 +1,102 @@
-import { fail, redirect } from '@sveltejs/kit'
-import type { RequestHandler } from './$types'
-import { prismaError } from '$lib/error-handling'
 import { prisma } from '$lib/server/prisma'
+import { json } from '@sveltejs/kit'
+import { redirect, setFlash } from 'sveltekit-flash-message/server'
+import type { RequestHandler } from './$types'
+import { delay } from '$lib/utils'
 
-export const GET: RequestHandler = async ({ url, locals }) => {
+/////////////////////////////////////////////////////////////////////////////////////
+export const POST: RequestHandler = async ({ request, url, locals, cookies }) => {
 	const session = await locals.auth.validate()
-	if (!session) throw redirect(307, '/auth/login')
+	if (!session)
+		throw redirect(
+			`/auth/login?from=/results/${url.pathname}`,
+			{ type: 'error', message: 'Not authorized - follow/server.ts' },
+			cookies
+		)
 
-	const followType = url.searchParams.get('followType')
-	// console.log('followType: ', followType)
-	const unfollow = url.searchParams.get('unfollow')
-	// console.log('unfollow: ', unfollow)
-	const itemId = url.searchParams.get('itemId')
-	// console.log('itemId: ', itemId)
+	const { itemId, type, unfollowId } = await request.json()
+	console.log(itemId, type, unfollowId)
 
-	if (!followType || !itemId) throw fail(500, { message: 'API error' })
+	if (!type || !itemId) {
+		setFlash({ type: 'error', message: 'Input error - follow/server.ts' }, cookies)
+		return json({ error: 'follow/server.ts - No itemId or type' })
+	}
 
-	async function follow() {
-		switch (followType) {
+	function getFollowData() {
+		switch (type) {
 			case 'series':
-				try {
-					return await prisma.follow.create({
-						data: {
-							type: 'series',
-							itemId: itemId!,
-							Series: { connect: { id: itemId! } },
-							User: { connect: { id: session!.user!.userId } }
-						}
-					})
-				} catch (error) {
-					prismaError(error)
-					throw fail(500, { message: `Series follow error: ${error}` })
+				return {
+					type: 'series',
+					itemId: itemId,
+					Series: { connect: { id: itemId } },
+					User: { connect: { id: session?.user.userId } }
 				}
 
 			case 'event':
-				try {
-					return await prisma.follow.create({
-						data: {
-							type: 'event',
-							itemId: itemId!,
-							Event: { connect: { id: itemId! } },
-							User: { connect: { id: session!.user!.userId } }
-						}
-					})
-				} catch (error) {
-					prismaError(error)
-					throw fail(500, { message: `Event follow error: ${error}` })
+				return {
+					type: 'event',
+					itemId: itemId,
+					Event: { connect: { id: itemId } },
+					User: { connect: { id: session?.user.userId } }
 				}
 
 			case 'comment':
-				try {
-					return await prisma.follow.create({
-						data: {
-							type: 'comment',
-							itemId: itemId!,
-							Comment: { connect: { id: itemId! } },
-							User: { connect: { id: session!.user!.userId } }
-						}
-					})
-				} catch (error) {
-					prismaError(error)
-					throw fail(500, { message: `Comment follow error: ${error}` })
+				return {
+					type: 'comment',
+					itemId: itemId,
+					Comment: { connect: { id: itemId! } },
+					User: { connect: { id: session?.user.userId } }
 				}
 
 			case 'venue':
-				try {
-					return await prisma.follow.create({
-						data: {
-							type: 'venue',
-							itemId: itemId!,
-							Venue: { connect: { id: itemId! } },
-							User: { connect: { id: session!.user!.userId } }
-						}
-					})
-				} catch (error) {
-					prismaError(error)
-					throw fail(500, { message: `Venue follow error: ${error}` })
+				return {
+					type: 'venue',
+					itemId: itemId!,
+					Venue: { connect: { id: itemId! } },
+					User: { connect: { id: session!.user!.userId } }
 				}
 
 			case 'organization':
-				try {
-					return await prisma.follow.create({
-						data: {
-							type: 'organization',
-							itemId: itemId!,
-							Organization: { connect: { id: itemId! } },
-							User: { connect: { id: session!.user!.userId } }
-						}
-					})
-				} catch (error) {
-					prismaError(error)
-					throw fail(500, { message: `Organization follow error: ${error}` })
+				return {
+					type: 'organization',
+					itemId: itemId!,
+					Organization: { connect: { id: itemId! } },
+					User: { connect: { id: session!.user!.userId } }
 				}
 
 			default:
-				console.log(`No followType matched `, followType)
+				return {
+					type: '',
+					itemId: null,
+					User: { connect: { id: session?.user.userId } }
+				} // default:
+			// 	console.log(`No likeType matched`, likeType)
+		}
+	}
+
+	async function follow() {
+		try {
+			await delay(1000)
+			return await prisma.follow.create({ data: getFollowData() })
+		} catch (error) {
+			return { error: 'follow/-follow()' }
 		}
 	}
 
 	async function unFollow() {
 		try {
-			if (!unfollow) throw fail(500, { message: `unlike error` })
-			// console.log('unlike: ', follow)
+			await delay(1000)
 			return await prisma.follow.delete({
-				where: { id: unfollow }
+				where: { id: unfollowId }
 			})
 		} catch (error) {
-			prismaError(error)
-			throw fail(500, { message: 'Unlike fail' })
+			return { error: 'follow/-unFollow()' }
 		}
 	}
 
-	if (unfollow) {
-		unFollow()
+	if (unfollowId) {
+		return json(await unFollow())
 	} else {
-		follow()
+		return json(await follow())
 	}
-
-	return new Response()
 }

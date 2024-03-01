@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation'
+	import { page } from '$app/stores'
 	import { cn, svelog } from '$lib/utils'
 	import Icon from '@iconify/svelte'
-	import type { Like, Prisma } from '@prisma/client'
+	import type { Like } from '@prisma/client'
 	import { error, fail } from '@sveltejs/kit'
 	import { useQueryClient } from '@tanstack/svelte-query'
 
 	type Item = {
 		id: string
 		Likes: Partial<Like>[]
-		publisherId: string | null
+		publisherId?: string | null
 		_count: any
 		[key: string]: any
 	}
@@ -17,57 +18,51 @@
 	let className: string | undefined = undefined
 	export { className as class }
 	export let item: Item
-	export let userId: string | undefined
 	export let type: string
 
-	if (!userId) throw error(400, 'Invalid userId in like component')
+	if (!$page.data.user) throw error(400, 'Invalid userId in like component')
 
-	// let action: Response | undefined
 	let isLoading = false
-	let itemLikedByUser = () => false
+	let likedByUser = false
 
 	const client = useQueryClient()
 
-	function getUserLikedId() {
-		const liked = item.Likes.find((like) => {
-			if (like.userId === userId) return like
-		})
-		return liked?.id
+	/**
+	 * Find the Like id for the liked item
+	 * @param {Like[]} likes An array of likes
+	 * @param {string} userId a string id of the current user
+	 * @returns {string} Either empty string or id of a Like
+	 */
+	function getUserLikeId(userId: string, likes: Partial<Like>[]) {
+		if (!likes) return ''
+		const liked = likes.find((like) => like.userId === userId)
+		if (liked) return liked.id
+		return ''
 	}
 
-	$: {
-		itemLikedByUser = () => {
-			if (!item.Likes) return false
+	$: likedByUser = item.Likes?.some((like) => like.userId === $page.data.user.id)
 
-			if (item.Likes.some((like) => like.userId === userId)) {
-				return true
-			}
-			return false
-		}
-	}
-
-	async function likeApi(unlikeId: string | boolean = false) {
+	async function likeApi(unlikeId?: string) {
 		return await fetch(`/api/like`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ itemId: item.id, type, userId, unlikeId })
+			body: JSON.stringify({ itemId: item.id, type, userId: $page.data.user.id, unlikeId })
 		}).then((r) => r.json())
 	}
 
-	async function like(unlikeId: string | boolean = false) {
+	async function like(unlikeId?: string) {
 		try {
 			isLoading = true
-			// const action = await fetch(`/api/like?type=${type}&itemId=${item.id}&unlikeId=${unlikeId}`, {
-			// 	method: 'GET',
-			// 	headers: { 'content-type': 'application/json' }
-			// })
 			const action = await likeApi(unlikeId)
 			//
 			if (action.error) {
 				console.log(action.error)
 			} else {
-				await invalidateAll()
-				if (type === 'comment') await client.invalidateQueries({ queryKey: ['comments'] })
+				if (type === 'comment') {
+					await client.invalidateQueries({ queryKey: ['comments'] })
+				} else {
+					await invalidateAll()
+				}
 			}
 
 			isLoading = false
@@ -80,15 +75,15 @@
 
 <div
 	class={cn('flex items-center gap-2 px-2 rounded-full', className)}
-	class:bg-accent={itemLikedByUser()}
-	class:bg-base-100={!itemLikedByUser()}
+	class:bg-accent={likedByUser}
+	class:bg-base-100={!likedByUser}
 	class:animate-bounce={isLoading}
 >
-	{#if itemLikedByUser()}
+	{#if likedByUser}
 		<button
 			disabled={isLoading}
 			on:click={() => {
-				like(getUserLikedId())
+				like(getUserLikeId($page.data.user.id, item.Likes))
 			}}
 		>
 			{#if !isLoading}
@@ -99,10 +94,9 @@
 		</button>
 	{:else}
 		<!-- can't like your own comment -->
-		{svelog(item.User?.userId, item.publisherId ?? 'no')}
 		<button
-			disabled={userId === item.User?.userId || userId === item.publisherId || isLoading}
-			on:click={() => like(false)}
+			disabled={$page.data.user.id === item.User?.id || $page.data.user.id === item.publisherId}
+			on:click={() => like()}
 		>
 			{#if isLoading}
 				<Icon class="opacity-25 animate-pulse" icon="mdi:thumb-up-outline" />
@@ -112,10 +106,7 @@
 		</button>
 	{/if}
 
-	<div
-		class="border-l-2 border-base-200 pl-2 cursor-default"
-		class:text-base-100={itemLikedByUser()}
-	>
+	<div class="border-l-2 border-base-200 pl-2 cursor-default" class:text-base-100={likedByUser}>
 		{item._count ? item._count.Likes : 0}
 	</div>
 </div>

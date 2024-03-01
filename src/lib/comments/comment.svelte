@@ -136,7 +136,7 @@
 		{/if}
 
 		<div class="flex flex-col gap-4 justify-between relative">
-			<LikeCount {userId} type="comment" {item} />
+			<LikeCount type="comment" {item} />
 		</div>
 	</div>
 </div>
