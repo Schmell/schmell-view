@@ -4,6 +4,8 @@ import { superValidate } from 'sveltekit-superforms/server'
 import type { Actions, PageServerLoad } from './$types'
 import { seriesSchema } from './seriesSchema'
 import { goto } from '$app/navigation'
+import { prisma } from '$lib/server/prisma'
+
 // import { seriesSchema } from './seriesSchema'
 
 export const load = (async ({ locals, params, url }) => {

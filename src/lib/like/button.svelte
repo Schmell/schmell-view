@@ -2,6 +2,7 @@
 	import Icon from '@iconify/svelte'
 	import { cn } from '$lib/utils'
 	import { getContext } from 'svelte'
+	import { page } from '$app/stores'
 
 	// let _class: string | undefined = undefined
 	// export { _class as class }
@@ -25,7 +26,10 @@
 			{/if}
 		</button>
 	{:else}
-		<button on:click={() => $likeMutate.mutate('')}>
+		<button
+			disabled={$page.data.user.id === item.User?.id || $page.data.user.id === item.publisherId}
+			on:click={() => $likeMutate.mutate('')}
+		>
 			{#if !$likeMutate.isPending}
 				<Icon icon={cn('mdi:thumb-up-outline', unlikedClass)} />
 			{:else}

@@ -12,6 +12,8 @@
 	import LikeComponent from '$lib/like/like-component.svelte'
 	import LikeButton from '$lib/like/like-button.svelte'
 	import Count from '$lib/like/count.svelte'
+	import EditMenu from './editMenu.svelte'
+	import { Avatar } from 'bits-ui'
 
 	export let data: PageData
 	$: ({ event, user } = data)
@@ -58,9 +60,9 @@
 					/>
 					<div class="absolute w-full flex justify-end bottom-2 right-2 p-2">
 						<div>
-							<div class="text-xs">
+							<!-- <div class="text-sm">
 								<Count item={event} type="event" />
-							</div>
+							</div> -->
 
 							<LikeFollow item={event} type="event" />
 							<div class="flex justify-end text-sm">
@@ -152,43 +154,19 @@
 					{showRaces ? '^ Hide Races' : '⌄ Show Races'}
 				</button>
 				<div>
-					<div class="tooltip tooltip-top" data-tip="View Competitors">
-						<a href="/comps/{event?.id}" class="btn btn-ghost p-1">
-							<Icon class="text-3xl text-primary" icon="material-symbols:groups-outline-rounded" />
-						</a>
-					</div>
+					<div class="flex items-center justify-center">
+						<EditMenu {event} />
 
-					<div class="tooltip tooltip-top" data-tip="Edit Races">
-						<a href="/races/{event?.id}" class="btn btn-ghost p-1">
-							<Icon class="text-3xl text-primary" icon="material-symbols:box-edit-outline" />
-						</a>
+						<!-- User -->
+						<div class="tooltip tooltip-top" data-tip={user?.username}>
+							<a href="/user/{user?.userId}" class="btn btn-ghost rounded-full p-1">
+								<Avatar.Root class="avatar w-8 ">
+									<Avatar.Image class=" rounded-full" alt={user?.username} src={user?.avatar} />
+									<Avatar.Fallback />
+								</Avatar.Root>
+							</a>
+						</div>
 					</div>
-
-					{#if data.user?.userId === event?.publisherId}
-						<div class="tooltip tooltip-top" data-tip="Edit Event">
-							<button
-								on:click={() => {
-									goto(`/events/${event?.id}/edit?from=${$page.url.pathname}`, {
-										state: { info: 'this is info' }
-									})
-								}}
-								class="btn btn-ghost p-1"
-							>
-								<Icon class="text-3xl text-primary" icon="material-symbols:edit-outline" />
-							</button>
-						</div>
-						<div class="tooltip tooltip-top" data-tip="Delete Event">
-							<form method="post" use:enhance>
-								<button
-									formaction="?/deleteEvent&itemId={event.id}&from={$page.url
-										.pathname}&{$page.url.searchParams.toString()}"
-									class="btn btn-ghost p-1"
-								>
-									<Icon class="text-3xl text-primary" width="24" icon="mdi:trash-outline" />
-								</button>
-							</form>
-						</div>
-					{/if}
 				</div>
 			</div>
 			<!-- ////////////////////////////////////////////////////////////////////////////// -->

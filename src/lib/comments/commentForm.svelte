@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query'
 	import type { Comment } from '@prisma/client'
+	import { delay } from '$lib/utils'
 
 	export let itemId: string
 	export let type: string
@@ -20,60 +21,36 @@
 
 	const addCommentMutation = createMutation({
 		mutationFn: createComment,
-		onMutate: async () => {
-			// Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-			await client.cancelQueries({ queryKey: ['uniqueUsers'] })
-			// await client.cancelQueries({ queryKey: ['count'] })
-			await client.cancelQueries({ queryKey: ['comments'] })
 
-			// Snapshot the previous value
-			const previousComments = client.getQueryData<any>(['comments', 1])
-
-			// Optimistically update to the new value
-			// if (previousComments) {
-			// 	console.log(comment)
-			// 	const newComment = { id: null, userId, type, comment }
-			// 	previousComments.pages.push(newComment)
-			// 	// console.log(previousComments.pages)
-
-			// 	client.setQueryData<any>(['comments', 1], {
-			// 		...previousComments,
-			// 		items: [newComment]
-			// 	})
-			// 	// console.log(client.getQueryData(['comments', 1]))
-			// }
-
-			return { previousComments }
+		onSuccess: async () => {
+			await delay(1000)
 		},
 
-		// If the mutation fails, use the context return ed from onMutate to roll back
+		onSettled: async () => {
+			await client.invalidateQueries({ queryKey: ['uniqueUsers'] })
+			await client.invalidateQueries({ queryKey: ['comments'] })
+			await client.invalidateQueries({ queryKey: ['count'] })
+		},
+
 		onError: (err: any, variables: any, context: any) => {
 			console.error('comment form Error: ', err, variables, context)
 			if (context?.previousTodos) {
 				client.setQueryData<Comment[]>(['comments'], context.previousTodos)
 			}
-		},
-		// Always refetch after error or success:
-		onSuccess: async () => {
-			// await client.resetQueries()
-			await client.invalidateQueries({ queryKey: ['uniqueUsers'] })
-			await client.invalidateQueries({ queryKey: ['comments'] })
-			// await client.invalidateQueries({ queryKey: ['count'] })
 		}
 	})
+
+	function handleSubmit(e: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
+		e.preventDefault
+		e.stopPropagation
+		$addCommentMutation.mutate(e)
+		e.currentTarget.reset()
+	}
 </script>
 
 <div class="w-full pt-2">
 	<!-- can't use enhance here -->
-	<form
-		bind:this={formElement}
-		on:submit={(e) => {
-			e.preventDefault
-			e.stopPropagation
-			formElement.reset()
-			$addCommentMutation.mutate(e)
-		}}
-	>
+	<form bind:this={formElement} on:submit={handleSubmit}>
 		<div class="join w-full flex">
 			<input
 				class="input rounded-r-none shadow-lg join-item w-full"

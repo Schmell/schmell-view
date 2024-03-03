@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { redirect } from 'sveltekit-flash-message/server'
+import { prisma } from '$lib/server/prisma'
 
 export const GET: RequestHandler = async (event) => {
 	const { url, locals } = event

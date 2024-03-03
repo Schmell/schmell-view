@@ -52,7 +52,7 @@
 	const likeMutate = createMutation({
 		mutationFn: likeApi,
 		onSuccess: async () => {
-			if (item.type === 'comment') {
+			if (type === 'comment') {
 				await client.invalidateQueries({ queryKey: ['comments'] })
 			} else {
 				await invalidateAll()

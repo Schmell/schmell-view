@@ -33,7 +33,7 @@
 						/>
 						<div class="absolute w-full flex justify-end bottom-0 right-4 p-2">
 							<div>
-								<LikeFollow item={series} type="series" userId={data.user?.userId} />
+								<LikeFollow item={series} type="series" />
 								<!-- Likes and follows -->
 								<div class="flex justify-end text-sm">
 									<span class="pr-1 flex items-center text-xs">
@@ -137,11 +137,11 @@
 						</a>
 					{/each}
 				{/if}
-				<div class="p-2">
-					<Comments item={series} type="series" userId={data.user?.userId} />
-				</div>
 			</div>
 		{/if}
 		<!-- {/if} -->
+		<div class="p-2">
+			<Comments item={series} type="series" userId={data.user?.userId} />
+		</div>
 	{/await}
 </Page>

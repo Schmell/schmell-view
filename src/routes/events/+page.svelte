@@ -9,6 +9,7 @@
 	import { createPagination } from '@melt-ui/svelte'
 	import type { PageData } from './$types'
 	import AreYouSure from '$lib/areYouSure/areYouSure.svelte'
+	import Count from '$lib/like/count.svelte'
 
 	export let data: PageData
 
@@ -106,8 +107,8 @@
 	{#each data.events as event}
 		<!--  -->
 		<ItemCard title={event.name} href="/events/{event.id}{$page.url.search}">
-			<div slot="top-right" class="text-xs flex gap-2">
-				<LikeCount item={event} type="event" />
+			<div slot="top-right" class="text-xs">
+				<Count item={event} type="event" />
 			</div>
 
 			<div class:opacity-60={!event.description}>

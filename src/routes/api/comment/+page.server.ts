@@ -1,7 +1,6 @@
 import { fail } from '@sveltejs/kit'
 import { prismaError } from '$lib/error-handling'
 import { prisma } from '$lib/server/prisma'
-// import { invalidateAll } from '$app/navigation'
 
 export const actions = {
 	comment: async ({ locals, request }) => {

@@ -1,6 +1,7 @@
 import type { PageServerLoad } from './$types'
 import { superValidate } from 'sveltekit-superforms/server'
 import { z } from 'zod'
+import { prisma } from '$lib/server/prisma'
 
 const commentSchema = z.object({
 	comment: z.string().max(256).nullish(),

@@ -1,5 +1,6 @@
 import { prismaError } from '$lib/error-handling'
 import { fail, json, type RequestHandler } from '@sveltejs/kit'
+import { prisma } from '$lib/server/prisma'
 
 export const GET: RequestHandler = async (event) => {
 	const { request, url, params, locals } = event

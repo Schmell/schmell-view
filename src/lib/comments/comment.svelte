@@ -1,10 +1,11 @@
 <script lang="ts">
-	import LikeCount from '$lib/like/like-count.svelte'
-	import type { CommentPartialWithRelations } from '$lib/schemas/generated/zod'
+	import Count from '$lib/like/count.svelte'
 	import { formatDateTime } from '$lib/utils/formatters'
+	import { flyAndScale } from '$lib/utils/transitions'
 	import Icon from '@iconify/svelte'
 	import type { Like, User } from '@prisma/client'
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query'
+	import { Avatar, DropdownMenu, LinkPreview } from 'bits-ui'
 
 	// just define whats needed and allow all
 	type Item = {
@@ -21,11 +22,19 @@
 	export let item: Item
 	export let userId = ''
 
-	let commentMenu: HTMLDetailsElement
-	let comment = item.comment
+	// let commentMenu: HTMLDetailsElement
 	let edit = false
+	let readMore = false
 
 	const client = useQueryClient()
+
+	// function getShortItem() {
+	// 	console.log(item.comment.length)
+	// 	if (item.comment.length > 40) {
+
+	// 	}
+	// }
+	// getShortItem()
 
 	// Delete
 	async function deleteComment() {
@@ -49,7 +58,7 @@
 		await fetch(`/api/comments/comment`, {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ id: item.id, comment })
+			body: JSON.stringify({ id: item.id, comment: item.comment })
 		}).then((r) => r.json())
 	}
 	const updateCommentMutation = createMutation({
@@ -65,29 +74,58 @@
 		}
 	})
 
+	// handel's
+	function handleSubmit(e: SubmitEvent) {
+		e.preventDefault
+		e.stopPropagation
+		$updateCommentMutation.mutate()
+	}
+
+	function handleDelete(e: SubmitEvent) {
+		e.preventDefault
+		e.stopPropagation
+		$deleteCommentMutation.mutate()
+	}
+
 	//
 </script>
 
 <div class="flex items-start gap-2" class:blur-sm={$deleteCommentMutation.isPending}>
-	<div class="avatar pt-3">
-		<div class="w-8 h-8 rounded-full">
-			<img alt={item.User?.username} src={item.User?.avatar} />
-		</div>
-	</div>
+	<!-- User avatar -->
+	<LinkPreview.Root>
+		<LinkPreview.Trigger>
+			<Avatar.Root class="w-8 h-8">
+				<a href="/user/{item.User.id}">
+					<Avatar.Image class="rounded-full" alt={item.User.username} src={item.User.avatar} />
+					<Avatar.Fallback
+						class="flex items-center justify-center text-lg border border-base-300 font-bold rounded-full"
+						>{item.User.username.charAt(0)}</Avatar.Fallback
+					>
+				</a>
+			</Avatar.Root>
+		</LinkPreview.Trigger>
+		<LinkPreview.Content
+			class="rounded-xl border border-base-300 bg-base-200 p-4 px-8 shadow-lg"
+			sideOffset={8}
+			transition={flyAndScale}
+			transitionConfig={{ duration: 150, y: -10 }}
+		>
+			<div class="flex items-center gap-2">
+				<Avatar.Root class="w-8 h-8">
+					<Avatar.Image class="rounded-full" alt={item.User.username} src={item.User.avatar} />
+					<Avatar.Fallback class="rounded-full">{item.User.username.charAt(0)}</Avatar.Fallback>
+				</Avatar.Root>
+				<span>{item.User.username}</span>
+			</div>
+		</LinkPreview.Content>
+	</LinkPreview.Root>
 
 	<div class="flex gap-2 py-2 items-end w-full justify-between pr-4">
 		<div class="w-full">
-			<!-- need a read more here -->
 			{#if edit}
-				<form
-					on:submit={(e) => {
-						e.preventDefault
-						e.stopPropagation
-						$updateCommentMutation.mutate()
-					}}
-				>
+				<form on:submit={handleSubmit}>
 					<div class="join">
-						<input class="input join-item" bind:value={comment} />
+						<input class="input join-item" bind:value={item.comment} />
 						<button disabled={$updateCommentMutation.isPending} class="join-item btn btn-primary">
 							{#if $updateCommentMutation.isPending}
 								<span class="loading loading-dots loading-xs" />
@@ -97,46 +135,63 @@
 					</div>
 				</form>
 			{:else}
-				<div class="px-4 pb-2">{@html item.comment}</div>
+				<!-- read more here -->
+				{#if item.comment.length > 60 && readMore === false}
+					<div class="px-4 pb-2">
+						{@html item.comment.slice(0, 59)} ...
+					</div>
+					<div class="w-full flex justify-end">
+						<button class="btn btn-xs btn-outline shadow-md" on:click={() => (readMore = true)}>
+							read more
+						</button>
+					</div>
+				{:else}
+					<div class="px-4 pb-2">
+						{@html item.comment}
+					</div>
+					{#if item.comment.length > 60}
+						<div class="w-full flex justify-end">
+							<button class="btn btn-xs btn-outline shadow-md" on:click={() => (readMore = false)}>
+								read less
+							</button>
+						</div>
+					{/if}
+				{/if}
 			{/if}
 			<!-- need refined time from post here -->
-			<div class="text-xs text-accent">
-				{formatDateTime(item?.createdAt ?? new Date())}
-			</div>
+			<div class="text-xs text-accent">{formatDateTime(item?.createdAt ?? new Date())}</div>
 		</div>
-		{#if userId === item.User?.id || userId === item.userId}
-			<details class="dropdown dropdown-end dropdown-left" bind:this={commentMenu}>
-				<summary class="btn btn-ghost btn-xs m-0"> <Icon icon="mdi:dots-vertical" /> </summary>
-				<ul class="menu shadow-md dropdown-content z-[1] bg-base-100 rounded-lg">
-					<li>
-						<button
-							on:click={() => {
-								commentMenu.open = false
-								edit = true
-							}}
-						>
-							Edit
-						</button>
-					</li>
-					<li>
-						<form
-							on:submit={(e) => {
-								e.preventDefault
-								e.stopPropagation
-								$deleteCommentMutation.mutate()
-							}}
-						>
-							<button class="text-error" on:click={() => (commentMenu.open = false)}>
-								Delete
-							</button>
-						</form>
-					</li>
-				</ul>
-			</details>
-		{/if}
 
-		<div class="flex flex-col gap-4 justify-between relative">
-			<LikeCount type="comment" {item} />
+		<div class="flex items-center gap-4 justify-between relative">
+			<!-- <LikeCount type="comment" {item} /> -->
+
+			{#if userId === item.User?.id || userId === item.userId}
+				<!-- need dialog here -->
+				<div class="pt-1">
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger>
+							<Icon icon="mdi:dots-vertical" />
+						</DropdownMenu.Trigger>
+
+						<DropdownMenu.Content class="min-w-20 max-w-32" side="left" sideOffset={4}>
+							<div class="menu shadow-md dropdown-content z-[1] bg-base-100 rounded-lg">
+								<DropdownMenu.Item>
+									<button on:click={() => (edit = true)}> Edit </button>
+								</DropdownMenu.Item>
+								<DropdownMenu.Item>
+									<form on:submit={handleDelete}>
+										<button class="text-error"> Delete </button>
+									</form>
+								</DropdownMenu.Item>
+							</div>
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
+				</div>
+			{/if}
+
+			<div class="text-xs">
+				<Count {item} type="comment" />
+			</div>
 		</div>
 	</div>
 </div>

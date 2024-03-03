@@ -1,4 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit'
+import { prisma } from '$lib/server/prisma'
 
 export const GET: RequestHandler = async (event) => {
 	const { type, id } = Object.fromEntries(event.url.searchParams)
