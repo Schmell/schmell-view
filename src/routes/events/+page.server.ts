@@ -3,24 +3,8 @@ import { fail, type Actions } from '@sveltejs/kit'
 import { redirect, setFlash } from 'sveltekit-flash-message/server'
 import type { PageServerLoad } from './$types'
 
-export const load: PageServerLoad = async (event) => {
-	const { locals, url } = event
-	const session = await locals.auth.validate()
-
-	if (!session) {
-		throw redirect(
-			302,
-			`/auth/login?from=${url.pathname}`,
-			{ type: 'error', message: 'Not Event' },
-			event
-		)
-	}
-
-	const skip = url.searchParams.get('skip')
-	const take = url.searchParams.get('take')
-	const whereType = url.searchParams.get('whereType')
-	const whereId = url.searchParams.get('whereId')
-	const title = url.searchParams.get('title')
+export const load: PageServerLoad = async ({ url, cookies }) => {
+	const { skip, take, whereType, whereId, title } = Object.fromEntries(url.searchParams)
 
 	function getWhere() {
 		if (whereType && whereId) {
@@ -30,13 +14,9 @@ export const load: PageServerLoad = async (event) => {
 		}
 		return {}
 	}
-	// console.log('getWhere(): ', getWhere())
+
 	async function getEventsCount() {
-		try {
-			return await prisma.event.count({ where: getWhere() })
-		} catch (error) {
-			console.log('error: ', error)
-		}
+		return await prisma.event.count({ where: getWhere() })
 	}
 
 	async function getEvents() {
@@ -62,6 +42,7 @@ export const load: PageServerLoad = async (event) => {
 				take: Number(take ?? 10)
 			})
 		} catch (error: any) {
+			setFlash({ type: 'error', message: 'Get event Fail' }, cookies)
 			throw fail(500, { message: 'Get event Fail', error: error.message })
 		}
 	}
@@ -80,9 +61,6 @@ export const load: PageServerLoad = async (event) => {
 		}
 	}
 
-	// const [events, count] = await getEvents()
-	// console.log('count: ', count)
-
 	return {
 		title,
 		events: await getEvents(),
@@ -92,22 +70,25 @@ export const load: PageServerLoad = async (event) => {
 }
 
 export const actions = {
-	sortByOrg: async () => {
+	sortByOrg: async ({ cookies }) => {
 		try {
 			return await prisma.organization.findMany({
 				orderBy: { name: 'asc' }
 			})
 		} catch (error) {
-			console.log('error: ', error)
+			setFlash({ type: 'error', message: 'sortByOrg action error' }, cookies)
 			return fail(500, { message: 'Sort By Org Fail' })
 		}
 	},
 
-	deleteEvent: async (event) => {
-		console.log('deleteEvent: ')
-		const { locals, url } = event
+	deleteEvent: async ({ locals, url, cookies }) => {
 		const session = locals.auth.validate()
-		if (!session) throw redirect(307, `/auth/login?from=${url.pathname}${url.search}`)
+		if (!session)
+			throw redirect(
+				`/auth/login?from=${url.pathname}${url.search}`,
+				{ type: 'error', message: 'Not authorized to delete' },
+				cookies
+			)
 
 		const itemId = url.searchParams.get('itemId') ?? ''
 
@@ -121,10 +102,10 @@ export const actions = {
 				where: { id: itemId }
 			})
 		} catch (error) {
+			setFlash({ type: 'error', message: 'Error in deleting event' }, cookies)
 			console.log('error: ', error)
 		}
 
-		const message = { type: 'success', message: 'Event was deleted' } as const
-		setFlash(message, event)
+		setFlash({ type: 'success', message: 'Event was deleted' }, cookies)
 	}
 } satisfies Actions

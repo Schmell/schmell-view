@@ -8,15 +8,15 @@ import { Prisma } from '@prisma/client'
 import { capitalizeFirstLetter } from '$lib/utils'
 import { LuciaError } from 'lucia'
 
-export const load: PageServerLoad = async (event) => {
-	const session = await event.locals.auth.validate()
+export const load: PageServerLoad = async ({ locals, cookies }) => {
+	const session = await locals.auth.validate()
 	if (session) {
 		if (!session.user.emailVerified) {
 			throw redirect(
 				302,
 				'/email-verification',
 				{ type: 'error', message: 'Email is not verified' },
-				event
+				cookies
 			)
 		}
 		// need to change this to dashboard as home page cannot be a login page
@@ -43,9 +43,7 @@ export const actions: Actions = {
 			// find user by key // and validate password
 			const key = await auth.useKey('email', form.data.email.toLowerCase(), form.data.password)
 			const user = await auth.getUser(key.userId)
-			// console.log(user)
 
-			// I think that having an unapproved model
 			if (!user.emailVerified) {
 				throw redirect(
 					'/auth/emal-verification',
@@ -86,17 +84,14 @@ export const actions: Actions = {
 				console.log('prisma known error: ', form)
 				// Unique constraint violation
 				if (e.code === 'P2002') {
-					//@ts-ignore
+					// @ts-ignore
 					const propName = e.meta?.target[0]
 
 					form.valid = false
-					console.log('form.data[propName]: ', form.data[propName])
 
 					form.errors[propName] = `${capitalizeFirstLetter(propName)} is already registered`
 
-					return fail(400, {
-						form
-					})
+					return fail(400, { form })
 				}
 
 				// Can't reach database server
@@ -110,6 +105,6 @@ export const actions: Actions = {
 		}
 		// redirect to profile page
 		// make sure you don't throw inside a try/catch block!
-		throw redirect(302, '/events')
+		throw redirect(302, '/dashboard', { type: 'success', message: 'Login successful' }, event)
 	}
 }
