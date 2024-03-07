@@ -45,7 +45,11 @@
 		return liked.id
 	}
 
-	$: likedByUser = item.Likes.some((like) => like.userId === userId)
+	$: {
+		if (item.Likes) {
+			likedByUser = item.Likes.some((like) => like.userId === userId)
+		}
+	}
 
 	async function likeApi(unlikeId: any) {
 		return await fetch(`/api/like`, {

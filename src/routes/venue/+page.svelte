@@ -25,7 +25,7 @@
 								<img src={venue.burgee} width="24" alt="venue burgee" />
 							{/if}
 						</div>
-						<img  src={venue.Publisher?.avatar} width="24" alt={venue.Publisher?.name} />
+						<img src={venue.Publisher?.avatar} width="24" alt={venue.Publisher?.name} />
 					</div>
 					<div class="p-2">
 						<div>
@@ -58,7 +58,7 @@
 							</a>
 						</div>
 
-						<LikeFollow type="venue" item={venue} userId={user?.userId} />
+						<LikeFollow type="venue" item={venue} />
 					</div>
 				</div>
 			</div>

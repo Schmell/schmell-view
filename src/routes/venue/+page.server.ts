@@ -9,6 +9,8 @@ export const load = (async () => {
 				orderBy: { createdAt: 'desc' },
 				include: {
 					Publisher: { select: { id: true, name: true, avatar: true } },
+					Follows: true,
+					Likes: { select: { id: true, eventId: true, userId: true } },
 					_count: true
 				}
 			})

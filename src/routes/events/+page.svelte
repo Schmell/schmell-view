@@ -4,12 +4,12 @@
 	import { page } from '$app/stores'
 	import { Page } from '$components/layout'
 	import ItemCard from '$components/layout/ItemCard.svelte'
-	import LikeCount from '$lib/like/like-count.svelte'
 	import Icon from '@iconify/svelte'
 	import { createPagination } from '@melt-ui/svelte'
 	import type { PageData } from './$types'
 	import AreYouSure from '$lib/areYouSure/areYouSure.svelte'
 	import Count from '$lib/like/count.svelte'
+	import { Avatar, DropdownMenu } from 'bits-ui'
 
 	export let data: PageData
 
@@ -27,15 +27,6 @@
 	$: ({ user } = data)
 
 	let pageSize = 10
-
-	// const likey = createQuery({
-	// 	queryFn: async () => data.awaited.events,
-	// 	queryKey: ['heynow'],
-	// 	initialData: events
-	// })
-	// if ($likey) {
-	// 	console.log($likey.data.)
-	// }
 
 	// melt-ui pagination component
 	const {
@@ -128,24 +119,38 @@
 					{@html event.Venue?.name}
 				</a>
 			</div>
+
 			<div slot="bottom-right">
 				<div class="flex items-center justify-end min-h-12">
-					{#if user?.userId === event?.publisherId}
-						<div class="dropdown dropdown-top dropdown-end text-base-content">
-							<div tabindex="0" role="button" class="px-1">
-								<Icon icon="mdi:dots-vertical" width="20" />
-							</div>
-							<!-- svelte-ignore  a11y-no-noninteractive-tabindex-->
-							<ul
-								tabindex="0"
-								class="dropdown-content z-[1] menu p-2 shadow-lg uppercase bg-base-300 rounded-box w-52"
-							>
-								<li>
-									<a href="/events/{event?.id}/edit?{getFromString()}">
-										<Icon icon="mdi:pencil-outline" /> edit
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger>
+							<Icon icon="mdi:dots-vertical" width="20" />
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content
+							class="dropdown-content gap-2 z-[1] menu shadow-lg uppercase bg-base-300 rounded-box min-w-28"
+							side="left"
+							sideOffset={4}
+						>
+							<DropdownMenu.Item class="p-1 rounded-md hover:bg-base-100">
+								<a href="/comps/{event?.id}" class="flex gap-2 items-center">
+									<Icon class="" icon="mdi:pencil-outline" /> Competitors
+								</a>
+							</DropdownMenu.Item>
+							<DropdownMenu.Item class="p-1 rounded-md hover:bg-base-100">
+								<a href="/races/{event?.id}" class="flex gap-2 items-center">
+									<Icon class="" icon="mdi:pencil-outline" /> Races
+								</a>
+							</DropdownMenu.Item>
+							{#if user?.userId === event?.publisherId}
+								<DropdownMenu.Item class="p-1 rounded-md hover:bg-base-100">
+									<a
+										href="/events/{event?.id}/edit?{getFromString()}"
+										class="flex gap-2 items-center"
+									>
+										<Icon class="" icon="mdi:pencil-outline" /> <span>Edit</span>
 									</a>
-								</li>
-								<li>
+								</DropdownMenu.Item>
+								<DropdownMenu.Item class="p- rounded-md hover:bg-base-100">
 									<form method="post" use:enhance>
 										<button
 											type="button"
@@ -158,51 +163,27 @@
 											<Icon icon="mdi:trash-outline" /> Delete
 										</button>
 									</form>
-								</li>
-							</ul>
-						</div>
-					{/if}
+								</DropdownMenu.Item>
+							{/if}
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
 
-					<div class="avatar">
-						<div class="w-6 rounded-full shadow-md">
-							<a href="/user/{event.Publisher?.id}">
-								<img src={event.Publisher?.avatar} alt={event.Publisher?.username} />
-							</a>
-						</div>
+					<div class="tooltip tooltip-top rounded-full" data-tip={event.Publisher?.username}>
+						<a href="/user/{event.Publisher?.id}" class="btn btn-ghost rounded-full p-1">
+							<Avatar.Root class="avatar w-6 rounded-full  bg-base-300 ">
+								<Avatar.Image
+									class="rounded-full "
+									alt="{event.Publisher?.username}}"
+									src={event.Publisher?.avatar}
+								/>
+								<Avatar.Fallback class="rounded-full ">
+									{event.Publisher?.username.slice(0, 1)}
+								</Avatar.Fallback>
+							</Avatar.Root>
+						</a>
 					</div>
-
-					<!-- Tools -->
-					<!-- {#if user?.userId === event?.publisherId} -->
-					<!-- <div class="tooltip tooltip-top" data-tip="Edit Event">
-							<a
-								href="/events/{event?.id}/edit?from={$page.url.pathname}
-									&{$page.url.searchParams.toString()}"
-								class="btn btn-ghost p-1"
-							>
-								<Icon class="text-3xl text-primary" width="24" icon="mdi:pencil-outline" />
-							</a>
-						</div>
-
-						<div class="tooltip tooltip-top" data-tip="Delete Event">
-							<form method="post" use:enhance>
-								<button
-									type="button"
-									class="btn btn-ghost p-1"
-									on:click={() => {
-										areYouSure.open = true
-										areYouSure.action = `?/deleteEvent&itemId=${event.id}&from=${
-											$page.url.pathname
-										}&${$page.url.searchParams.toString()}`
-										areYouSure.severity = 'low'
-									}}
-								>
-									<Icon class="text-3xl text-primary" width="24" icon="mdi:trash-outline" />
-								</button>
-							</form>
-						</div> -->
-					<!-- {/if} -->
-					<!-- tools end -->
 				</div>
+
 				<div class="text-xs text-base-content pr-2 pb-1">
 					{event.createdAt?.toLocaleDateString()}
 				</div>

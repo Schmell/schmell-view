@@ -17,12 +17,14 @@ export const GET = async (event) => {
 	}
 
 	//
-	console.log('callback event: ', event)
+	// console.log('callback event: ', event)
 	//
 
-	const { existingUser, googleUser, createUser, createKey } = await googleAuth.validateCallback(
-		code
-	)
+	const googAuth = await googleAuth.validateCallback(code)
+
+	console.log('googAuth: ', googAuth)
+	// console.log(existingUser, googleUser)
+	const { existingUser, googleUser, createUser, createKey } = googAuth
 
 	try {
 		const getUser = async () => {

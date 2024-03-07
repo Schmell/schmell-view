@@ -73,7 +73,9 @@
 						</ul>
 					</div>
 				{:else}
-					<a href="/auth/login" class="btn btn-primary btn-xs rounded-full shadow-lg">Login</a>
+					<a href="/auth/login" class="btn btn-primary btn-xs uppercase rounded-full shadow-lg"
+						>Login</a
+					>
 				{/if}
 			</div>
 		</nav>
@@ -173,7 +175,7 @@
 	}
 
 	footer {
-		@apply bg-primary-focus text-base-200;
+		@apply bg-primary text-base-200;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -185,7 +187,7 @@
 	}
 
 	.navbar {
-		@apply bg-primary-focus shadow-md;
+		@apply bg-primary shadow-md;
 		display: flex;
 		justify-content: space-between;
 		padding-inline-start: 0em;

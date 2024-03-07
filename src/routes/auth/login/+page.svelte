@@ -27,20 +27,20 @@
 <Page title="Login">
 	<p class="m-0">Don't have an account? <a href="/auth/register"> Register </a></p>
 	<Form {formObj}>
-		<Input name="email" type="email" {formObj} />
+		<Input name="email" type="email" autofill="off" {formObj} />
 		<Input name="password" type="password" {formObj} />
 		<Button>submit</Button>
 		<div slot="bottomLinks" class="mt-1">
 			<a href="/auth/password-reset">Reset password</a>
 			<!-- <a href="/signup">Create an account</a> -->
 			<div class="flex flex-col gap-1">
-				<a class="btn btn-ghost" href="/auth/login/github">
+				<a class="btn btn-ghost uppercase" href="/auth/login/github">
 					<Icon icon="fa6-brands:github" /> Sign in with Github
 				</a>
-				<a class="btn btn-ghost" href="/auth/login/google">
+				<a class="btn btn-ghost uppercase" href="/auth/login/google">
 					<Icon icon="devicon:google" /> Sign in with Google
 				</a>
-				<a class="btn btn-ghos btn-disabled" href="/auth/login/facebook">
+				<a class="btn btn-ghost uppercase btn-disabled" href="/auth/login/facebook">
 					<Icon icon="devicon:facebook" /> Sign in with facebook
 				</a>
 			</div>

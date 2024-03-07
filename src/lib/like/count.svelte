@@ -8,7 +8,6 @@
 
 	export let item
 	export let type
-	$: console.log(type)
 </script>
 
 <LikeComponent let:Like let:liked {item} {type}>

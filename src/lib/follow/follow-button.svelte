@@ -42,9 +42,15 @@
 		return followed?.id
 	}
 
-	$: followedId = getUserFollowedId(item.Follows)
+	let followedId
+	$: if (item.Follows) {
+		followedId = getUserFollowedId(item.Follows)
+	}
 
-	$: followedByUser = item.Follows.some((follow) => follow.userId === userId) ?? false
+	let followedByUser
+	$: if (item.Follows) {
+		followedByUser = item.Follows.some((follow) => follow.userId === userId) ?? false
+	}
 
 	async function followApi(unfollowId?: string) {
 		if (unfollowId === undefined) return json({ error: 'API error - no unfollow id provided' })

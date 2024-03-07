@@ -6,8 +6,9 @@
 	import type { Like, User } from '@prisma/client'
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query'
 	import { Avatar, DropdownMenu, LinkPreview } from 'bits-ui'
+	import { fly, slide } from 'svelte/transition'
 
-	// just define whats needed and allow all
+	// ✔️ just define whats needed and allow all the rest
 	type Item = {
 		id: string
 		comment: string
@@ -19,22 +20,15 @@
 		_count: string
 		[key: string]: any
 	}
+
 	export let item: Item
 	export let userId = ''
 
-	// let commentMenu: HTMLDetailsElement
 	let edit = false
 	let readMore = false
+	let focused = false
 
 	const client = useQueryClient()
-
-	// function getShortItem() {
-	// 	console.log(item.comment.length)
-	// 	if (item.comment.length > 40) {
-
-	// 	}
-	// }
-	// getShortItem()
 
 	// Delete
 	async function deleteComment() {
@@ -63,18 +57,20 @@
 	}
 	const updateCommentMutation = createMutation({
 		mutationFn: updateComment,
-		onMutate: async () => {},
+		onMutate: async () => {
+			return { waiting: true }
+		},
 		onError: ({ message }) => {
 			console.log('message: ', message)
 		},
 
 		onSuccess: async () => {
+			focused = false
 			await client.invalidateQueries({ queryKey: ['comments'] })
 			edit = false
 		}
 	})
 
-	// handel's
 	function handleSubmit(e: SubmitEvent) {
 		e.preventDefault
 		e.stopPropagation
@@ -120,77 +116,89 @@
 		</LinkPreview.Content>
 	</LinkPreview.Root>
 
-	<div class="flex gap-2 py-2 items-end w-full justify-between pr-4">
+	<div class=" py-2 w-full justify-between pr-4">
 		<div class="w-full">
 			{#if edit}
-				<form on:submit={handleSubmit}>
-					<div class="join">
-						<input class="input join-item" bind:value={item.comment} />
-						<button disabled={$updateCommentMutation.isPending} class="join-item btn btn-primary">
-							{#if $updateCommentMutation.isPending}
-								<span class="loading loading-dots loading-xs" />
-							{/if}
-							edit
+				<form on:submit={handleSubmit} class="join w-full pb-2">
+					<input
+						class="input join-item w-full !outline-none focus:shadow-lg focus:border-r-transparent"
+						bind:value={item.comment}
+						on:focus={() => (focused = true)}
+					/>
+					{#if focused}
+						<button
+							disabled={$updateCommentMutation.isPending}
+							class="join-item btn btn-ghost border-2 border-opacity-10 border-white"
+						>
+							<div in:slide out:slide={{ delay: 500, duration: 500 }}>
+								{#if $updateCommentMutation.isPending}
+									<span class="loading loading-dots loading-xs" />
+								{:else}
+									<Icon class="text-xl" icon="mdi:send" />
+								{/if}
+							</div>
 						</button>
-					</div>
-				</form>
-			{:else}
-				<!-- read more here -->
-				{#if item.comment.length > 60 && readMore === false}
-					<div class="px-4 pb-2">
-						{@html item.comment.slice(0, 59)} ...
-					</div>
-					<div class="w-full flex justify-end">
-						<button class="btn btn-xs btn-outline shadow-md" on:click={() => (readMore = true)}>
-							read more
-						</button>
-					</div>
-				{:else}
-					<div class="px-4 pb-2">
-						{@html item.comment}
-					</div>
-					{#if item.comment.length > 60}
-						<div class="w-full flex justify-end">
-							<button class="btn btn-xs btn-outline shadow-md" on:click={() => (readMore = false)}>
-								read less
-							</button>
-						</div>
 					{/if}
+				</form>
+			{:else if item.comment.length > 75 && readMore === false}
+				<div class="px-4">
+					{@html item.comment.slice(0, 74)} ...
+				</div>
+				<div class="w-full flex justify-end">
+					<button class="btn btn-xs btn-ghost shadow-md" on:click={() => (readMore = true)}>
+						more
+					</button>
+				</div>
+			{:else}
+				<div class="px-4">
+					{@html item.comment}
+				</div>
+				{#if item.comment.length > 60}
+					<div class="w-full flex justify-end">
+						<button class="btn btn-xs btn-ghost shadow-md" on:click={() => (readMore = false)}>
+							less
+						</button>
+					</div>
 				{/if}
 			{/if}
 			<!-- need refined time from post here -->
-			<div class="text-xs text-accent">{formatDateTime(item?.createdAt ?? new Date())}</div>
 		</div>
 
 		<div class="flex items-center gap-4 justify-between relative">
-			<!-- <LikeCount type="comment" {item} /> -->
+			<div class="text-xs text-accent">{formatDateTime(item?.createdAt ?? new Date())}</div>
+			<div class="flex items-center gap-3">
+				{#if userId === item.User?.id || userId === item.userId}
+					<div class="pt-1">
+						<DropdownMenu.Root>
+							<DropdownMenu.Trigger>
+								<Icon icon="mdi:dots-vertical" />
+							</DropdownMenu.Trigger>
 
-			{#if userId === item.User?.id || userId === item.userId}
-				<!-- need dialog here -->
-				<div class="pt-1">
-					<DropdownMenu.Root>
-						<DropdownMenu.Trigger>
-							<Icon icon="mdi:dots-vertical" />
-						</DropdownMenu.Trigger>
-
-						<DropdownMenu.Content class="min-w-20 max-w-32" side="left" sideOffset={4}>
-							<div class="menu shadow-md dropdown-content z-[1] bg-base-100 rounded-lg">
-								<DropdownMenu.Item>
-									<button on:click={() => (edit = true)}> Edit </button>
+							<DropdownMenu.Content
+								class="dropdown-content gap-2 z-[1] menu shadow-lg uppercase bg-base-300 rounded-box min-w-24"
+								side="left"
+								sideOffset={4}
+							>
+								<DropdownMenu.Item class=" p-1 pl-2 hover:bg-base-100 rounded-md">
+									<button on:click={() => (edit = true)} class="flex items-center gap-2">
+										<Icon class="" icon="mdi:pencil-outline" /> Edit
+									</button>
 								</DropdownMenu.Item>
-								<DropdownMenu.Item>
+								<DropdownMenu.Item class="p-1 pl-2 hover:bg-base-100 rounded-md">
 									<form on:submit={handleDelete}>
-										<button class="text-error"> Delete </button>
+										<button class="text-error flex items-center gap-2">
+											<Icon icon="mdi:trash-outline" /> Delete
+										</button>
 									</form>
 								</DropdownMenu.Item>
-							</div>
-						</DropdownMenu.Content>
-					</DropdownMenu.Root>
-				</div>
-			{/if}
+							</DropdownMenu.Content>
+						</DropdownMenu.Root>
+					</div>
+				{/if}
 
-			<div class="text-xs">
-				<Count {item} type="comment" />
+				<div class="text-xs">
+					<Count {item} type="comment" />
+				</div>
 			</div>
 		</div>
 	</div>

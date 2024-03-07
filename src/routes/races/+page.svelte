@@ -76,7 +76,9 @@
 				</div>
 
 				{#if race.notes}
-					<div class="text-xs text-primary-focus underline">Notes:</div>
+					<div class="text-xs text-[color-mix(in_oklab,oklch(var(--p)),black_7%)] underline">
+						Notes:
+					</div>
 					<div class="px-2 pb-4">
 						{race.notes}
 					</div>

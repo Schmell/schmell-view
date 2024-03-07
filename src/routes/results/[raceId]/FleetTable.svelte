@@ -622,12 +622,12 @@
 	}
 
 	.selectedEven {
-		@apply bg-info text-neutral-focus;
+		@apply bg-info text-base-100;
 	}
 
 	.selectedOdd {
 		--tw-bg-opacity: 0.8 !important;
 		background-color: hsl(var(--in) / var(--tw-bg-opacity)) !important;
-		@apply text-neutral-focus;
+		@apply text-base-100;
 	}
 </style>

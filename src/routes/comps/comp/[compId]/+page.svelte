@@ -118,11 +118,10 @@
 								<span class="text-xs text-primary">Rating: </span>
 								<span>{comp.rating}</span>
 							</div>
-							
 						{/if}
 					</div>
 
-					<p class="py-6 px-2 text-lg shadow-lg border-r-4 border-accent rounded-lg ">
+					<p class="py-6 px-2 text-lg shadow-lg border-r-4 border-accent rounded-lg">
 						{comp.description ?? 'No description provided'}
 					</p>
 					<div class="flex gap-2 items-center justify-end">
@@ -186,7 +185,7 @@
 									{#each event.Races as race}
 										<div class=" mx-4 mb-4 border-l-4 border-accent shadow-xl rounded-lg">
 											<div
-												class="px-4 py-2 bg-accent-focus text-lg font-semibold w-full rounded-t-md"
+												class="px-4 py-2 bg-[color-mix(in_oklab,oklch(var(--a)),black_7%)] text-lg font-semibold w-full rounded-t-md"
 											>
 												<a href="/results/{race.id}" class="text-accent-content">{race.name}</a>
 											</div>

@@ -45,6 +45,7 @@ export const actions: Actions = {
 			})
 			newTheme = form.data.theme
 		}
+		// transformPageChunk: ({ html }) => html.replace('data-theme=""', `data-theme="${theme}"`)
 
 		try {
 			await prisma.userSettings.upsert({
@@ -67,7 +68,7 @@ export const actions: Actions = {
 			return fail(400, { message: 'Fail on settings save' })
 		}
 		// return { newTheme };\
-		console.log('url.searchParams.get(from): ', url.searchParams.get('from'))
+		// console.log('url.searchParams.get(from): ', url.searchParams.get('from'))
 		throw redirect(301, `${url.searchParams.get('from')}?theme=${newTheme}`)
 	}
 }

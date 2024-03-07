@@ -1,25 +1,23 @@
 <script script lang="ts">
-	import { enhance } from '$app/forms'
-	import { goto } from '$app/navigation'
-	import { page } from '$app/stores'
 	import { Page } from '$components/layout'
 	import Comments from '$lib/comments/comments.svelte'
 	import LikeFollow from '$lib/like/like-follow.svelte'
-	// import Like from '$lib/like/like.svelte'
-	import { getHref, isUrl } from '$lib/utils'
+	import { getHref, isUrl, svelog } from '$lib/utils'
 	import Icon from '@iconify/svelte'
+	import { Avatar, Tooltip } from 'bits-ui'
 	import type { PageData } from './$types'
-	import LikeComponent from '$lib/like/like-component.svelte'
-	import LikeButton from '$lib/like/like-button.svelte'
-	import Count from '$lib/like/count.svelte'
 	import EditMenu from './editMenu.svelte'
-	import { Avatar } from 'bits-ui'
+	import { flyAndScale } from '$lib/utils/transitions'
+	import { ScrollArea } from 'bits-ui'
+	import Progress from '$components/progress.svelte'
+	import StatusBadge from '$components/statusBadge.svelte'
 
 	export let data: PageData
-	$: ({ event, user } = data)
+	$: ({ event, user, awaited } = data)
 	$: userId = user?.userId
 
 	let showRaces = false
+	let progressTip
 	//
 </script>
 
@@ -35,10 +33,10 @@
 			<div class="md:flex">
 				<div class="md:shrink-0 flex relative">
 					<div class="flex absolute top-2 right-2">
-						{#if event.complete}
-							<div class="badge badge-success shadow-lg">complete</div>
+						{#if !event.public}
+							<div class="badge badge-error shadow-md">Private</div>
 						{:else}
-							<div class="badge badge-warning shadow-lg w-36">In progress</div>
+							<div class="badge badge-success shadow-md">Public</div>
 						{/if}
 					</div>
 					{#if isUrl(event.Venue?.burgee)}
@@ -60,11 +58,8 @@
 					/>
 					<div class="absolute w-full flex justify-end bottom-2 right-2 p-2">
 						<div>
-							<!-- <div class="text-sm">
-								<Count item={event} type="event" />
-							</div> -->
-
 							<LikeFollow item={event} type="event" />
+							<!-- Count thing -->
 							<div class="flex justify-end text-sm">
 								<span class="pr-1 flex items-center text-xs">
 									{event._count.Likes}
@@ -126,80 +121,105 @@
 								</div>
 							</a>
 						{/if}
-						<div class="flex justify-end pb-2 pr-3">
-							{#if !event.public}
-								<div class="badge badge-error absolute right-2 top-2 shadow-md">Private</div>
-							{:else}
-								<div class="badge badge-success shadow-md">Public</div>
-							{/if}
-						</div>
-						<!-- Likes and follows -->
-						<div class="flex justify-end text-sm">
-							<span class="pr-1 flex items-center text-xs">
-								{event._count.Likes}
-								<Icon class="px-1 text-lg" icon="mdi:thumbs-up" />
-							</span>
-							/
-							<span class="pr-2 pl-2 flex items-center text-xs">
-								{event._count.Follows}
-								<Icon class="px-1 text-lg" icon="mdi:bell-ring" />
-							</span>
-						</div>
 					</div>
+				</div>
+				<div class="pb-2 pr-6">
+					<!--  -->
+					<StatusBadge status={event.complete ? 'success' : 'warning'}>
+						{event.complete ? 'Complete' : 'In progress'}
+					</StatusBadge>
 				</div>
 			</div>
 
 			<div class="px-4 pb-4 flex justify-between items-center">
-				<button class="btn btn-ghost btn-xs" on:click={() => (showRaces = !showRaces)}>
+				<button class="btn btn-ghost btn-xs uppercase" on:click={() => (showRaces = !showRaces)}>
 					{showRaces ? '^ Hide Races' : '⌄ Show Races'}
 				</button>
+
 				<div>
 					<div class="flex items-center justify-center">
 						<EditMenu {event} />
 
-						<!-- User -->
-						<div class="tooltip tooltip-top" data-tip={user?.username}>
-							<a href="/user/{user?.userId}" class="btn btn-ghost rounded-full p-1">
-								<Avatar.Root class="avatar w-8 ">
-									<Avatar.Image class=" rounded-full" alt={user?.username} src={user?.avatar} />
-									<Avatar.Fallback />
-								</Avatar.Root>
-							</a>
-						</div>
+						<!-- User Avatar -->
+						<Tooltip.Root openDelay={1000}>
+							<Tooltip.Trigger>
+								<a href="/user/{event.publisherId}" class="btn btn-ghost rounded-full p-1">
+									<Avatar.Root class="avatar w-8 ">
+										<Avatar.Image
+											class=" rounded-full"
+											alt={event.Publisher?.username}
+											src={event.Publisher?.avatar}
+										/>
+										<Avatar.Fallback />
+									</Avatar.Root>
+								</a>
+							</Tooltip.Trigger>
+							<Tooltip.Content
+								transition={flyAndScale}
+								transitionConfig={{ y: 8, duration: 150 }}
+								side="left"
+								sideOffset={8}
+							>
+								<div class="p-2 bg-base-300 rounded-lg">{user?.username}</div>
+							</Tooltip.Content>
+						</Tooltip.Root>
 					</div>
 				</div>
 			</div>
-			<!-- ////////////////////////////////////////////////////////////////////////////// -->
-
-			{#if showRaces}
-				{#await data.await.races}
-					<progress class="progress progress-accent px-4 w-full" />
-				{:then races}
-					{#each races as race}
-						<a href="/results/{race.id}">
-							<div class=" p-2 px-8 border-b-4 border-l-4 rounded-lg border-base-200 m-4">
-								<div class="w-full pt-1">
-									<h1 class="text-xl font-semibold">{race.name}</h1>
-								</div>
-								<div class="flex justify-between pb-2">
-									<div class="text-xs">
-										{race.date ?? ''}
-										{race.time ? `- ${race.time}` : ''}
-									</div>
-
-									<div
-										class="badge badge-success shadow-md"
-										class:badge-error={!Number(race.sailed)}
-									>
-										{Number(race.sailed) ? 'Sailed' : 'Unsailed'}
-									</div>
-								</div>
-							</div>
-						</a>
-					{/each}
-				{/await}
-			{/if}
 		</div>
+
+		<!-- NEW RACES VIEW ///////////////////////////////////////////////// -->
+		{#if showRaces}
+			<ScrollArea.Root class="">
+				<ScrollArea.Viewport class=" max-h-36 w-full">
+					<ScrollArea.Content>
+						<div class="flex gap-8 p-4 w-full shadow-xl overflow-scroll min-h-36">
+							{#await awaited.races}
+								<progress class="progress progress-accent px-4 w-full" />
+							{:then races}
+								{#each races as race}
+									<a href="/results/{race.id}" class="relative">
+										<div
+											class="border-opacity-50 border-l-2 border-b-2 border-accent rounded-lg rounded-tl-lg rounded-tr-[3em] overflow-hidden min-w-36 max-w-42"
+										>
+											<div class="shadow-lg bg-base-100 p-2 pl-4">
+												{race.name}
+											</div>
+
+											<div
+												class="badge badge-success shadow-md absolute -right-2 top-2 z-10"
+												class:badge-error={!Number(race.sailed)}
+											>
+												{#if Number(race.sailed)}
+													<Icon icon="mdi:check" />
+												{:else}
+													<Icon icon="mdi:minus-circle-off-outline" />
+												{/if}
+											</div>
+
+											<div class="flex justify-between items-center p-2 pb-4 px-4">
+												<div class="">{race.date ?? 'TBD'}</div>
+											</div>
+											<div class="text-accent text-xs p-1 flex justify-end">
+												{race.updatedAt?.toLocaleDateString()}
+											</div>
+										</div>
+									</a>
+								{/each}
+							{/await}
+						</div>
+					</ScrollArea.Content>
+				</ScrollArea.Viewport>
+				<ScrollArea.Scrollbar
+					orientation="horizontal"
+					class="flex select-none rounded-full border-l border-l-orange-50  p-1 w-3 bg-orange-50"
+				>
+					<ScrollArea.Thumb class=" flex-1 rounded-full bg-orange-500 opacity-40" />
+				</ScrollArea.Scrollbar>
+				<ScrollArea.Corner />
+			</ScrollArea.Root>
+		{/if}
+
 		<div class="max-w-xl m-auto flex justify-center">
 			<Comments type="event" item={event} {userId} />
 		</div>

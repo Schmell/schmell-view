@@ -26,7 +26,7 @@ export const themeHandle: Handle = async ({ resolve, event }) => {
 		theme = newTheme
 	}
 
-	if (theme || cookieTheme) {
+	if (newTheme || cookieTheme) {
 		return await resolve(event, {
 			transformPageChunk: ({ html }) => html.replace('data-theme=""', `data-theme="${theme}"`)
 		})

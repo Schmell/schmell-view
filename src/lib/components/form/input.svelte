@@ -40,6 +40,7 @@
 			aria-invalid={$errors.password ? 'true' : undefined}
 			class={cn('input input-bordered w-full max-w-lg', className)}
 			class:input-error={$errors[name]}
+			{...$$restProps}
 		/>
 	{:else if type === 'email'}
 		<input

@@ -2,6 +2,7 @@
 	import { createInfiniteQuery, createQuery } from '@tanstack/svelte-query'
 	import Comment from './comment.svelte'
 	import CommentForm from './commentForm.svelte'
+	import IntersectionObserver from '$components/IntersectionObserver.svelte'
 
 	export let item: any
 	export let userId = ''
@@ -33,9 +34,8 @@
 			(r) => r.json()
 		)
 	}
-
 	const query = createInfiniteQuery({
-		queryKey: ['comments', 1],
+		queryKey: ['comments'],
 		queryFn: ({ pageParam }) => getInfiniteComments({ pageParam }),
 		initialPageParam: '',
 		getNextPageParam: (lastPage, allPages) => {
@@ -58,14 +58,14 @@
 				{#each $uniqueUsers.data as user}
 					<div class="avatar">
 						<div class="w-6 bg-base-300">
-							<img alt="" src={user.User.avatar} />
+							<img alt={user.User.username} src={user.User.avatar} />
 						</div>
 					</div>
 				{/each}
 			{/if}
 
 			<div class="avatar placeholder">
-				<div class:text-xs={$count.data >= 10} class="w-6 bg-neutral-focus text-neutral-content">
+				<div class:text-xs={$count.data >= 10} class="w-6 bg-base-100 text-neutral-content">
 					+{$count.data}
 				</div>
 			</div>
@@ -77,9 +77,6 @@
 	<CommentForm {type} {userId} itemId={item.id ?? ''} />
 
 	<div class="pt-4">
-		{#if $query.isLoading}
-			<progress class="progress w-full" />
-		{/if}
 		{#if $query.isSuccess}
 			{#each $query.data.pages as page}
 				{#each page.comments as item}
@@ -87,24 +84,19 @@
 				{/each}
 			{/each}
 		{/if}
+		{#if $query.isLoading}
+			<progress class="progress w-full" />
+		{/if}
 	</div>
 
 	<!--  -->
 	{#if $query.hasNextPage}
-		<div class="py-4">
-			<button
-				on:click={() => {
-					$query.fetchNextPage()
-				}}
-				disabled={$query.isFetchingNextPage}
-				class="btn btn-outline btn-sm w-full"
-			>
-				{#if $query.isFetchingNextPage}
-					<span class="loading loading-dots loading-md" />
-				{:else}
-					See more
-				{/if}
-			</button>
-		</div>
+		<IntersectionObserver let:intersecting top={400}>
+			{#if intersecting}
+				<div class="opacity-0">
+					{$query.fetchNextPage()}
+				</div>
+			{/if}
+		</IntersectionObserver>
 	{/if}
 </div>

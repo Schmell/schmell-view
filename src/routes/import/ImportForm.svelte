@@ -67,7 +67,7 @@
 				<div class="tooltip tooltip-bottom-right" data-tip="Add Organization">
 					<a
 						href="/organization/new/edit?from={$page.url.pathname}{$page.url.search}"
-						class="btn btn-primary btn-circle btn-sm hover:btn-primary-focus"
+						class="btn btn-primary btn-circle btn-sm hover:bg-[color-mix(in_oklab,oklch(var(--p)),black_7%)]"
 					>
 						<Icon class="text-3xl" icon="ic:baseline-add" />
 					</a>

@@ -28,6 +28,7 @@ export const load = (async ({ params, url }) => {
 					venueId: true,
 					venueName: true,
 					publisherId: true,
+					Publisher: true,
 					public: true,
 					complete: true,
 					eventwebsite: true,
@@ -82,34 +83,12 @@ export const load = (async ({ params, url }) => {
 			return fail(500, { message: 'Mooked' })
 		}
 	}
-
-	// edit comment
-	// let eventComment = {}
-	// const editCommentId = url.searchParams.get('editComment')
-
-	// if (editCommentId) {
-	// 	try {
-	// 		eventComment = await prisma.comment.findFirstOrThrow({
-	// 			where: { id: editCommentId }
-	// 		})
-	// 	} catch (error) {
-	// 		luciaErrors(error)
-	// 		prismaError(error)
-	// 		console.log('error: ', error)
-	// 		throw fail(500, { messgage: 'Unknown Error occured' })
-	// 	}
-	// }
-
-	// const commentForm = await superValidate(eventComment, commentSchema, { id: 'commentForm' })
-
-	// const deleteCommentForm = await superValidate(eventComment, deleteCommentSchema, {
-	// 	id: 'deleteComment'
-	// })
+	// console.log(await getRaces())
 
 	return {
 		event: await getEvent(),
 		comments: await getComments(),
-		await: {
+		awaited: {
 			races: getRaces()
 		}
 	}

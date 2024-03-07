@@ -2,12 +2,15 @@
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query'
 	import type { Comment } from '@prisma/client'
 	import { delay } from '$lib/utils'
+	import Icon from '@iconify/svelte'
+	import { fade, slide } from 'svelte/transition'
 
 	export let itemId: string
 	export let type: string
 	export let userId = ''
 	let comment: HTMLInputElement
 	let formElement: HTMLFormElement
+	let focused = false
 
 	const client = useQueryClient()
 
@@ -19,14 +22,21 @@
 		}).then((res) => res.json())
 	}
 
+	let addCommentTime = 0
 	const addCommentMutation = createMutation({
 		mutationFn: createComment,
+		onMutate: async () => {
+			addCommentTime = Date.now()
+		},
 
 		onSuccess: async () => {
-			await delay(1000)
+			const delta = Date.now() - addCommentTime
+			console.log('delta: ', delta)
+			await delay(1000 - delta)
 		},
 
 		onSettled: async () => {
+			focused = false
 			await client.invalidateQueries({ queryKey: ['uniqueUsers'] })
 			await client.invalidateQueries({ queryKey: ['comments'] })
 			await client.invalidateQueries({ queryKey: ['count'] })
@@ -48,47 +58,29 @@
 	}
 </script>
 
-<div class="w-full pt-2">
-	<!-- can't use enhance here -->
+<div class="w-full py-4">
 	<form bind:this={formElement} on:submit={handleSubmit}>
 		<div class="join w-full flex">
 			<input
-				class="input rounded-r-none shadow-lg join-item w-full"
+				class="input shadow-lg join-item w-full !outline-none focus:shadow-lg focus:border-r-transparent"
 				class:error={$addCommentMutation.isError}
 				bind:value={comment}
+				on:focus={() => (focused = true)}
 			/>
-			<button
-				disabled={$addCommentMutation.isPending}
-				class="btn btn-primary shadow-lg join-item w-24"
-			>
-				{#if $addCommentMutation.isPending}
-					<span class="loading loading-dots loading-xs" />
-				{:else}
-					Post
-				{/if}
-			</button>
+			{#if focused}
+				<button
+					disabled={$addCommentMutation.isPending}
+					class="btn btn-ghost bg-base-200 text-xl border-2 border-opacity-10 border-white text-primary shadow-lg join-item w-14"
+				>
+					<div transition:slide>
+						{#if $addCommentMutation.isPending}
+							<span class="loading loading-dots loading-xs" />
+						{:else}
+							<Icon icon="mdi:send" />
+						{/if}
+					</div>
+				</button>
+			{/if}
 		</div>
 	</form>
 </div>
-
-<!-- <Form {action} {formObj}>
-	<input type="hidden" name="itemId" value={itemId} />
-	<input type="hidden" name="type" value={type} />
-	<input type="hidden" name="userId" value={userId} />
-	<div class="join w-full">
-		<Input
-			{formObj}
-			name="comment"
-			label=" "
-			placeholder="add a comment"
-			class="rounded-r-none shadow-lg join-item"
-		/>
-		{#if $delayed}
-			<button class="join-item btn btn-primary w-24 mt-1" disabled={$delayed}>
-				<span class="loading loading-dots loading-md" />
-			</button>
-		{:else}
-			<button class="join-item btn btn-primary w-24 mt-1"> post </button>
-		{/if}
-	</div>
-</Form> -->

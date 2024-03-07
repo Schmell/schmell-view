@@ -3,26 +3,23 @@ import { fail, type Actions } from '@sveltejs/kit'
 import { redirect, setFlash } from 'sveltekit-flash-message/server'
 import type { PageServerLoad } from './$types'
 
-export const load: PageServerLoad = async ({ url, cookies }) => {
+export const load: PageServerLoad = async ({ locals, url, cookies }) => {
+	const session = await locals.auth.validate()
 	const { skip, take, whereType, whereId, title } = Object.fromEntries(url.searchParams)
 
-	function getWhere() {
-		if (whereType && whereId) {
-			const where = {}
-			where[whereType] = whereId
-			return where
-		}
-		return {}
-	}
-
 	async function getEventsCount() {
-		return await prisma.event.count({ where: getWhere() })
+		return await prisma.event.count({ where: { [whereType]: whereId } })
 	}
 
 	async function getEvents() {
 		try {
 			return await prisma.event.findMany({
-				where: getWhere(),
+				where: {
+					OR: [
+						{ [whereType]: whereId, public: true },
+						{ [whereType]: whereId, publisherId: session?.user.userId }
+					]
+				},
 				orderBy: sort(),
 				select: {
 					id: true,

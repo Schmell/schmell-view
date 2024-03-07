@@ -2,7 +2,6 @@
 	import { enhance } from '$app/forms'
 	import { Page } from '$components/layout'
 	export let form
-	// $: (const {url, pathname} = form)
 </script>
 
 <Page title="Upload">

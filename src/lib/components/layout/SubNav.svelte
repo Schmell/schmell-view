@@ -1,11 +1,36 @@
 <script>
+	import { flyAndScale } from '$lib/utils/transitions'
+	import { Tooltip } from 'bits-ui'
+
 	export let title
+	let tip
 </script>
 
 <div class="sub-nav">
-	<div class="h-full tooltip tooltip-bottom" data-tip={title}>
-		<div class="text-3xl font-semibold select-none line-clamp-1">{title}</div>
+	<div>
+		<Tooltip.Root open={tip}>
+			<Tooltip.Trigger>
+				<!-- svelte-ignore a11y-no-static-element-interactions -->
+				<div
+					on:click={() => (tip = true)}
+					on:keydown={() => {}}
+					class="text-3xl font-semibold select-none line-clamp-1"
+				>
+					{title}
+				</div>
+			</Tooltip.Trigger>
+			<Tooltip.Content
+				transition={flyAndScale}
+				transitionConfig={{ y: 8, duration: 150 }}
+				side="bottom"
+				sideOffset={10}
+				alignOffset={-45}
+			>
+				<div class="bg-base-300 p-2 rounded-lg">{title}</div>
+			</Tooltip.Content>
+		</Tooltip.Root>
 	</div>
+
 	<div class="mr-4"><slot name="trailing" /></div>
 </div>
 
