@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Page } from '$components/layout'
-	export let data
-	console.log(data)
+	import Icon from '@iconify/svelte'
 </script>
 
 <svelte:head>
@@ -11,44 +10,97 @@
 <Page title="Home">
 	<div>
 		<div class="space-y-4">
-			<h1>Vite Sail is Easy.</h1>
-			<blockquote class="blockquote">You wont believe that it is soo easy.</blockquote>
-			<p>
-				The Vite Sail Scoring app is the easiest way to post and share your sailing race results
-				online. Users will easily be able to get the latest scores by following you organiztion or
-				individual Event.
-			</p>
-			<h2>
-				<span> How easy is it? </span>
-			</h2>
-			<div class="steps p-4">
-				<!-- <Step>
-		  <svelte:fragment slot="header">Register</svelte:fragment>
-		  <p>
-			Step one is to register your organization. <br />
-			Each Event is presented by an organization. Don't worry you can have many but you will need
-			at least one to get started
-		  </p>
-		  <a href="/" class="btn variant-outline block p-4">Register Now!</a>
-		</Step>
-		<Step>
-		  <svelte:fragment slot="header">Upload</svelte:fragment>
-		  <p>
-			Currently we are supporting Sailwave files. You don't need to export anything. Just upload
-			your .blw file and presto results are posted
-		  </p>
-		  <a href="/" class="btn variant-outline block p-4">Upload Now!</a>
-		</Step>
-		<Step>
-		  <svelte:fragment slot="header">Share</svelte:fragment>
-		  <p>
-			Share your results easily by sending emails, texts or social posts. Users that are already
-			folling your event will get real-time updates and notifications when you publish new
-			content
-		  </p>
-		  <a href="/" class="btn variant-outline block p-4">Publish Now!</a>
-		</Step> -->
+			<!--  -->
+			<div class="hero bg-base-200">
+				<div class="hero-content text-center">
+					<div class="max-w-md">
+						<h1 class="text-5xl font-bold">
+							<span
+								class="bg-gradient-to-br from-blue-500 to-green-500 bg-clip-text text-transparent box-decoration-clone"
+							>
+								Vite Sail is easy
+							</span>
+						</h1>
+						<blockquote class="blockquote">You wont believe that it is soo easy.</blockquote>
+
+						<p class="py-6">
+							The Vite Sail Scoring app is the easiest way to post and share your sailing race
+							results online. Users will easily be able to get the latest scores by following you
+							organiztion or individual events.
+						</p>
+						<div class="flex gap-2 justify-center">
+							<button class="btn btn-primary">
+								<Icon icon="mdi:stopwatch-start-outline" /> Get Started
+							</button>
+							<button class="btn btn-outline btn-base-300">
+								<Icon icon="mdi:read-more-outline" />
+								Read the Docs
+							</button>
+						</div>
+					</div>
+				</div>
 			</div>
+
+			<h1 class="flex justify-center font-bold">
+				<span> How easy is it? </span>
+			</h1>
+			<div class="steps p-4">
+				<div class="step">
+					<div>Register</div>
+					<p>
+						Step one is to register your organization. <br />
+						Each Event is presented by an organization. Don't worry you can have many but you will need
+						at least one to get started
+					</p>
+					<a href="/" class="btn variant-outline block p-4">Register Now!</a>
+				</div>
+				<div class="step">
+					<div>Upload</div>
+					<p>
+						Currently we are supporting Sailwave files. You don't need to export anything. Just
+						upload your .blw file and presto results are posted
+					</p>
+					<a href="/" class="btn variant-outline block p-4">Upload Now!</a>
+				</div>
+				<div class="step">
+					<div>Share</div>
+					<p>
+						Share your results easily by sending emails, texts or social posts. Users that are
+						already folling your event will get real-time updates and notifications when you publish
+						new content
+					</p>
+					<a href="/" class="btn variant-outline block p-4">Publish Now!</a>
+				</div>
+			</div>
+			<!--  -->
+			<div class="hero bg-base-200">
+				<div class="hero-content text-center">
+					<div class="max-w-md">
+						<h1 class="text-5xl font-bold">
+							<span
+								class="bg-gradient-to-br from-red-500 to-yellow-500 bg-clip-text text-transparent box-decoration-clone"
+							>
+								Vite means Fast.
+							</span>
+						</h1>
+						<p class="py-6">
+							Vite means fast. With highly performant features vite will get your results up and
+							pubilished in the blink of an eye. and with user subsriptions to your events you fans
+							will get instant updates on the app with real-time data delivered directyl to them.
+						</p>
+						<div class="flex gap-2 justify-center">
+							<button class="btn btn-primary">
+								<Icon icon="mdi:stopwatch-start-outline" /> Get Started
+							</button>
+							<button class="btn btn-outline btn-base-300">
+								<Icon icon="mdi:read-more-outline" />
+								Read the Docs
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<h1>Accounts</h1>
 
 			<h3>There are two types of accounts.</h3>

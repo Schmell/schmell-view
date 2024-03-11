@@ -12,15 +12,9 @@ export const GET: RequestHandler = async (event) => {
 
 	const { type, id, take, cursor } = Object.fromEntries(url.searchParams)
 
-	function getWhere() {
-		const where = {}
-		if (type && id) where[type + 'Id'] = id
-		return where
-	}
-
 	async function getUniqueAvatars() {
 		const users = await prisma.comment.findMany({
-			where: getWhere(),
+			where: { [type + 'Id']: id },
 			select: {
 				User: { select: { avatar: true } }
 			}
@@ -34,14 +28,14 @@ export const GET: RequestHandler = async (event) => {
 	// console.log(await getUniqueAvatars())
 	async function getCommentCount() {
 		return await prisma.comment.count({
-			where: getWhere()
+			where: { [type + 'Id']: id }
 		})
 	}
 	// const queryParams =
 	async function getComments() {
 		if (cursor === '') {
 			return await prisma.comment.findMany({
-				where: getWhere(),
+				where: { [type + 'Id']: id },
 				skip: 0,
 				take: Number(take) ?? 4,
 				orderBy: { createdAt: 'desc' },
@@ -58,7 +52,7 @@ export const GET: RequestHandler = async (event) => {
 		}
 
 		return await prisma.comment.findMany({
-			where: getWhere(),
+			where: { [type + 'Id']: id },
 			skip: 1,
 			take: Number(take) ?? 4,
 			orderBy: { createdAt: 'desc' },

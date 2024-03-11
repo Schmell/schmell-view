@@ -1,11 +1,11 @@
-import { auth, googleAuth } from '$lib/server/lucia.js'
+import { auth, discordAuth, githubAuth } from '$lib/server/lucia.js'
 import { OAuthRequestError } from '@lucia-auth/oauth'
 import { Prisma } from '@prisma/client'
 import { prisma } from '$lib/server/prisma'
+import type { RequestHandler } from '@sveltejs/kit'
 
-export const GET = async (event) => {
-	const { url, cookies, locals } = event
-	const storedState = cookies.get('google_oauth_state')
+export const GET: RequestHandler = async ({ url, cookies, locals }) => {
+	const storedState = cookies.get('discord_oauth_state')
 	const state = url.searchParams.get('state')
 	const code = url.searchParams.get('code')
 
@@ -16,22 +16,24 @@ export const GET = async (event) => {
 		})
 	}
 
-	const googAuth = await googleAuth.validateCallback(code)
-
-	const { existingUser, googleUser, createUser, createKey } = googAuth
+	const { existingUser, discordUser, createUser, createKey } = await discordAuth.validateCallback(
+		code
+	)
 
 	try {
+		const names = discordUser.username.split(' ')
+
 		const getUser = async () => {
 			if (existingUser) return existingUser
 
 			const user = await createUser({
 				attributes: {
-					username: googleUser.name,
-					email: googleUser.email,
-					name: googleUser.name,
-					firstname: googleUser.given_name,
-					lastname: googleUser.family_name,
-					avatar: googleUser.picture,
+					username: discordUser.username,
+					email: discordUser.email ?? '',
+					name: discordUser.username ?? '',
+					firstname: names ? names[0] : '',
+					lastname: names ? names[1] : '',
+					avatar: discordUser.avatar,
 					email_verified: 1
 				}
 			})
@@ -46,38 +48,29 @@ export const GET = async (event) => {
 		})
 
 		locals.auth.setSession(session)
-		// setFlash({ type: 'success', message: 'New User Created' }, event);
+
 		return new Response(null, {
 			status: 302,
 			headers: {
 				Location: '/'
 			}
 		})
-		//
 	} catch (e) {
-		//
-		console.log('auth/google/callback - getUser(): ', e)
-		//
 		if (e instanceof OAuthRequestError) {
-			console.log('OAuthRequestError: ', e)
 			// invalid code
 			return new Response(null, {
 				status: 400
 			})
 		}
-
 		if (e instanceof Prisma.PrismaClientKnownRequestError) {
 			// Unique constraint violation
 			if (e.code === 'P2002') {
-				const target = e.meta?.target as string[]
-				const violatedField = target[0]
-
-				if (target.length > 0) console.log('Unique constraint violations: ', target)
-
+				// @ts-ignore
+				const violatedField = e.meta?.target[0]
 				if (violatedField === 'email') {
 					const user = await prisma.user.findFirst({
 						where: {
-							email: googleUser.email
+							email: discordUser.email
 						}
 					})
 					if (user?.email_verified) {
@@ -97,6 +90,8 @@ export const GET = async (event) => {
 						Location: '/'
 					}
 				})
+
+				// throw redirect(307, `/link-accounts?field=${violatedField}`);
 			}
 
 			// Can't reach database server
@@ -109,10 +104,8 @@ export const GET = async (event) => {
 			console.log('prisma known error: ', e)
 		}
 
-		console.log('google OAuth callback error: ', e)
 		return new Response(null, {
-			status: 404,
-			statusText: 'google OAuth callback error'
+			status: 500
 		})
 	}
 }

@@ -40,6 +40,9 @@
 				<a class="btn btn-ghost uppercase" href="/auth/login/google">
 					<Icon icon="devicon:google" /> Sign in with Google
 				</a>
+				<a class="btn btn-ghost uppercase" href="/auth/login/discord">
+					<Icon icon="skill-icons:discord" /> Sign in with Discord
+				</a>
 				<a class="btn btn-ghost uppercase btn-disabled" href="/auth/login/facebook">
 					<Icon icon="devicon:facebook" /> Sign in with facebook
 				</a>

@@ -4,7 +4,7 @@ import { sveltekit } from 'lucia/middleware'
 import { dev } from '$app/environment'
 import { prisma as prismaAdapter } from '@lucia-auth/adapter-prisma'
 import { prisma } from '$lib/server/prisma'
-import { github, google, facebook } from '@lucia-auth/oauth/providers'
+import { github, google, facebook, discord } from '@lucia-auth/oauth/providers'
 
 import {
 	GITHUB_CLIENT_ID,
@@ -14,7 +14,10 @@ import {
 	GOOGLE_CLIENT_REDIRECTURI,
 	FACEBOOK_CLIENT_ID,
 	FACEBOOK_CLIENT_SECRET,
-	FACEBOOK_CLIENT_REDIRECTURI
+	FACEBOOK_CLIENT_REDIRECTURI,
+	DISCORD_CLIENT_ID,
+	DISCORD_CLIENT_SECRET,
+	DISCORD_CLIENT_REDIRECTURI
 } from '$env/static/private'
 
 export const auth = lucia({
@@ -58,6 +61,11 @@ export const facebookAuth = facebook(auth, {
 	clientSecret: FACEBOOK_CLIENT_SECRET,
 	redirectUri: FACEBOOK_CLIENT_REDIRECTURI
 	// scope: ['https://www.googleapis.com/auth/userinfo.profile']
+})
+export const discordAuth = discord(auth, {
+	clientId: DISCORD_CLIENT_ID,
+	clientSecret: DISCORD_CLIENT_SECRET,
+	redirectUri: DISCORD_CLIENT_REDIRECTURI
 })
 
 export type Auth = typeof auth

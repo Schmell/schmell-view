@@ -90,26 +90,27 @@
 	<!-- User avatar -->
 	<LinkPreview.Root>
 		<LinkPreview.Trigger>
-			<Avatar.Root class="w-8 h-8">
+			<Avatar.Root class="w-8 h-8 rounded-full bg-neutral-content bg-opacity-45">
 				<a href="/user/{item.User.id}">
-					<Avatar.Image class="rounded-full" alt={item.User.username} src={item.User.avatar} />
+					<Avatar.Image class="" alt={item.User.username} src={item.User.avatar} />
 					<Avatar.Fallback
 						class="flex items-center justify-center text-lg border border-base-300 font-bold rounded-full"
-						>{item.User.username.charAt(0)}</Avatar.Fallback
 					>
+						{item.User.username.charAt(0)}
+					</Avatar.Fallback>
 				</a>
 			</Avatar.Root>
 		</LinkPreview.Trigger>
 		<LinkPreview.Content
 			class="rounded-xl border border-base-300 bg-base-200 p-4 px-8 shadow-lg"
-			sideOffset={8}
 			transition={flyAndScale}
 			transitionConfig={{ duration: 150, y: -10 }}
+			sideOffset={8}
 		>
 			<div class="flex items-center gap-2">
-				<Avatar.Root class="w-8 h-8">
-					<Avatar.Image class="rounded-full" alt={item.User.username} src={item.User.avatar} />
-					<Avatar.Fallback class="rounded-full">{item.User.username.charAt(0)}</Avatar.Fallback>
+				<Avatar.Root class="w-8 h-8 rounded-full bg-neutral-content bg-opacity-45">
+					<Avatar.Image class="" alt={item.User.username} src={item.User.avatar} />
+					<Avatar.Fallback class="">{item.User.username.charAt(0)}</Avatar.Fallback>
 				</Avatar.Root>
 				<span>{item.User.username}</span>
 			</div>

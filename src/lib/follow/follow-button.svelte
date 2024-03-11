@@ -15,11 +15,11 @@
 		id: string
 		Follows: Partial<Follow>[]
 		publisherId?: string | null
-		_count: any
+		// _count: any
 		[key: string]: any
 	}
 
-	export let item: Item
+	export let item: Item | null
 	export let type: string
 	let userId: string
 	$: userId = $page.data.user.id
@@ -43,12 +43,12 @@
 	}
 
 	let followedId
-	$: if (item.Follows) {
+	$: if (item?.Follows) {
 		followedId = getUserFollowedId(item.Follows)
 	}
 
 	let followedByUser
-	$: if (item.Follows) {
+	$: if (item?.Follows) {
 		followedByUser = item.Follows.some((follow) => follow.userId === userId) ?? false
 	}
 
@@ -58,7 +58,7 @@
 			method: 'POST',
 			headers: { 'content-type': 'application/json' },
 			body: JSON.stringify({
-				itemId: item.id,
+				itemId: item?.id,
 				type,
 				unfollowId
 			})
@@ -88,7 +88,7 @@
 {:else}
 	<button
 		aria-label="follow"
-		disabled={userId === item.User?.id || userId === item.publisherId}
+		disabled={userId === item?.User?.id || userId === item?.publisherId}
 		on:click={() => $follow.mutate('')}
 	>
 		{#if $follow.isPending}

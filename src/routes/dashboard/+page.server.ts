@@ -1,15 +1,17 @@
 import { redirect, type Actions, fail } from '@sveltejs/kit'
 import { loadFlash } from 'sveltekit-flash-message/server'
 import type { PageServerLoad } from './$types'
-import { auth } from '$lib/server/lucia'
 import { prismaError } from '$lib/error-handling'
 import { prisma } from '$lib/server/prisma'
 
-export const load: PageServerLoad = loadFlash(async (event) => {
-	const { locals, url } = event
-
+export const load: PageServerLoad = loadFlash(async ({ locals, url }) => {
 	const session = await locals.auth.validate()
 	if (!session) throw redirect(302, `/auth/login?from=${url.pathname}`)
+
+	const { eventSkip, eventTake, followSkip, followTake, likeCursor } = Object.fromEntries(
+		url.searchParams
+	)
+	// console.log(eventSkip, eventTake)
 
 	async function getUserStats() {
 		try {
@@ -20,6 +22,10 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 				}
 			})
 		} catch (error) {}
+	}
+
+	async function getUserEventsCount() {
+		return prisma.event.count({ where: { publisherId: session?.user.userId } })
 	}
 
 	async function getUserEvents() {
@@ -40,11 +46,13 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 					Venue: true,
 
 					Likes: true,
-					Follows: true,
+					Follows: { select: { id: true, userId: true } },
 					_count: {
 						select: { Likes: true, Follows: true, Comps: true, Races: { where: { sailed: '1' } } }
 					}
-				}
+				},
+				skip: Number(eventSkip ?? 0),
+				take: Number(eventTake ?? 5)
 			})
 		} catch (error) {
 			prismaError(error)
@@ -53,21 +61,30 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 		}
 	}
 
+	async function getUserOrganizationsCount() {
+		return prisma.organization.count({
+			where: { ownerId: session?.user.userId }
+		})
+	}
+
 	async function getUserOrganizations() {
-		try {
-			return await prisma.organization.findMany({
-				where: { ownerId: session?.user.userId },
-				include: {
-					_count: { select: { Likes: true, Follows: true, Events: true, Series: true } },
-					Likes: true,
-					Follows: true
-				}
-			})
-		} catch (error) {
-			prismaError(error)
-			console.log('error: ', error)
-			throw fail(400, { message: 'Fail query on User Likes' })
+		if (url.searchParams.get('orgs')) {
+			try {
+				return prisma.organization.findMany({
+					where: { ownerId: session?.user.userId },
+					include: {
+						_count: { select: { Likes: true, Follows: true, Events: true, Series: true } },
+						Likes: true,
+						Follows: true
+					}
+				})
+			} catch (error) {
+				prismaError(error)
+				console.log('error: ', error)
+				throw fail(400, { message: 'Fail query on User Likes' })
+			}
 		}
+		return []
 	}
 
 	async function getUserSeries() {
@@ -90,6 +107,12 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 		}
 	}
 
+	async function getUserFollowingCount() {
+		return prisma.follow.count({
+			where: { userId: session?.user.userId }
+		})
+	}
+
 	async function getUserFollowing() {
 		try {
 			return await prisma.follow.findMany({
@@ -101,7 +124,9 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 					Organization: { include: { Follows: true } },
 					Venue: { include: { Follows: true } },
 					Comp: { include: { Follows: true } }
-				}
+				},
+				skip: Number(followSkip ?? 0),
+				take: Number(followTake ?? 5)
 			})
 		} catch (error) {
 			prismaError(error)
@@ -110,30 +135,68 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 		}
 	}
 
+	async function getUserLikesCount() {
+		return await prisma.like.count({
+			where: { userId: session?.user.userId }
+		})
+	}
+
 	async function getUserLikes() {
 		try {
 			if (url.searchParams.get('likes')) {
-				return await prisma.like.findMany({
-					where: { userId: session?.user.userId },
-					orderBy: { createdAt: 'desc' },
-					include: {
-						Event: { include: { Likes: true } },
-						Organization: { include: { Likes: true } },
-						Comment: {
-							include: {
-								User: true,
-								Venue: true,
-								Organization: true,
-								Event: true,
-								Comp: true,
-								Likes: true
-							}
+				console.log(likeCursor)
+				if (!likeCursor) {
+					return prisma.like.findMany({
+						where: { userId: session?.user.userId },
+						skip: 0,
+						take: 5,
+						orderBy: { createdAt: 'desc' },
+						include: {
+							Event: { include: { Likes: true } },
+							Organization: { include: { Likes: true } },
+							Comment: {
+								include: {
+									User: true,
+									Venue: true,
+									Organization: true,
+									Event: true,
+									Comp: true,
+									Likes: true
+								}
+							},
+							Venue: { include: { Likes: true } },
+							Comp: { include: { Likes: true } },
+							User: true
+						}
+					})
+				} else {
+					return prisma.like.findMany({
+						where: { userId: session?.user.userId },
+						skip: 1,
+						take: 10,
+						cursor: {
+							id: likeCursor ?? ''
 						},
-						Venue: { include: { Likes: true } },
-						Comp: { include: { Likes: true } },
-						User: true
-					}
-				})
+						orderBy: { createdAt: 'desc' },
+						include: {
+							Event: { include: { Likes: true } },
+							Organization: { include: { Likes: true } },
+							Comment: {
+								include: {
+									User: true,
+									Venue: true,
+									Organization: true,
+									Event: true,
+									Comp: true,
+									Likes: true
+								}
+							},
+							Venue: { include: { Likes: true } },
+							Comp: { include: { Likes: true } },
+							User: true
+						}
+					})
+				}
 			}
 			return []
 		} catch (error) {
@@ -144,27 +207,27 @@ export const load: PageServerLoad = loadFlash(async (event) => {
 	}
 
 	return {
-		organizations: await getUserOrganizations(),
 		series: await getUserSeries(),
 		events: await getUserEvents(),
 		following: await getUserFollowing(),
-		likes: await getUserLikes(),
+		followCount: await getUserFollowingCount(),
+		eventsCount: await getUserEventsCount(),
+		likesCount: await getUserLikesCount(),
+		organizationsCount: await getUserOrganizationsCount(),
+		awaited: {
+			organizations: getUserOrganizations(),
+			likes: getUserLikes()
+		},
 		userStats: await getUserStats()
 	}
 })
 
-export const actions: Actions = {
-	// logout: async ({ locals }) => {
-	// 	const session = await locals.auth.validate()
-	// 	if (!session) return redirect(307, '/auth/login')
-	// 	await auth.invalidateSession(session.sessionId) // invalidate session
-	// 	locals.auth.setSession(null) // remove cookie
-	// 	throw redirect(302, '/auth/login') // redirect to login page
-	// },
-	getLikes: async (event) => {
-		const session = await event.locals.auth.validate()
-		// return {
-		// 	likes: await getUserLikes(session?.user.userId)
-		// }
-	}
-}
+// export const actions: Actions = {
+
+// 	// getLikes: async (event) => {
+// 	// 	const session = await event.locals.auth.validate()
+// 	// 	// return {
+// 	// 	// 	likes: await getUserLikes(session?.user.userId)
+// 	// 	// }
+// 	// }
+// }

@@ -8,11 +8,16 @@
 	// import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools'
 	import '../app.css'
 	import { browser } from '$app/environment'
+	import { onNavigate } from '$app/navigation'
+	import { DropdownMenu, Tooltip } from 'bits-ui'
+	import { flyAndScale } from '$lib/utils/transitions'
+	import Avatar from '$components/layout/avatar.svelte'
 
 	export let data
-	$: ({ user } = data)
+	// $: ({ user } = data)
 
 	let open = false
+	let avatarTip = false
 
 	function handleClickOutside() {
 		open = false
@@ -28,6 +33,19 @@
 				enabled: browser
 			}
 		}
+	})
+
+	onNavigate((navigation) => {
+		// @ts-ignore
+		if (!document.startViewTransition) return
+
+		return new Promise((resolve) => {
+			// @ts-ignore
+			document.startViewTransition(async () => {
+				resolve()
+				await navigation.complete
+			})
+		})
 	})
 </script>
 
@@ -52,30 +70,36 @@
 			<div class="user-nav">
 				<!--  -->
 				{#if data.user}
-					<div
-						class="dropdown-end dropdown avatar rounded-full border-2 border-neutral-content bg-black bg-opacity-20 drop-shadow-lg focus:bg-base-100"
-					>
-						<div tabindex="-1" class="w-10 rounded-full select-none">
-							<img src={user?.avatar} alt={user?.name} />
-						</div>
-						<ul
-							tabindex="-1"
-							class=" dropdown-content menu rounded-box w-52 bg-base-100 p-2 text-base-content drop-shadow-lg"
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger>
+							<!--  -->
+							<Avatar user={data.user} />
+							<!--  -->
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content
+							class="w-full max-w-[8em] z-20 rounded-xl text-base-content border-base-300 bg-base-100 px-2 py-2.5 shadow-lg"
+							transition={flyAndScale}
+							sideOffset={4}
+							alignOffset={-34}
 						>
-							<li><a href="/auth/profile?from={$page.url.pathname}">Profile</a></li>
-							<li><a href="/auth/settings?from={$page.url.pathname}">Settings</a></li>
-							<li><div class="divider m-0 p-0" /></li>
-							<li>
+							<DropdownMenu.Item class="font-semibold hover:bg-base-200 p-2 rounded-lg">
+								<a href="/auth/profile?from={$page.url.pathname}">Profile</a>
+							</DropdownMenu.Item>
+							<DropdownMenu.Item class="font-semibold hover:bg-base-200 p-2 rounded-lg">
+								<a href="/auth/settings?from={$page.url.pathname}">Settings</a>
+							</DropdownMenu.Item>
+							<DropdownMenu.Separator class="divider m-0 p-0" />
+							<DropdownMenu.Item class="font-semibold hover:bg-base-200 p-2 rounded-lg">
 								<form method="POST">
 									<button formaction="/?/logout" type="submit">Logout</button>
 								</form>
-							</li>
-						</ul>
-					</div>
+							</DropdownMenu.Item>
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
 				{:else}
-					<a href="/auth/login" class="btn btn-primary btn-xs uppercase rounded-full shadow-lg"
-						>Login</a
-					>
+					<a href="/auth/login" class="btn btn-primary btn-xs uppercase rounded-full shadow-lg">
+						Login
+					</a>
 				{/if}
 			</div>
 		</nav>
@@ -108,7 +132,7 @@
 			</section>
 		{/if}
 	</div>
-	<main>
+	<main class="relative">
 		<slot />
 	</main>
 

@@ -18,7 +18,7 @@
 	}
 
 	let _class: string | undefined = undefined
-	export { className as class }
+	export { _class as class }
 	export let item: Item
 	export let type: string
 
