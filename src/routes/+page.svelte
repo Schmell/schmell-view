@@ -8,7 +8,7 @@
 </svelte:head>
 
 <Page title="Home">
-	<div>
+	<div class="prose">
 		<div class="space-y-4">
 			<!--  -->
 			<div class="hero bg-base-200">
@@ -46,7 +46,7 @@
 			</h1>
 			<div class="steps p-4">
 				<div class="step">
-					<div>Register</div>
+					<h3>Register</h3>
 					<p>
 						Step one is to register your organization. <br />
 						Each Event is presented by an organization. Don't worry you can have many but you will need
@@ -55,7 +55,7 @@
 					<a href="/" class="btn variant-outline block p-4">Register Now!</a>
 				</div>
 				<div class="step">
-					<div>Upload</div>
+					<h3>Upload</h3>
 					<p>
 						Currently we are supporting Sailwave files. You don't need to export anything. Just
 						upload your .blw file and presto results are posted
@@ -63,7 +63,7 @@
 					<a href="/" class="btn variant-outline block p-4">Upload Now!</a>
 				</div>
 				<div class="step">
-					<div>Share</div>
+					<h3>Share</h3>
 					<p>
 						Share your results easily by sending emails, texts or social posts. Users that are
 						already folling your event will get real-time updates and notifications when you publish

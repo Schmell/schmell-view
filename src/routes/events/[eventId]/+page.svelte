@@ -143,8 +143,8 @@
 						<!-- User Avatar -->
 						<Tooltip.Root openDelay={1000}>
 							<Tooltip.Trigger>
-								<a href="/user/{event.publisherId}" class="btn btn-ghost rounded-full p-1">
-									<Avatar.Root class="avatar w-8 ">
+								<a href="/user/{event.publisherId}" class="btn btn-ghost rounded-full m-0 p-0">
+									<Avatar.Root class="avatar w-8 bg-base-content bg-opacity-30 rounded-full ">
 										<Avatar.Image
 											class=" rounded-full"
 											alt={event.Publisher?.username}

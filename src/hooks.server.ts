@@ -20,13 +20,13 @@ export const themeHandle: Handle = async ({ resolve, event }) => {
 	const newTheme = event.url.searchParams.get('theme')
 	const cookieTheme = event.cookies.get('colorTheme')
 
-	if (cookieTheme) {
-		theme = cookieTheme
-	} else if (newTheme) {
+	if (newTheme) {
 		theme = newTheme
+	} else if (cookieTheme) {
+		theme = cookieTheme
 	}
 
-	if (newTheme || cookieTheme) {
+	if (theme) {
 		return await resolve(event, {
 			transformPageChunk: ({ html }) => html.replace('data-theme=""', `data-theme="${theme}"`)
 		})

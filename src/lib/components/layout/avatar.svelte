@@ -1,7 +1,10 @@
 <script lang="ts">
+	import { cn } from '$lib/utils'
 	import { flyAndScale } from '$lib/utils/transitions'
 	import { Avatar, Tooltip } from 'bits-ui'
 
+	let _class: string | undefined = undefined
+	export { _class as class }
 	export let user
 
 	let avatarTip = false
@@ -10,7 +13,10 @@
 <Tooltip.Root open={avatarTip}>
 	<Tooltip.Trigger>
 		<Avatar.Root
-			class="absolute top-2 right-8 w-10 h-10 hover:animate-pulse rounded-full overflow-hidden border-2 border-neutral-content bg-black bg-opacity-20 shadow-xl focus:bg-base-100 select-none"
+			class={cn(
+				'absolute top-2 right-8 w-10 h-10 hover:animate-pulse rounded-full overflow-hidden border-2 border-neutral-content bg-black bg-opacity-20 shadow-xl focus:bg-base-100 select-none',
+				_class
+			)}
 		>
 			<Avatar.Image src={user?.avatar} alt={user?.username} />
 			<Avatar.Fallback class="flex justify-center items-center h-full w-full font-bold ">

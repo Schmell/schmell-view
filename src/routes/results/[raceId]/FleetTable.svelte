@@ -301,7 +301,6 @@
 			columnVisibility
 		},
 		enableRowSelection: true,
-		// enableMultiRowSelection: false,
 		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -311,7 +310,6 @@
 	const table = createSvelteTable(options)
 
 	$: setColumnVisibility(getResultColumns())
-	// $: console.log(getResultColumns())
 
 	function setGroupView(column: Column<Result, unknown>, accessor: string[]) {
 		const accessorList = {}
@@ -331,17 +329,10 @@
 		return resCols[colString]
 	}
 
-	// const handleClick = () => {
-	// 	const elem = document.activeElement as HTMLInputElement
-	// 	if (elem) {
-	// 		elem?.blur()
-	// 	}
-	// }
-
 	//
 </script>
 
-<div class="w-fit mt-8 border-r-2 border-b-4 border-base-300 rounded-lg">
+<div class="w-fit border-r-2 border-b-4 border-base-300 rounded-lg">
 	<div
 		class="flex justify-between items-center py-4 mb-2 px-2 bg-gradient-to-r from-base-200 to-base-300 rounded-t-lg shadow-lg"
 	>
@@ -349,7 +340,7 @@
 		<p class="pr-2">{race.name}</p>
 	</div>
 
-	<table class="table table-md table-zebra md:table-sm shadow-lg w-fit">
+	<table class="table table-sm table-zebra md:table-lg shadow-lg w-fit">
 		<thead>
 			{#each $table.getHeaderGroups() as headerGroup}
 				<tr>

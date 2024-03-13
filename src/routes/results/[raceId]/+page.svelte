@@ -53,7 +53,7 @@
 	{#if !Number(data.race?.sailed)}
 		<div class="bg-error w-full p-2 text-error-content rounded-md">This Race was not sailed</div>
 	{:else}
-		<div class="pt-2 flex flex-col items-center">
+		<div class="flex flex-col items-center">
 			{#each fleetsTables() as table}
 				<FleetTable
 					race={data.race}

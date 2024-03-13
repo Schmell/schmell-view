@@ -1,17 +1,26 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
+	import { LikeFollowCount } from '$lib/like'
 	import Icon from '@iconify/svelte'
 	import { Pagination } from 'bits-ui'
 
-	export let events
-	export let series
-	export let eventsCount
+	type DashboardEvent = {
+		id: string
+		name: string
+		complete: boolean
+		_count: { Races: number; Likes: number; Follows: number; Comps: number }
+		Venue: { id: string; name: string } | null
+		Races: { _count: {} }[] | null
+		Organization: any
+	}
+
+	export let events: DashboardEvent[]
+	export let eventsCount = 0
 
 	let eventPageSize = 5
-	let eventDiv: HTMLDivElement
 	let currentPage = 1
-	// $: console.log(currentPage)
+	let eventDiv: HTMLDivElement
 
 	function excludePaginationSearchParams() {
 		$page.url.searchParams.delete('eventSkip')
@@ -27,74 +36,77 @@
 </script>
 
 <div class="flex flex-col gap-2" bind:this={eventDiv}>
-	{#if !events.length && !series.length}
-		<div class="text-sm">You have no Events or Series yet!</div>
+	{#if !events?.length}
+		<div class="text-sm">You have no Events yet!</div>
 		<a href="/events/createEvent" class="btn btn-primary rounded-full">Add event</a>
 	{:else}
 		{#each events as event}
-			<a
-				href="/events/{event?.id}"
-				class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-accent w-full rounded-lg shadow-xl"
-			>
-				<div class="capitalize w-full p-2 font-bold rounded-t-xl bg-info bg-opacity-10">
-					<div class="flex justify-between">
-						<div class="line-clamp-1">{event.name}</div>
-						<div class="flex gap-1 items-center min-w-fit text-xs pr-2">
-							<Icon icon="mdi:thumb-up" />
-							{event._count.Likes} /
-							<Icon icon="mdi:bell-ring" />
-							{event._count.Follows}
+			{#if event}
+				<a
+					href="/events/{event?.id}"
+					class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-accent w-full rounded-lg shadow-xl"
+				>
+					<div class="capitalize w-full p-2 font-bold rounded-t-xl bg-info bg-opacity-10">
+						<div class="flex justify-between">
+							<div class="line-clamp-1">{event.name}</div>
+							{#if event._count}
+								<LikeFollowCount count={event._count} />
+							{/if}
 						</div>
 					</div>
-				</div>
 
-				<div class="px-4">
-					{@html event?.name} -
-					<span class="text-xs">{@html event?.Venue?.name}</span>
-					<div class="flex justify-between">
+					<div class="px-4">
+						{@html event.name} -
+						<a href="/venue/{event.Venue?.id}" class="text-xs">{@html event.Venue?.name}</a>
+						<a href="/comps/{event.id}" class="block">
+							{event._count.Comps} <span class="text-sm"> - competitors</span>
+						</a>
+						<div class="flex justify-between">
+							<a href="/races/{event.id}" class="flex items-center gap-1">
+								{event?._count.Races} <span class="text-xs">of</span>
+								{event.Races?.length}
+								<span class="text-sm"> - races sailed</span>
+							</a>
+							<!-- Need to have a complete flag on the event -->
+							{#if event._count.Races === event.Races?.length || event.complete}
+								<div class="badge badge-success">
+									<Icon icon="mdi:check" />
+								</div>
+							{:else}
+								<div class="badge badge-warning">
+									<Icon icon="material-symbols:progress-activity" />
+								</div>
+							{/if}
+						</div>
+					</div>
+					<!-- Organization -->
+					<div class="flex justify-between items-end w-full px-4">
 						<div>
-							{event?._count.Races} of {event.Races.length} races sailed
-						</div>
-						<!-- Need to have a complete flag on the event -->
-						{#if event._count.Races === event.Races.length || event.complete}
-							<div class="badge badge-success">
-								<Icon icon="mdi:check" />
-								<!-- complete -->
-							</div>
-						{:else}
-							<div class="badge badge-warning">
-								<Icon icon="material-symbols:progress-activity" />
-							</div>
-						{/if}
-					</div>
-				</div>
-				<!-- Organization -->
-				<div class="flex justify-between items-end w-full px-4">
-					<div>
-						<div class="flex items-center text-xs gap-4">
-							<div class="flex items-center gap-2">
-								<Icon icon="clarity:organization-line" />
-								{event?.Organization?.name}
-							</div>
-							<div class="flex items-center gap-1">
-								<div class="flex items-center gap-1 min-w-fit">
-									<Icon icon="mdi:thumb-up" />
-									{event._count.Likes}
+							<div class="flex items-center text-xs gap-4">
+								<div class="flex items-center gap-2">
+									<Icon icon="clarity:organization-line" />
+									{event.Organization?.name}
 								</div>
-								/
 								<div class="flex items-center gap-1">
-									<Icon icon="mdi:bell-ring" />
-									{event._count.Follows}
+									<div class="flex items-center gap-1 min-w-fit">
+										<Icon icon="mdi:thumb-up" />
+										{event.Organization?._count.Likes}
+									</div>
+									/
+									<div class="flex items-center gap-1">
+										<Icon icon="mdi:bell-ring" />
+										{event._count.Follows}
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
 
-					<div class="text-xs opacity-40">
-						{event?.createdAt?.toLocaleDateString()}
+						<div class="text-xs opacity-40">
+							<!-- {event?.createdAt?.toLocaleDateString()} -->
+						</div>
 					</div>
-				</div>
-			</a>
+				</a>
+			{/if}
 		{/each}
 
 		<!-- ///////////////////////////////////////////////////////// -->
@@ -166,40 +178,6 @@
 			</Pagination.Root>
 		</div>
 		<!--  -->
-
-		<h1>Series</h1>
-		<div class="divider m-0" />
-
-		{#each series as ser}
-			<a
-				href="/series/{ser?.id}"
-				class="p-0 pb-4 flex flex-col gap-4 mb-4 border-l-4 border-secondary w-full rounded-lg shadow-xl"
-			>
-				<div class="capitalize w-full p-2 font-bold rounded-t-xl bg-secondary bg-opacity-10">
-					<div class="flex justify-between">
-						<div class="line-clamp-1">{ser.name}</div>
-						<div class="flex gap-1 items-center min-w-fit text-xs pr-2">
-							<Icon icon="mdi:thumb-up" />
-							{ser._count.Likes} /
-							<Icon icon="mdi:bell-ring" />
-							{ser._count.Follows}
-						</div>
-					</div>
-				</div>
-				<div class="p-2 px-4">
-					{@html ser.description}
-				</div>
-
-				<a href="/organization/{ser.Organization?.id}" class="flex justify-between w-full px-4">
-					<div class="flex gap-2 items-center text-xs">
-						<Icon icon="clarity:organization-line" />
-						{ser.Organization?.name}
-					</div>
-					<div class="text-xs opacity-40">
-						{ser?.createdAt?.toLocaleDateString()}
-					</div>
-				</a>
-			</a>
-		{/each}
 	{/if}
+	<!-- {/if} -->
 </div>

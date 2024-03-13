@@ -92,7 +92,7 @@
 		<LinkPreview.Trigger>
 			<Avatar.Root class="w-8 h-8 rounded-full bg-neutral-content bg-opacity-45">
 				<a href="/user/{item.User.id}">
-					<Avatar.Image class="" alt={item.User.username} src={item.User.avatar} />
+					<Avatar.Image class=" rounded-full" alt={item.User.username} src={item.User.avatar} />
 					<Avatar.Fallback
 						class="flex items-center justify-center text-lg border border-base-300 font-bold rounded-full"
 					>
