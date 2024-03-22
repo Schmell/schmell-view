@@ -20,7 +20,8 @@
 	export let item: Item
 	export let type: string
 
-	if (!$page.data.user) throw error(400, 'Invalid userId in like component')
+	let userId
+	if ($page.data.user) userId = $page.data.user.id
 
 	let isLoading = false
 	let likedByUser = false
@@ -40,13 +41,13 @@
 		return ''
 	}
 
-	$: likedByUser = item.Likes?.some((like) => like.userId === $page.data.user.id)
+	$: likedByUser = item.Likes?.some((like) => like.userId === userId)
 
 	async function likeApi(unlikeId?: string) {
 		return await fetch(`/api/like`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ itemId: item.id, type, userId: $page.data.user.id, unlikeId })
+			body: JSON.stringify({ itemId: item.id, type, userId, unlikeId })
 		}).then((r) => r.json())
 	}
 
@@ -95,7 +96,7 @@
 	{:else}
 		<!-- can't like your own comment -->
 		<button
-			disabled={$page.data.user.id === item.User?.id || $page.data.user.id === item.publisherId}
+			disabled={userId === item.User?.id || userId === item.publisherId}
 			on:click={() => like()}
 		>
 			{#if isLoading}

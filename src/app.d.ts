@@ -12,7 +12,12 @@ declare global {
 			from: string
 		}
 		interface PageData {
-			flash?: { type: 'success' | 'error'; message: string }
+			flash?: {
+				type: 'success' | 'error' | 'info' | 'warning'
+				message: string
+				description?: string
+				action?: any
+			}
 		}
 	}
 

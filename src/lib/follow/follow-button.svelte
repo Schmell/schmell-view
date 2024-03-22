@@ -22,13 +22,7 @@
 	export let item: Item | null
 	export let type: string
 	let userId: string
-	$: userId = $page.data.user.id
-
-	$: {
-		if (!userId) {
-			throw error(400, 'Invalid userId in follow component')
-		}
-	}
+	if ($page.data.user) userId = $page.data.user.id
 
 	const flash = getFlash(page)
 	function showMessage(message) {

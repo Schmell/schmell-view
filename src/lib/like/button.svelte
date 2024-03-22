@@ -2,10 +2,6 @@
 	import Icon from '@iconify/svelte'
 	import { cn } from '$lib/utils'
 	import { getContext } from 'svelte'
-	import { page } from '$app/stores'
-
-	// let _class: string | undefined = undefined
-	// export { _class as class }
 
 	export let likedClass: string | undefined = undefined
 	export let unlikedClass: string | undefined = undefined
@@ -27,7 +23,7 @@
 		</button>
 	{:else}
 		<button
-			disabled={$page.data.user.id === item.User?.id || $page.data.user.id === item.publisherId}
+			disabled={userId === item.User?.id || userId === item.publisherId}
 			on:click={() => $likeMutate.mutate('')}
 		>
 			{#if !$likeMutate.isPending}

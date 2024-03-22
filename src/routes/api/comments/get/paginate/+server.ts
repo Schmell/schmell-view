@@ -3,13 +3,7 @@ import type { RequestHandler } from './$types'
 import { redirect } from 'sveltekit-flash-message/server'
 import { prisma } from '$lib/server/prisma'
 
-export const GET: RequestHandler = async (event) => {
-	const { url, locals } = event
-	// auth check
-	const session = await locals.auth.validate()
-	if (!session)
-		throw redirect(302, '/auth/login', { type: 'success', message: 'Not Autorized' }, event)
-
+export const GET: RequestHandler = async ({ url }) => {
 	const { type, id, take, cursor } = Object.fromEntries(url.searchParams)
 
 	async function getUniqueAvatars() {
@@ -25,15 +19,38 @@ export const GET: RequestHandler = async (event) => {
 		return new Set(avatars)
 	}
 
-	// console.log(await getUniqueAvatars())
 	async function getCommentCount() {
 		return await prisma.comment.count({
 			where: { [type + 'Id']: id }
 		})
 	}
-	// const queryParams =
+
+	function getCommentQuery(): any {
+		const baseQuery = {
+			where: { [type + 'Id']: id },
+			skip: 1,
+			take: Number(take) ?? 4,
+			orderBy: { createdAt: 'desc' },
+			select: {
+				comment: true,
+				id: true,
+				type: true,
+				User: { select: { id: true, username: true, avatar: true } },
+				Likes: true,
+				Follow: true,
+				_count: true
+			}
+		}
+
+		if (cursor) {
+			return { baseQuery, cursor: { id: cursor } }
+		}
+		return { baseQuery }
+	}
+
 	async function getComments() {
 		if (cursor === '') {
+			// return await prisma.comment.findMany({ ...getCommentQuery() })
 			return await prisma.comment.findMany({
 				where: { [type + 'Id']: id },
 				skip: 0,

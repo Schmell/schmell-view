@@ -8,8 +8,6 @@
 
 	export let data: PageData
 	$: ({ user } = data)
-	// $: console.log('data: ', data)
-	// $: console.log('series: ', series)
 </script>
 
 <Page title="Series">
@@ -24,10 +22,10 @@
 		{#if !data.series}
 			<div>No series available</div>
 		{:else}
-			{#each data.series as ser}
+			{#each data.series as ser (ser.id)}
 				<ItemCard title={ser.name} href="/series/{ser.id}">
 					<div slot="top-right" class="text-xs flex gap-2">
-						<LikeCount userId={user?.userId} item={ser} type="series" />
+						<LikeCount item={ser} type="series" />
 					</div>
 
 					<div class:opacity-60={!ser.description}>
@@ -37,16 +35,16 @@
 					<div slot="bottom-left" class="p-2 text-base-content">
 						{#if ser.Organization}
 							<a
-								href="/organization/{ser.Organization?.id}"
+								href="/organization/{ser.Organization.id}"
 								class="flex items-center gap-2 line-clamp-1"
 							>
 								<Icon icon="clarity:organization-solid" />
-								{@html ser.Organization?.name}
+								{@html ser.Organization.name}
 							</a>
 						{/if}
 						{#if ser.Venues}
 							{#each ser.Venues as venue}
-								<a href="/venue/{venue?.id}" class="flex items-center gap-2 line-clamp-1">
+								<a href="/venue/{venue.id}" class="flex items-center gap-2 line-clamp-1">
 									<Icon icon="mdi:map-marker" />
 									{@html venue.name}
 								</a>
@@ -54,10 +52,10 @@
 						{/if}
 					</div>
 					<div slot="bottom-right">
-						{#if data.user?.userId === ser?.publisherId}
+						{#if user?.userId === ser.publisherId}
 							<div class="tooltip tooltip-top" data-tip="Edit Series">
 								<a
-  									href="/series/{ser?.id}/edit?from={$page.url.pathname}
+									href="/series/{ser?.id}/edit?from={$page.url.pathname}
 									&{$page.url.searchParams.toString()}"
 									class="btn btn-ghost p-1"
 								>

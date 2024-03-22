@@ -16,7 +16,7 @@
 	$: ({ event, user, awaited } = data)
 	$: userId = user?.userId
 
-	let showRaces = false
+	let showRaces = true
 	let progressTip
 	//
 </script>
@@ -132,9 +132,9 @@
 			</div>
 
 			<div class="px-4 pb-4 flex justify-between items-center">
-				<button class="btn btn-ghost btn-xs uppercase" on:click={() => (showRaces = !showRaces)}>
+				<!-- <button class="btn btn-ghost btn-xs uppercase" on:click={() => (showRaces = !showRaces)}>
 					{showRaces ? '^ Hide Races' : '⌄ Show Races'}
-				</button>
+				</button> -->
 
 				<div>
 					<div class="flex items-center justify-center">
@@ -167,6 +167,9 @@
 				</div>
 			</div>
 		</div>
+		<button class="btn btn-ghost btn-xs uppercase" on:click={() => (showRaces = !showRaces)}>
+			{showRaces ? '^ Hide Races' : '⌄ Show Races'}
+		</button>
 
 		<!-- NEW RACES VIEW ///////////////////////////////////////////////// -->
 		{#if showRaces}

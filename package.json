@@ -51,6 +51,7 @@
 	"type": "module",
 	"dependencies": {
 		"@google-cloud/local-auth": "^2.1.0",
+		"@googlemaps/js-api-loader": "^1.16.6",
 		"@js-temporal/polyfill": "^0.4.4",
 		"@lucia-auth/adapter-prisma": "^3.0.0",
 		"@lucia-auth/oauth": "^2.0.1",
@@ -66,14 +67,17 @@
 		"csvtojson": "^2.0.10",
 		"formsnap": "^0.1.2",
 		"gapi": "^0.0.3",
+		"gapi-script": "^1.2.0",
 		"gaxios": "^6.1.1",
-		"google-auth-library": "^9.6.0",
-		"googleapis": "^105.0.0",
+		"google-auth-library": "^9.7.0",
+		"googleapis": "^134.0.0",
 		"lucia": "^2.0.0",
+		"mode-watcher": "^0.3.0",
 		"nodemailer": "^6.9.4",
 		"svelte-email": "^0.0.4",
 		"svelte-french-toast": "^1.2.0",
 		"svelte-inview": "^4.0.2",
+		"svelte-sonner": "^0.3.19",
 		"sveltekit-flash-message": "^2.1.0",
 		"tailwind-merge": "^1.14.0"
 	}

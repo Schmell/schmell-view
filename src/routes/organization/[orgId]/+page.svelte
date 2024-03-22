@@ -41,7 +41,7 @@
 					/>
 					<!-- Likes and Follows -->
 					<div class="right-4 bottom-0 absolute">
-						<LikeFollow item={org} userId={user?.userId} type="organization" />
+						<LikeFollow item={org} type="organization" />
 					</div>
 				</div>
 				<div class="pt-8 pb-4 px-8">

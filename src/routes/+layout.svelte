@@ -12,12 +12,11 @@
 	import { DropdownMenu, Tooltip } from 'bits-ui'
 	import { flyAndScale } from '$lib/utils/transitions'
 	import Avatar from '$components/layout/avatar.svelte'
+	import { Toaster, toast } from 'svelte-sonner'
 
 	export let data
-	// $: ({ user } = data)
 
 	let open = false
-	let avatarTip = false
 
 	function handleClickOutside() {
 		open = false
@@ -25,7 +24,14 @@
 
 	const toggleOpen = () => (open = !open)
 
-	const flash = getFlash(page)
+	const flash = getFlash(page) as any
+
+	$: if ($flash) {
+		toast[$flash.type]($flash.message, {
+			description: $flash.description,
+			action: $flash.action
+		})
+	}
 
 	const queryClient = new QueryClient({
 		defaultOptions: {
@@ -50,6 +56,25 @@
 </script>
 
 <QueryClientProvider client={queryClient}>
+	<Toaster
+		theme="dark"
+		closeButton
+		toastOptions={{
+			unstyled: true,
+			classes: {
+				actionButton: 'bg-base-100',
+				cancelButton: 'bg-error',
+				closeButton: 'text-error',
+				toast: 'flex items-center gap-2 bg-base-300 p-4 rounded-lg xl:max-w-full',
+				success: 'bg-success text-success-content',
+				error: 'bg-error text-error-content',
+				warning: 'bg-warning text-warning-content',
+				info: 'bg-info text-info-content',
+				description: 'text-base-content'
+			}
+		}}
+	/>
+
 	<div class="fixed top-0 z-20 w-full">
 		<nav class="navbar border-base-300 text-secondary-content">
 			<button

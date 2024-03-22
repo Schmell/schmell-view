@@ -69,7 +69,7 @@
 				/>
 			</div>
 			<div class="absolute -bottom-3 right-0">
-				<LikeFollow type="venue" item={venue} userId={user?.userId} />
+				<LikeFollow type="venue" item={venue} />
 			</div>
 		</div>
 	</div>

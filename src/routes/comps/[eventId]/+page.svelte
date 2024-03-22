@@ -10,18 +10,23 @@
 
 <Page title="Competitiors">
 	{#if comps}
-		{#each comps as comp}
-			<ItemCard title={comp.boat ? comp.boat : comp.skipper} href="/comps/comp/{comp.id}">
-				<!-- <div slot="top-right">
-					<a href="/races/{comp.id}" class="btn btn-accent btn-xs">View Races</a>
-				</div> -->
+		<div class="rounded-xl bg-base-100 m-auto w-full max-w-xl">
+			{#each comps as comp}
+				<a href="/comps/comp/{comp.id}" class="flex items-center gap-2">
+					<div class="w-full p-2 px-4">
+						<h3 class="font-bold">{comp.boat}</h3>
+						<p>{comp.skipper}</p>
+					</div>
+					<p class="min-w-40 text-xs">{comp.fleet ?? comp.division}</p>
+				</a>
+				<div class=" m-0 border border-accent" />
+				<!-- <ItemCard title={comp.boat ? comp.boat : comp.skipper} href="/comps/comp/{comp.id}">
 				<div slot="bottom-right" class="flex justify-end text-primary">
 					<div class="tooltip tooltip-top" data-tip="View Competitor">
 						<a href="/comps/comp/{comp?.id}" class="btn btn-ghost p-1">
 							<Icon icon="material-symbols:groups-outline-rounded" width="30" />
 						</a>
 					</div>
-					<!-- Edit should only show when current user is owner -->
 					{#if user?.userId === comp.publisherId}
 						<div class="tooltip tooltip-top" data-tip="Edit Competitor">
 							<a href="/comps/{comp?.id}?edit=1" class="btn btn-ghost">
@@ -84,9 +89,6 @@
 							</div>
 						</div>
 					{/if}
-					<!-- <div>
-						{JSON.stringify(comp.rest)}
-					</div> -->
 				</div>
 
 				<div slot="bottom-left" class="p-2 text-xs text-base-content">
@@ -111,8 +113,9 @@
 						</span>
 					</div>
 				</div>
-			</ItemCard>
-		{/each}
+			</ItemCard> -->
+			{/each}
+		</div>
 	{:else}
 		<div>Loading...</div>
 	{/if}

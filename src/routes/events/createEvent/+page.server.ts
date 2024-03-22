@@ -6,11 +6,27 @@ import type { Actions, PageServerLoad } from './$types'
 import { prismaError } from '$lib/error-handling'
 import { redirect } from 'sveltekit-flash-message/server'
 import { dev } from '$app/environment'
+import { goto } from '$app/navigation'
 
-export const load = (async (event) => {
-	const session = await event.locals.auth.validate()
-
-	if (!session) throw redirect(302, '/', { type: 'error', message: 'Un-authorized' }, event)
+export const load = (async ({ locals, url, cookies }) => {
+	const session = await locals.auth.validate()
+	if (!session) {
+		throw redirect(
+			302,
+			'/auth/login',
+			{
+				// @ts-ignore
+				type: 'warning',
+				message: 'Not Authorized',
+				description: 'You need to be logged in to Create event',
+				action: {
+					label: 'Back',
+					onClick: () => goto(url.searchParams.get('from') ?? '')
+				}
+			},
+			cookies
+		)
+	}
 
 	async function getOrgs() {
 		try {

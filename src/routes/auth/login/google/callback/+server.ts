@@ -3,8 +3,8 @@ import { OAuthRequestError } from '@lucia-auth/oauth'
 import { Prisma } from '@prisma/client'
 import { prisma } from '$lib/server/prisma'
 
-export const GET = async (event) => {
-	const { url, cookies, locals } = event
+export const GET = async ({ url, cookies, locals }) => {
+	//
 	const storedState = cookies.get('google_oauth_state')
 	const state = url.searchParams.get('state')
 	const code = url.searchParams.get('code')
@@ -46,12 +46,10 @@ export const GET = async (event) => {
 		})
 
 		locals.auth.setSession(session)
-		// setFlash({ type: 'success', message: 'New User Created' }, event);
+
 		return new Response(null, {
 			status: 302,
-			headers: {
-				Location: '/'
-			}
+			headers: { Location: '/' }
 		})
 		//
 	} catch (e) {

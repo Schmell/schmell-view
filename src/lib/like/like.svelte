@@ -22,8 +22,8 @@
 	export let item: Item
 	export let type: string
 
-	if (!$page.data.user) throw error(400, 'Invalid userId in like component')
-	let userId = $page.data.user.id
+	let userId
+	if ($page.data.user) userId = $page.data.user.id
 	let likedByUser = false
 
 	const client = useQueryClient()

@@ -24,6 +24,26 @@ p {
 	@apply my-2;
 }
 
+svg[data-close-button] {
+	@apply bg-primary;
+}
+
+.pac-item {
+	@apply bg-base-100 text-base-content border-base-300;
+}
+
+.pac-item:hover {
+	@apply bg-base-200 text-base-content;
+}
+
+.pac-item-query {
+	@apply text-base-content;
+}
+
+.pac-container {
+	@apply bg-base-200;
+}
+
 /* [data-menu-item] {
 	@apply btn btn-xs btn-ghost;
 } */

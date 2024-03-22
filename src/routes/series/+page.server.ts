@@ -7,6 +7,10 @@ export const load = (async () => {
 		try {
 			return prisma.series.findMany({
 				select: {
+					id: true,
+					name: true,
+					description: true,
+					createdAt: true,
 					publisherId: true,
 					Publisher: true,
 					Organization: { select: { name: true, id: true } },

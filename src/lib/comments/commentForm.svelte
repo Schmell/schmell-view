@@ -4,6 +4,8 @@
 	import { delay } from '$lib/utils'
 	import Icon from '@iconify/svelte'
 	import { fade, slide } from 'svelte/transition'
+	import { toast } from 'svelte-sonner'
+	import { goto } from '$app/navigation'
 
 	export let itemId: string
 	export let type: string
@@ -31,7 +33,6 @@
 
 		onSuccess: async () => {
 			const delta = Date.now() - addCommentTime
-			console.log('delta: ', delta)
 			await delay(1000 - delta)
 		},
 
@@ -44,6 +45,13 @@
 
 		onError: (err: any, variables: any, context: any) => {
 			console.error('comment form Error: ', err, variables, context)
+			toast.error('Not Authorized', {
+				description: 'You need to be logged in to make a comment',
+				action: {
+					label: 'Login',
+					onClick: () => goto('/auth/login')
+				}
+			})
 			if (context?.previousTodos) {
 				client.setQueryData<Comment[]>(['comments'], context.previousTodos)
 			}
@@ -62,10 +70,13 @@
 	<form bind:this={formElement} on:submit={handleSubmit}>
 		<div class="join w-full flex">
 			<input
-				class="input shadow-lg join-item w-full !outline-none focus:shadow-lg focus:border-r-transparent"
+				class="input rounded-lg shadow-lg join-item w-full !outline-none focus:shadow-lg focus:border-r-transparent"
 				class:error={$addCommentMutation.isError}
 				bind:value={comment}
 				on:focus={() => (focused = true)}
+				on:blur={() => {
+					if (!comment) focused = false
+				}}
 			/>
 			{#if focused}
 				<button

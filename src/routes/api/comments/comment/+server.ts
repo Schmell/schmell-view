@@ -1,6 +1,8 @@
 import { prismaError } from '$lib/error-handling'
 import { fail, json, type RequestHandler } from '@sveltejs/kit'
 import { prisma } from '$lib/server/prisma'
+import { redirect } from 'sveltekit-flash-message/server'
+import { toast } from 'svelte-sonner'
 
 export const GET: RequestHandler = async (event) => {
 	const { request, url, params, locals } = event
@@ -8,18 +10,18 @@ export const GET: RequestHandler = async (event) => {
 	return json({})
 }
 
-export const POST: RequestHandler = async (event) => {
-	const { request, url, params, locals } = event
+export const POST: RequestHandler = async ({ request, locals }) => {
 	const session = await locals.auth.validate()
 
 	const { id, type, itemId, comment } = await request.json()
+
 	async function createComment() {
 		const data = generateUpsert()
 		try {
 			return await prisma.comment.upsert({ ...data })
 		} catch (error) {
+			// console.log(error)
 			prismaError(error)
-			console.log('error: ', error)
 		}
 	}
 
@@ -79,13 +81,10 @@ export const POST: RequestHandler = async (event) => {
 		}
 	}
 
-	const newComment = await createComment()
-	return json(newComment)
+	return json(await createComment())
 }
 
-export const PUT: RequestHandler = async (event) => {
-	const { request, url, params, locals } = event
-
+export const PUT: RequestHandler = async ({ request }) => {
 	const { id, comment, type } = await request.json()
 
 	console.log(comment, id, type)
@@ -95,8 +94,7 @@ export const PUT: RequestHandler = async (event) => {
 	return json({ id, comment })
 }
 
-export const DELETE: RequestHandler = async (event) => {
-	const { request, url, params, locals } = event
+export const DELETE: RequestHandler = async ({ request, locals }) => {
 	// console.log(await request.json())
 	const { item } = await request.json()
 	// console.log(item.id)
