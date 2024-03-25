@@ -9,3 +9,5 @@ node_modules
 .env.*
 !.env.example
 vite.config.js.timestamp-*
+/src/lib/service
+/src/routes/google
