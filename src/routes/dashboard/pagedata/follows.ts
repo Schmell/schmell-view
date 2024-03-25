@@ -1,4 +1,5 @@
 import { fail } from '@sveltejs/kit'
+import { prisma } from '$lib/server/prisma'
 
 export async function getUserFollowingCount({ userId }) {
 	return prisma.follow.count({

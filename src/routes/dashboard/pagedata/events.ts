@@ -1,3 +1,5 @@
+import { prisma } from '$lib/server/prisma'
+
 export async function getUserEventsCount({ userId }) {
 	return prisma.event.count({ where: { publisherId: userId } })
 }

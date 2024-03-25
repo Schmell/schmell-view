@@ -1,3 +1,5 @@
+import { prisma } from '$lib/server/prisma'
+
 export async function getUser({ userId }) {
 	try {
 		return await prisma.user.findUnique({

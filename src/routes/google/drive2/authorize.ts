@@ -1,12 +1,12 @@
+import { authenticate } from '@google-cloud/local-auth'
 import fs from 'fs/promises'
+import type { OAuth2Client } from 'google-auth-library'
+import { google } from 'googleapis'
 import path from 'path'
 import process from 'process'
-import { authenticate } from '@google-cloud/local-auth'
-import { google } from 'googleapis'
-import type { OAuth2Client } from 'google-auth-library'
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/drive']
+const SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/calendar']
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.

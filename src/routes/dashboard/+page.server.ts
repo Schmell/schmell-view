@@ -1,5 +1,6 @@
 import { loadFlash, redirect } from 'sveltekit-flash-message/server'
 import type { PageServerLoad } from './$types'
+
 import {
 	getUser,
 	getUserEvents,
